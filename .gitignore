@@ -1,0 +1,51 @@
+# Build
+bin/
+obj/
+out/
+Debug/
+Release/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# VSCode
+.vscode/
+
+# ASP.NET Secrets
+appsettings.Development.json
+appsettings.Local.json
+
+# Environment config
+.env
+.env.*
+
+# Logs
+*.log
+
+# dotCover
+*.dotCover
+
+# Database files
+*.mdf
+*.ldf
+
+# lib folder if you manage frontend dependencies manually (optional)
+wwwroot/lib/
+
+# Publish output
+publish/
+*.publish.xml
+
+# npm / node_modules (if using frontend tooling)
+node_modules/
+
+# Others
+*.db
+*.sqlite

@@ -1,0 +1,241 @@
+﻿@{
+    ViewData["Title"] = "Chi tiết phòng thuê";
+}
+
+<section class="hero-wrap hero-wrap-2" style="background-image: url('images/bg_3.jpg');" data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-end justify-content-start">
+            <div class="col-md-9 ftco-animate pb-4">
+                <h1 class="mb-3 bread">Phòng</h1>
+                <p class="breadcrumbs">
+                    <span class="mr-2">
+                        <a href="/Home">
+                            Trang chủ <i class="ion-ios-arrow-forward"></i>
+                        </a>
+                    </span>
+                    <span class="mr-2">
+                        <a href="/Room">
+                            Danh sách các phòng <i class="ion-ios-arrow-forward"></i>
+                        </a>
+                    </span>
+                    <span>
+                        Chi tiết phòng <i class="ion-ios-arrow-forward"></i>
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section ftco-services-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 property-wrap mb-5">
+                <div class="row">
+                    <div class="col-md-6 d-flex ftco-animate">
+                        <div class="img align-self-stretch" style="background-image: url(images/work-2.jpg);"></div>
+                    </div>
+                    <div class="col-md-6 ftco-animate py-5">
+                        <div class="text py-5 pl-md-5">
+                            <div class="d-flex">
+                                <div>
+                                    <h3><a href="properties-single.html">Khu trọ FPT</a></h3>
+                                </div>
+                                <div class="pl-md-4">
+                                    <h4 class="price">3.5tr/tháng</h4>
+                                </div>
+                            </div>
+                            <p>
+                                Nằm ngay trong khuôn viên trường, ký túc xá FPT mang đến một môi trường sống hiện đại, an toàn và tiện nghi, giúp sinh viên có những trải nghiệm học tập và sinh hoạt tốt nhất.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 tour-wrap">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Diện tích phòng</th>
+                            <td>
+                                <p>25m² - 35m²</p>
+                            </td>
+                            <td></td>
+                        </tr><!-- END TR-->
+
+                        <tr>
+                            <th scope="row">Số giường ngủ</th>
+                            <td>
+                                <p>3 giường/phòng</p>
+                            </td>
+                            <td></td>
+                        </tr><!-- END TR-->
+
+                        <tr>
+                            <th scope="row">Số phòng tắm</th>
+                            <td>
+                                <p>2 phòng tắm riêng</p>
+                            </td>
+                            <td></td>
+                        </tr><!-- END TR-->
+
+                        <tr>
+                            <th scope="row">Nhà để xe</th>
+                            <td>
+                                <p>Khu vực gửi xe rộng rãi</p>
+                            </td>
+                            <td></td>
+                        </tr><!-- END TR-->
+                        <tr>
+                            <th scope="row">Tiện ích nổi bật</th>
+                            <td class="d-flex">
+                                <ul>
+                                    <li>Trang bị đầy đủ giường, tủ quần áo, bàn học</li>
+                                    <li>Hệ thống an ninh 24/7</li>
+                                </ul>
+                                <ul>
+                                    <li>Khu vực sinh hoạt chung rộng rãi, wifi tốc độ cao</li>
+                                    <li>Siêu thị mini, khu thể thao ngay trong khuôn viên</li>
+                                </ul>
+                            </td>
+                            <td></td>
+                        </tr><!-- END TR-->
+
+                        <tr>
+                            <th scope="row">Không bao gồm</th>
+                            <td class="d-flex">
+                                <ul>
+                                    <li>Phí điện, nước tính theo mức tiêu thụ</li>
+                                </ul>
+                                <ul>
+                                    <li>Phí giữ xe</li>
+                                </ul> 
+                                <ul>
+                                    <li>Dịch vụ giặt ủi</li>
+                                </ul>
+                            </td>
+                            <td></td>
+                        </tr><!-- END TR-->
+                        <tr>
+                            <th scope="row">Vị trí</th>
+                            <td>
+                                <div id="map"></div>
+                            </td>
+                        </tr><!-- END TR-->
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-12 tour-wrap">
+                <div class="pt-5 mt-5">
+                    <h3 class="mb-5">6 Reviews</h3>
+                    <ul class="comment-list">
+                        <li class="comment">
+                            <div class="vcard bio">
+                                <img src="images/person_1.jpg" alt="User avatar">
+                            </div>
+                            <div class="comment-body">
+                                <h3>Nguyễn Văn A</h3>
+                                <div class="meta">Ngày 05/03/2025 lúc 10:15 AM</div>
+                                <p>Phòng sạch sẽ, thoáng mát, đầy đủ tiện nghi. Mình ở đây hơn 1 năm rồi và cảm thấy rất thoải mái. Khu vực an ninh, không gian yên tĩnh, phù hợp để học tập.</p>
+                                <p><a href="#" class="reply">Trả lời</a></p>
+                            </div>
+                        </li>
+
+                        <li class="comment">
+                            <div class="vcard bio">
+                                <img src="images/person_2.jpg" alt="User avatar">
+                            </div>
+                            <div class="comment-body">
+                                <h3>Trần Thị B</h3>
+                                <div class="meta">Ngày 05/03/2025 lúc 11:30 AM</div>
+                                <p>Giá thuê hợp lý, phòng rộng rãi, có bàn học và wifi rất ổn. Tuy nhiên, giờ giấc hơi nghiêm ngặt nên ai hay đi về khuya thì nên cân nhắc nhé.</p>
+                                <p><a href="#" class="reply">Trả lời</a></p>
+                            </div>
+
+                            <ul class="children">
+                                <li class="comment">
+                                    <div class="vcard bio">
+                                        <img src="images/person_3.jpg" alt="User avatar">
+                                    </div>
+                                    <div class="comment-body">
+                                        <h3>Phạm Văn C</h3>
+                                        <div class="meta">Ngày 05/03/2025 lúc 12:00 PM</div>
+                                        <p>Trần Thị B: Mình thấy quy định giờ giấc cũng hợp lý thôi, vì giúp đảm bảo an ninh cho mọi người. Nhưng nếu cần đi khuya thì có thể xin phép quản lý.</p>
+                                        <p><a href="#" class="reply">Trả lời</a></p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="comment">
+                            <div class="vcard bio">
+                                <img src="images/person_4.jpg" alt="User avatar">
+                            </div>
+                            <div class="comment-body">
+                                <h3>Lê Minh D</h3>
+                                <div class="meta">Ngày 05/03/2025 lúc 01:45 PM</div>
+                                <p>Phòng rất mới và sạch, có máy giặt chung, nước nóng lạnh đầy đủ. Ở đây rất thích vì gần trường, đi học chỉ mất 5 phút.</p>
+                                <p><a href="#" class="reply">Trả lời</a></p>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- END comment-list -->
+
+                    <div class="comment-form-wrap pt-5">
+                        <h3 class="mb-4">Để lại bình luận</h3>
+                        <form action="#" class="p-4 bg-light rounded shadow-sm">
+                            <div class="form-group mb-3">
+                                <label for="name" class="fw-bold">Họ và tên *</label>
+                                <input type="text" class="form-control" id="name" placeholder="Nhập họ và tên của bạn">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="email" class="fw-bold">Email *</label>
+                                <input type="email" class="form-control" id="email" placeholder="Nhập email của bạn">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="website" class="fw-bold">Website (nếu có)</label>
+                                <input type="url" class="form-control" id="website" placeholder="Nhập URL trang web của bạn">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="message" class="fw-bold">Nội dung bình luận *</label>
+                                <textarea id="message" cols="30" rows="5" class="form-control" placeholder="Nhập nội dung bình luận..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary py-2 px-4">Gửi bình luận</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> <!-- .section -->
+<script src="https://maps.gomaps.pro/maps/api/js?key=@ViewData["GoogleMapsAPIKey"]"></script>
+<script>
+    function initMap() {
+        var geocoder = new google.maps.Geocoder();
+        var address = "@ViewData["Address"]";
+
+        var map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 15,
+            center: { lat: 0, lng: 0 }
+        });
+
+        geocoder.geocode({ 'address': address }, function (results, status) {
+            if (status === 'OK') {
+                map.setCenter(results[0].geometry.location);
+                new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location,
+                    title: "Our Location"
+                });
+            } else {
+                console.error("Geocode was not successful: " + status);
+            }
+        });
+    }
+
+    window.onload = initMap;
+</script>

@@ -1,0 +1,84 @@
+﻿<div class="bg-black top" style="padding-bottom: 0.15rem; padding-top: 0.15rem">
+	<div class="container">
+		<div class="row no-gutters d-flex align-items-start align-items-center px-md-0">
+			<div class="col-lg-12 d-block">
+				<div class="row d-flex">
+					<div class="col-md pr-4 d-flex topper align-items-center">
+						<div class="icon mr-2 d-flex justify-content-center align-items-center">
+							<span class="icon-phone2"></span>
+						</div>
+						<span class="text">(+84) 941 673 660</span>
+					</div>
+					<div class="col-md pr-4 d-flex topper align-items-center">
+						<div class="icon mr-2 d-flex justify-content-center align-items-center">
+							<span class="icon-paper-plane"></span>
+						</div>
+						<span class="text">bluedream.company@email.com</span>
+					</div>
+					<div class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right justify-content-end">
+						@if (Context.Session.GetString("AccountId") != null)
+						{
+							<div class="dropdown">
+								<a style="color: #fff" class="text dropdown-toggle" href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Xin chào, @(Context.Session.GetString("UserName") ?? Context.Session.GetString("Email"))
+								</a>
+								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+									<a class="dropdown-item" href="/Profile">Thông tin cá nhân</a>
+									<a class="dropdown-item" href="#">Lịch sử thuê</a>
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item text-danger" href="/Auth/Logout">Đăng xuất</a>
+								</div>
+							</div>
+						}
+						else
+						{
+							<p class="mb-0 register-link">
+								<a href="#" class="mr-3">Đăng ký</a>
+								<a href="/Auth/Login">Đăng nhập</a>
+							</p>
+						}
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light site-navbar-target"
+	 id="ftco-navbar">
+	<div class="container">
+		<a class="navbar-brand" href="index.html">BlueHouse</a>
+		<button class="navbar-toggler js-fh5co-nav-toggle fh5co-nav-toggle" type="button" data-toggle="collapse"
+				data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="oi oi-menu"></span> Menu
+		</button>
+
+		<div class="collapse navbar-collapse" id="ftco-nav">
+			<ul class="navbar-nav nav ml-auto">
+				<li class="nav-item"><a href="/Home" class="nav-link"><span>Trang chủ</span></a></li>
+				<li class="nav-item"><a href="/Service" class="nav-link"><span>Dịch vụ</span></a></li>
+				<li class="nav-item">
+					<a href="/Room" class="nav-link"><span>Danh sách phòng</span></a>
+				</li>
+				<li class="nav-item"><a href="/About" class="nav-link"><span>Về chúng tôi</span></a></li>
+				<li class="nav-item"><a href="/Contact" class="nav-link"><span>Liên hệ</span></a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		let currentPath = window.location.pathname.toLowerCase();
+		let navLinks = document.querySelectorAll(".navbar-nav .nav-item a");
+
+		navLinks.forEach(link => {
+			let linkPath = link.getAttribute("href").toLowerCase();
+			if (currentPath.startsWith(linkPath)) {
+				link.classList.add("active");
+			} else {
+				link.classList.remove("active");
+			}
+		});
+	});
+
+</script>

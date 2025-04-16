@@ -1,0 +1,84 @@
+﻿@model LoginViewModel
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<section class="ftco-section contact-section ftco-no-pb" id="login-section" style="padding: 10em !important">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-3">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <span class="subheading">Đăng nhập</span>
+                <h2 style="font-family: system-ui;" class="mb-4">Chào mừng bạn trở lại!</h2>
+                <p>Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ của chúng tôi.</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center block-9">
+            <div class="col-md-7 text-center order-md-last d-flex ftco-animate">
+                <form asp-controller="Auth" asp-action="Login" method="post" class="bg-light p-4 p-md-5 contact-form">
+                    <div style="width: 100%; text-align: center; margin-bottom: 20px;">
+                        <a asp-controller="Auth" asp-action="ExternalLogin" asp-route-provider="Google" class="btn btn-danger btn-block" style="background-color: #f54859;">
+                            <img src="/images/login/icons/icon-google.png" alt="GOOGLE" style="width: 20px; margin-right: 10px;"> Đăng nhập với Google
+                        </a>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
+                    {
+                        <script>
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi đăng nhập!',
+                                text: '@Html.Raw(TempData["ErrorMessage"])'
+                            });
+                        </script>
+                    }
+
+                    @if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+                    {
+                        <script>
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Đăng nhập thành công!',
+                                text: '@Html.Raw(TempData["SuccessMessage"])',
+                                timer: 2500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = '@Html.Raw(TempData["RedirectUrl"])';
+                            });
+                        </script>
+                    }
+
+                    <div class="form-group">
+                        <input asp-for="AccountEmail" type="email" class="form-control" placeholder="Email của bạn">
+                    </div>
+                    <span asp-validation-for="AccountEmail" class="text-danger"></span>
+
+                    <div class="form-group">
+                        <input asp-for="AccountPassword" type="password" class="form-control" placeholder="Mật khẩu">
+                    </div>
+                    <span asp-validation-for="AccountPassword" class="text-danger"></span>
+
+                    <div class="form-group d-flex justify-content-between">
+                        <div>
+                            <input type="checkbox" id="rememberMe" />
+                            <label for="rememberMe">Nhớ mật khẩu</label>
+                        </div>
+                        <a href="#" class="text-primary">Quên mật khẩu?</a>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Đăng nhập" class="btn btn-primary py-3 px-5 btn-block">
+                    </div>
+
+                    <div class="box p-2 px-3 bg-light d-flex justify-content-center">
+                        <span class="text-muted">Chưa có tài khoản?</span>
+                        <a href="#" class="text-primary ml-2">Đăng ký ngay</a> 
+                    </div> 
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</section>
+n
