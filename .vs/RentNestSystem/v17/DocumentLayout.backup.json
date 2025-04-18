@@ -134,8 +134,7 @@
               "RelativeToolTip": "RentNest.Web\\Controllers\\AuthController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-16T07:12:44.753Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T07:12:44.753Z"
             },
             {
               "$type": "Document",
@@ -147,8 +146,7 @@
               "RelativeToolTip": "RentNest.Web\\Models\\LoginViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-16T07:11:51.523Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T07:11:51.523Z"
             },
             {
               "$type": "Document",
@@ -160,8 +158,7 @@
               "RelativeToolTip": "RentNest.Web\\Views\\Auth\\Login.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-16T07:10:49.086Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T07:10:49.086Z"
             },
             {
               "$type": "Document",
@@ -173,8 +170,7 @@
               "RelativeToolTip": "RentNest.Web\\Views\\Auth\\ExternalLoginCallback.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-16T07:10:48.391Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T07:10:48.391Z"
             },
             {
               "$type": "Document",
@@ -186,8 +182,7 @@
               "RelativeToolTip": "RentNest.Web\\Views\\Room\\Detail.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-16T07:10:28.878Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T07:10:28.878Z"
             },
             {
               "$type": "Document",
@@ -199,8 +194,7 @@
               "RelativeToolTip": "RentNest.Service\\Interfaces\\IAccountService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-16T06:25:33.877Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T06:25:33.877Z"
             },
             {
               "$type": "Document",
@@ -212,8 +206,7 @@
               "RelativeToolTip": "RentNest.Service\\Implements\\AccountService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-16T06:25:12.23Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T06:25:12.23Z"
             },
             {
               "$type": "Document",
@@ -225,8 +218,7 @@
               "RelativeToolTip": "RentNest.Web\\Views\\Home\\About.cshtml",
               "ViewState": "AgIAACcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-16T06:24:21.979Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T06:24:21.979Z"
             },
             {
               "$type": "Document",
@@ -238,8 +230,7 @@
               "RelativeToolTip": "RentNest.Core\\Domains\\Account.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-16T06:23:25.416Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T06:23:25.416Z"
             },
             {
               "$type": "Document",
@@ -251,8 +242,7 @@
               "RelativeToolTip": "RentNest.Web\\Views\\Account\\Profile.cshtml",
               "ViewState": "AgIAACQAAAAAAAAAAAAAAAAAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-16T06:19:27.581Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T06:19:27.581Z"
             },
             {
               "$type": "Document",
@@ -264,8 +254,7 @@
               "RelativeToolTip": "RentNest.Web\\Views\\Home\\Service.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-16T06:15:40.212Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T06:15:40.212Z"
             },
             {
               "$type": "Document",
@@ -277,8 +266,7 @@
               "RelativeToolTip": "RentNest.Web\\Views\\Home\\Index.cshtml",
               "ViewState": "AgIAAKIAAAAAAAAAAAAAAKcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-16T06:15:38.841Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T06:15:38.841Z"
             },
             {
               "$type": "Document",
@@ -290,8 +278,7 @@
               "RelativeToolTip": "RentNest.Web\\Views\\Home\\Contact.cshtml",
               "ViewState": "AgIAAFEAAAAAAAAAAAAAAFsAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-16T06:15:38.137Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T06:15:38.137Z"
             },
             {
               "$type": "Document",
@@ -327,8 +314,7 @@
               "RelativeToolTip": "RentNest.Web\\Controllers\\RoomController.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAAQAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-16T06:03:08.695Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T06:03:08.695Z"
             },
             {
               "$type": "Document",
@@ -340,8 +326,7 @@
               "RelativeToolTip": "RentNest.Web\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-04-16T06:02:36.879Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T06:02:36.879Z"
             },
             {
               "$type": "Document",
@@ -363,7 +348,7 @@
               "RelativeDocumentMoniker": "RentNest.Web\\Program.cs",
               "ToolTip": "D:\\FPT_UNI\\EXE201\\RentNestSystem\\RentNest.Web\\Program.cs",
               "RelativeToolTip": "RentNest.Web\\Program.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAQwBsAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAQwBgAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-16T05:59:26.658Z",
               "EditorCaption": ""
@@ -414,8 +399,7 @@
               "RelativeToolTip": "RentNest.Web\\Controllers\\HomeController.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAAwCUAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-16T05:56:59.307Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T05:56:59.307Z"
             },
             {
               "$type": "Document",
@@ -439,8 +423,7 @@
               "RelativeToolTip": "RentNest.Core\\Domains\\Entity.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-16T05:49:27.191Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T05:49:27.191Z"
             }
           ]
         }

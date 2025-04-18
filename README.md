@@ -22,14 +22,14 @@
 
 ## 🛠️ Công nghệ sử dụng
 
-| Layer | Stack |
-|------|-------|
-| Frontend | HTML/CSS, JavaScript, Bootstrap, jQuery, Swal |
-| Backend | ASP.NET Core MVC, Entity Framework Core |
-| Database | MS SQL Server |
-| Authentication | Google OAuth 2.0, Session Auth |
-| Real-time | SignalR |
-| API | Google Maps API |
+| Layer          | Stack                                         |
+| -------------- | --------------------------------------------- |
+| Frontend       | HTML/CSS, JavaScript, Bootstrap, jQuery, Swal |
+| Backend        | ASP.NET Core MVC, Entity Framework Core       |
+| Database       | MS SQL Server                                 |
+| Authentication | Google OAuth 2.0, Session Auth                |
+| Real-time      | SignalR                                       |
+| API            | Google Maps API                               |
 
 ---
 
@@ -50,14 +50,19 @@ bashdotnet ef database update
 Tạo một project tại Google Developers Console và lấy thông tin ClientId, ClientSecret.
 Thêm thông tin này vào file appsettings.Development.json (file này không được push lên GitHub)
 
-### 4. Chạy ứng dụng
+### 4. Chạy SQL
+
+Chạy Scripts/database.sql trong SQL Server trước chạy bắt đầu dự án
+
+### 5. Chạy ứng dụng
 
 dotnet run --project RentNest.Web
 
-
 ## 🔐 Ghi chú bảo mật
+
 Mọi thông tin nhạy cảm như OAuth secrets phải được đặt trong appsettings.Development.json hoặc dùng biến môi trường
 ❌ Tuyệt đối không được commit lên GitHub
 
 ## 🤝 Đóng góp
+
 Pull request luôn được chào đón. Vui lòng mở issue nếu bạn muốn thảo luận tính năng mới hoặc sửa lỗi.
