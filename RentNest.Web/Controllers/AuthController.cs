@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using RentNest.Core.Domains;
+using RentNest.Core.DTO;
 using RentNest.Service.Interfaces;
 using RentNest.Web.Models;
 using System.Security.Claims;
-
+using System.Net.Http;
 namespace RentNest.Web.Controllers
 {
     public class AuthController : Controller
@@ -22,28 +24,43 @@ namespace RentNest.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login([FromForm] AccountLoginDto model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-
-            var user = await _accountService.GetAccountByEmailAsync(model.AccountEmail);
-            if (user == null || user.Password != model.AccountPassword)
+            if (!await _accountService.Login(model))
             {
                 TempData["ErrorMessage"] = "Email hoặc mật khẩu không hợp lệ!";
                 return RedirectToAction("Login", "Auth");
             }
-
-            HttpContext.Session.SetString("AccountId", user.AccountId.ToString());
-            //HttpContext.Session.SetString("AccountName", user.AccountName);
-            HttpContext.Session.SetString("Email", user.Email);
-            HttpContext.Session.SetString("Role", user.AccountRole == 1 ? "Staff" : "Member");
+            var account = await _accountService.GetAccountByEmailAsync(model.Email);
+            HttpContext.Session.SetString("AccountId", account!.AccountId.ToString());
+            HttpContext.Session.SetString("AccountName", account.Username!);
+            HttpContext.Session.SetString("Email", account.Email);
 
             TempData["SuccessMessage"] = "Đăng nhập thành công! Đang chuyển hướng đến trang chủ...";
             TempData["RedirectUrl"] = Url.Action("Index", "Home");
+            var claims = new List<Claim>
+                {
+        new Claim(ClaimTypes.NameIdentifier, account!.AccountId.ToString()),
+        new Claim(ClaimTypes.Name, account!.Username!),
+        new Claim(ClaimTypes.Role, account!.Role!)
+                };
 
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true
+            };
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity), authProperties);
+            // if (response.Content.RoleName == AppRoles.Admin.ToString())
+            // {
+            //     return RedirectToAction("Index", "Admin");
+            // }
             return RedirectToAction("Login", "Auth");
         }
 

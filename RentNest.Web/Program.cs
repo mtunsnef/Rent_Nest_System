@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using RentNest.Core.Domains;
+using RentNest.Infrastructure.DataAccess;
 using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
 
@@ -9,10 +12,17 @@ namespace RentNest.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            builder.Services.AddDbContext<RentNestSystemContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            //Service
             builder.Services.AddScoped<IAccountService, AccountService>();
+
+
+
+            //DAO
+            builder.Services.AddScoped<AccountDAO>();
 
             builder.Services.AddDistributedMemoryCache(); //su dung cache de luu session
             builder.Services.AddSession(options =>
@@ -24,7 +34,12 @@ namespace RentNest.Web
 
             builder.Services.AddAuthorization();
             builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
-
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Use Google scheme here
+            });
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -56,6 +71,7 @@ namespace RentNest.Web
                 }
                 await next();
             });
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
