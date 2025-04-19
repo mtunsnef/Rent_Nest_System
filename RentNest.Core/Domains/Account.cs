@@ -1,21 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RentNest.Core.Domains
+namespace RentNest.Core.Domains;
+
+public partial class Account
 {
-    public class Account
-    {
-        public int AccountId { get; set; }
-        public string? AccountName { get; set; }
-        public string Email { get; set; }
-        public string? PhoneNumber { get; set; }
-        public string? Address { get; set; }
-        public DateTime? DateOfBirth { get; set; }
-        public string? Gender { get; set; }
-        public string? Password { get; set; }
-        public int? AccountRole { get; set; } // 1: Staff, 0: Member
-    }
+    public int AccountId { get; set; }
+
+    public string? Username { get; set; }
+
+    public string Email { get; set; } = null!;
+
+    public string? Password { get; set; }
+
+    public string IsActive { get; set; } = null!;
+
+    public string AuthProvider { get; set; } = null!;
+
+    public string? AuthProviderId { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public string Role { get; set; } = null!;
+
+    public virtual ICollection<Accommodation> Accommodations { get; set; } = new List<Accommodation>();
+
+    public virtual LandLordVerification? LandLordVerificationAccount { get; set; }
+
+    public virtual ICollection<LandLordVerification> LandLordVerificationVerifiedByNavigations { get; set; } = new List<LandLordVerification>();
+
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
+    public virtual ICollection<PostApproval> PostApprovals { get; set; } = new List<PostApproval>();
+
+    public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
+
+    public virtual UserProfile? UserProfile { get; set; }
 }

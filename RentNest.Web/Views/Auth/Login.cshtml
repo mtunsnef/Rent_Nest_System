@@ -1,4 +1,4 @@
-﻿@model LoginViewModel
+﻿@model RentNest.Core.DTO.AccountLoginDto
 @{
     ViewData["Title"] = "Đăng nhập";
 }
@@ -18,8 +18,10 @@
             <div class="col-md-7 text-center order-md-last d-flex ftco-animate">
                 <form asp-controller="Auth" asp-action="Login" method="post" class="bg-light p-4 p-md-5 contact-form">
                     <div style="width: 100%; text-align: center; margin-bottom: 20px;">
-                        <a asp-controller="Auth" asp-action="ExternalLogin" asp-route-provider="Google" class="btn btn-danger btn-block" style="background-color: #f54859;">
-                            <img src="/images/login/icons/icon-google.png" alt="GOOGLE" style="width: 20px; margin-right: 10px;"> Đăng nhập với Google
+                        <a asp-controller="Auth" asp-action="ExternalLogin" asp-route-provider="Google"
+                            class="btn btn-danger btn-block" style="background-color: #f54859;">
+                            <img src="/images/login/icons/icon-google.png" alt="GOOGLE"
+                                style="width: 20px; margin-right: 10px;"> Đăng nhập với Google
                         </a>
                     </div>
 
@@ -50,14 +52,14 @@
                     }
 
                     <div class="form-group">
-                        <input asp-for="AccountEmail" type="email" class="form-control" placeholder="Email của bạn">
+                        <input asp-for="Email" type="email" class="form-control" placeholder="Email của bạn">
                     </div>
-                    <span asp-validation-for="AccountEmail" class="text-danger"></span>
+                    <span asp-validation-for="Email" class="text-danger"></span>
 
                     <div class="form-group">
-                        <input asp-for="AccountPassword" type="password" class="form-control" placeholder="Mật khẩu">
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Mật khẩu">
                     </div>
-                    <span asp-validation-for="AccountPassword" class="text-danger"></span>
+                    <span asp-validation-for="Password" class="text-danger"></span>
 
                     <div class="form-group d-flex justify-content-between">
                         <div>
@@ -73,10 +75,10 @@
 
                     <div class="box p-2 px-3 bg-light d-flex justify-content-center">
                         <span class="text-muted">Chưa có tài khoản?</span>
-                        <a href="#" class="text-primary ml-2">Đăng ký ngay</a> 
-                    </div> 
+                        <a href="#" class="text-primary ml-2">Đăng ký ngay</a>
+                    </div>
                 </form>
-                
+
             </div>
         </div>
     </div>
