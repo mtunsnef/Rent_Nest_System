@@ -18,9 +18,6 @@ namespace RentNest.Web
             builder.Services.AddControllersWithViews();
             //Service
             builder.Services.AddScoped<IAccountService, AccountService>();
-
-
-
             //DAO
             builder.Services.AddScoped<AccountDAO>();
 
@@ -31,8 +28,13 @@ namespace RentNest.Web
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+            builder.Services.AddAuthentication("CookieAuth")
+            .AddCookie("CookieAuth", config =>
+            {
+                config.LoginPath = "/Auth/Login";
+                config.AccessDeniedPath = "/Auth/AccessDenied";
+            });
 
-            builder.Services.AddAuthorization();
             builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
             builder.Services.AddAuthentication(options =>
             {
@@ -40,16 +42,7 @@ namespace RentNest.Web
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Use Google scheme here
             });
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/Auth/Login";
-                    options.AccessDeniedPath = "/Auth/AccessDenied";
-                });
-
             var app = builder.Build();
-
-
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

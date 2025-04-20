@@ -39,24 +39,20 @@ namespace RentNest.Web.Controllers
             HttpContext.Session.SetString("AccountId", account!.AccountId.ToString());
             HttpContext.Session.SetString("AccountName", account.Username!);
             HttpContext.Session.SetString("Email", account.Email);
+            // set authen 
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, account.Email),
+                new Claim(ClaimTypes.Role, account.Role)
+            };
+            var identity = new ClaimsIdentity(claims, "CookieAuth");
+            var principal = new ClaimsPrincipal(identity);
 
+            HttpContext.SignInAsync("CookieAuth", principal).Wait();
             TempData["SuccessMessage"] = "Đăng nhập thành công! Đang chuyển hướng đến trang chủ...";
             TempData["RedirectUrl"] = Url.Action("Index", "Home");
-            var claims = new List<Claim>
-                {
-        new Claim(ClaimTypes.NameIdentifier, account!.AccountId.ToString()),
-        new Claim(ClaimTypes.Name, account!.Username!),
-        new Claim(ClaimTypes.Role, account!.Role!)
-                };
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = true
-            };
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity), authProperties);
             // if (response.Content.RoleName == AppRoles.Admin.ToString())
             // {
             //     return RedirectToAction("Index", "Admin");
@@ -66,8 +62,9 @@ namespace RentNest.Web.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync("CookieAuth");
             HttpContext.Session.Clear();
+            ModelState.Clear();
             return RedirectToAction("Login");
         }
 
