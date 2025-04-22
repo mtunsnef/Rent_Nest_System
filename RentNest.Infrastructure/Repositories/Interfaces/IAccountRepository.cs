@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RentNest.Infrastructure.Repositories.Interfaces
 {
-    internal class IAccountRepository
+    public class IAccountRepository
     {
     }
 }

@@ -1,0 +1,32 @@
+﻿.pulse-icon {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.access-card {
+    border-radius: 20px;
+    max-width: 500px;
+    margin-top: 6rem;
+}
+
+.btn-go-back {
+    background-color: #25252596 !important;
+    border: none;
+    color: #fff;
+}
