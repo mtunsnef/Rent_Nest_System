@@ -26,9 +26,18 @@
 								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
 									<a class="dropdown-item" href="/Profile">Thông tin cá nhân</a>
 									<a class="dropdown-item" href="#">Lịch sử thuê</a>
-									<a class="dropdown-item" href="#">Đổi mật khẩu</a>
-									<div class="dropdown-divider"></div>
-									<a class="dropdown-item text-danger" href="/Auth/Logout">Đăng xuất</a>
+									@{
+										var email = Context.Session.GetString("Email");
+										if (email != null)
+										{
+											<a class="dropdown-item" asp-controller="Account" asp-action="ConfirmEmail"
+												method="post">Đổi mật
+												khẩu</a>
+											<div class="dropdown-divider"></div>
+											<a class="dropdown-item text-danger" href="/Auth/Logout">Đăng xuất</a>
+										}
+									}
+
 								</div>
 							</div>
 						}

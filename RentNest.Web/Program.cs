@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using RentNest.Common.Helper.Mail;
 using RentNest.Core.Domains;
 using RentNest.Infrastructure.DataAccess;
 using RentNest.Service.Implements;
@@ -16,6 +18,9 @@ namespace RentNest.Web
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            var mailSettings = builder.Configuration.GetSection("MailSettings");
+            builder.Services.Configure<MailSettings>(mailSettings);
+            builder.Services.AddTransient<MailService>();
             //Service
             builder.Services.AddScoped<IAccountService, AccountService>();
             //DAO
@@ -34,7 +39,6 @@ namespace RentNest.Web
                 config.LoginPath = "/Auth/Login";
                 config.AccessDeniedPath = "/Auth/AccessDenied";
             });
-
             builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
             builder.Services.AddAuthentication(options =>
             {
@@ -42,6 +46,9 @@ namespace RentNest.Web
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Use Google scheme here
             });
+
+
+
             var app = builder.Build();
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

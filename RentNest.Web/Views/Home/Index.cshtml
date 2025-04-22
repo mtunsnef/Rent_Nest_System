@@ -1,7 +1,7 @@
 ﻿@{
 	ViewData["Title"] = "Trang chủ";
 }
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <section class="hero-wrap js-fullheight" style="background-image: url('images/bg_2.jpg');" data-section="home"
 	data-stellar-background-ratio="0.5">
 	<div class="overlay"></div>
@@ -23,7 +23,27 @@
 		</div>
 	</div>
 </section>
+@if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
+{
+	<script>
+		Swal.fire({
+			icon: 'error',
+			title: 'Lỗi!',
+			text: '@Html.Raw(TempData["ErrorMessage"])'
+		});
+	</script>
+}
 
+@if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+{
+	<script>
+		Swal.fire({
+			icon: 'success',
+			title: 'Gửi Email thành công!',
+			text: '@Html.Raw(TempData["SuccessMessage"])'
+		});
+	</script>
+}
 
 <section class="ftco-section ftco-services-2 bg-light" id="services-section">
 	<div class="container">

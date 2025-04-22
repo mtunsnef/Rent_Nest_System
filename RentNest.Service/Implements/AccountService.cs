@@ -18,6 +18,10 @@ namespace RentNest.Service.Implements
         public async Task<Boolean> Login(AccountLoginDto accountDto)
         {
             var account = await _accountDAO.GetAccountByEmailAsync(accountDto.Email);
+            if (account == null)
+            {
+                return false;
+            }
             // hash with SHA256
             string hashPassword;
             using (SHA256 sha256 = SHA256.Create())
@@ -32,6 +36,6 @@ namespace RentNest.Service.Implements
             return false;
         }
         public async Task<Account?> GetAccountByEmailAsync(string email) => await _accountDAO.GetAccountByEmailAsync(email);
+        public void Update(Account account) => _accountDAO.Update(account);
     }
-
 }

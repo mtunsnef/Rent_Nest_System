@@ -14,5 +14,12 @@ namespace RentNest.Infrastructure.DataAccess
             _context = context;
         }
         public async Task<Account?> GetAccountByEmailAsync(string email) => await _context.Accounts.FirstOrDefaultAsync(account => account.Email.Equals(email));
+        public void Update(Account account)
+        {
+
+            _context.Accounts.Attach(account);
+            _context.Entry(account).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
     }
 }

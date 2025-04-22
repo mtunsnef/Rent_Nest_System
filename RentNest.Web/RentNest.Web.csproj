@@ -22,10 +22,12 @@
   <ItemGroup>
     <ProjectReference Include="..\RentNest.Core\RentNest.Core.csproj" />
     <ProjectReference Include="..\RentNest.Service\RentNest.Service.csproj" />
+    <ProjectReference Include="..\RentNest.Common\RentNest.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
   </ItemGroup>
 
 </Project>

@@ -75,6 +75,7 @@ namespace RentNest.Web.Controllers
             return Challenge(properties, provider);
         }
 
+
         //public async Task<IActionResult> ExternalLoginCallback()
         //{
         //    var authenticateResult = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
