@@ -19,14 +19,25 @@
 						@if (Context.Session.GetString("AccountId") != null)
 						{
 							<div class="dropdown">
-								<a style="color: #fff" class="text dropdown-toggle" href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<a style="color: #fff" class="text dropdown-toggle" href="#" role="button" id="userDropdown"
+									data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									Xin chào, @(Context.Session.GetString("UserName") ?? Context.Session.GetString("Email"))
 								</a>
 								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
 									<a class="dropdown-item" href="/Profile">Thông tin cá nhân</a>
 									<a class="dropdown-item" href="#">Lịch sử thuê</a>
-									<div class="dropdown-divider"></div>
-									<a class="dropdown-item text-danger" href="/Auth/Logout">Đăng xuất</a>
+									@{
+										var email = Context.Session.GetString("Email");
+										if (email != null)
+										{
+											<a class="dropdown-item" asp-controller="Account" asp-action="ConfirmEmail"
+												method="post">Đổi mật
+												khẩu</a>
+											<div class="dropdown-divider"></div>
+											<a class="dropdown-item text-danger" href="/Auth/Logout">Đăng xuất</a>
+										}
+									}
+
 								</div>
 							</div>
 						}
@@ -45,11 +56,11 @@
 	</div>
 </div>
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light site-navbar-target"
-	 id="ftco-navbar">
+	id="ftco-navbar">
 	<div class="container">
 		<a class="navbar-brand" href="index.html">BlueHouse</a>
 		<button class="navbar-toggler js-fh5co-nav-toggle fh5co-nav-toggle" type="button" data-toggle="collapse"
-				data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+			data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="oi oi-menu"></span> Menu
 		</button>
 

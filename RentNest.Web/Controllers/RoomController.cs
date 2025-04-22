@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace RentNest.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = "CookieAuth", Roles = "U")]
+
     public class RoomController : Controller
     {
         private readonly IConfiguration _configuration;

@@ -10,4 +10,8 @@
     <Folder Include="Repositories\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RentNest.Core\RentNest.Core.csproj" />
+  </ItemGroup>
+
 </Project>

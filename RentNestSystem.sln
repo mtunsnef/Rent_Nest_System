@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentNest.Service", "RentNes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentNest.Infrastructure", "RentNest.Infrastructure\RentNest.Infrastructure.csproj", "{68C01140-B133-40F0-848B-BB93ED592489}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentNest.Common", "RentNest.Common\RentNest.Common.csproj", "{5A590951-4AED-4C91-8A4B-14ECADD35855}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{68C01140-B133-40F0-848B-BB93ED592489}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68C01140-B133-40F0-848B-BB93ED592489}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68C01140-B133-40F0-848B-BB93ED592489}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A590951-4AED-4C91-8A4B-14ECADD35855}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A590951-4AED-4C91-8A4B-14ECADD35855}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A590951-4AED-4C91-8A4B-14ECADD35855}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A590951-4AED-4C91-8A4B-14ECADD35855}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

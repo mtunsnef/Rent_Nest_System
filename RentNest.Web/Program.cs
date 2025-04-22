@@ -1,4 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
+using RentNest.Common.Helper.Mail;
+using RentNest.Core.Domains;
+using RentNest.Infrastructure.DataAccess;
 using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
 
@@ -9,10 +14,17 @@ namespace RentNest.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            builder.Services.AddDbContext<RentNestSystemContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            var mailSettings = builder.Configuration.GetSection("MailSettings");
+            builder.Services.Configure<MailSettings>(mailSettings);
+            builder.Services.AddTransient<MailService>();
+            //Service
             builder.Services.AddScoped<IAccountService, AccountService>();
+            //DAO
+            builder.Services.AddScoped<AccountDAO>();
 
             builder.Services.AddDistributedMemoryCache(); //su dung cache de luu session
             builder.Services.AddSession(options =>
@@ -21,20 +33,23 @@ namespace RentNest.Web
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-
-            builder.Services.AddAuthorization();
+            builder.Services.AddAuthentication("CookieAuth")
+            .AddCookie("CookieAuth", config =>
+            {
+                config.LoginPath = "/Auth/Login";
+                config.AccessDeniedPath = "/Auth/AccessDenied";
+            });
             builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Use Google scheme here
+            });
 
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/Auth/Login";
-                    options.AccessDeniedPath = "/Auth/AccessDenied";
-                });
+
 
             var app = builder.Build();
-
-
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -56,6 +71,7 @@ namespace RentNest.Web
                 }
                 await next();
             });
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
