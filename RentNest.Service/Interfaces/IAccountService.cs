@@ -8,6 +8,8 @@ namespace RentNest.Service.Interfaces
         Task<Boolean> Login(AccountLoginDto accountDto);
         Task<Account?> GetAccountByEmailAsync(string email);
         void Update(Account account);
+        Task<Account> CreateGoogleAccountAsync(GoogleAccountRegisterDto dto);
+
     }
 
 }

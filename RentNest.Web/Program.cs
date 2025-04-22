@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
-using RentNest.Common.Helper.Mail;
+using Microsoft.Extensions.Options;
+using RentNest.Core.Configs;
+using RentNest.Core.Consts;
 using RentNest.Core.Domains;
 using RentNest.Infrastructure.DataAccess;
 using RentNest.Service.Implements;
@@ -14,39 +15,60 @@ namespace RentNest.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            Env.Load(); //load file .env
+
             builder.Services.AddDbContext<RentNestSystemContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            var mailSettings = builder.Configuration.GetSection("MailSettings");
-            builder.Services.Configure<MailSettings>(mailSettings);
+
             builder.Services.AddTransient<MailService>();
             //Service
             builder.Services.AddScoped<IAccountService, AccountService>();
             //DAO
-            builder.Services.AddScoped<AccountDAO>();
+            builder.Services.AddScoped<AccountDAO>(); //????
 
-            builder.Services.AddDistributedMemoryCache(); //su dung cache de luu session
+            //Config
+           
+            builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).AddEnvironmentVariables();
+            builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("Authentication:Google"));
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+
+            //su dung cache de luu session
+            builder.Services.AddDistributedMemoryCache();
+
+            //add session
             builder.Services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-            builder.Services.AddAuthentication("CookieAuth")
-            .AddCookie("CookieAuth", config =>
-            {
-                config.LoginPath = "/Auth/Login";
-                config.AccessDeniedPath = "/Auth/AccessDenied";
-            });
-            builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
+            //auth
             builder.Services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Use Google scheme here
-            });
+                options.DefaultAuthenticateScheme = AuthSchemes.Cookie;
+                options.DefaultSignInScheme = AuthSchemes.Cookie;
+                options.DefaultChallengeScheme = AuthSchemes.Google;
+            })
+              .AddCookie(AuthSchemes.Cookie, config =>
+              {
+                  config.LoginPath = "/Auth/Login";
+                  config.AccessDeniedPath = "/Auth/AccessDenied";
+              })
+              .AddGoogle(AuthSchemes.Google, options =>
+              {
+                  var googleAuthSettings = builder.Configuration
+                      .GetSection("Authentication:Google")
+                      .Get<GoogleAuthSettings>();
 
+                  options.ClientId = googleAuthSettings.ClientId;
+                  options.ClientSecret = googleAuthSettings.ClientSecret;
+                  options.CallbackPath = googleAuthSettings.CallbackPath;
+              });
+
+            builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
 
             var app = builder.Build();

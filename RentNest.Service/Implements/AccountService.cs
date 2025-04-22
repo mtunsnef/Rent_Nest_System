@@ -2,6 +2,8 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+using RentNest.Core.Consts;
 using RentNest.Core.Domains;
 using RentNest.Core.DTO;
 using RentNest.Infrastructure.DataAccess;
@@ -10,14 +12,9 @@ namespace RentNest.Service.Implements
 {
     public class AccountService : IAccountService
     {
-        private readonly AccountDAO _accountDAO;
-        public AccountService(AccountDAO accountDAO)
+        public async Task<bool> Login(AccountLoginDto accountDto)
         {
-            _accountDAO = accountDAO;
-        }
-        public async Task<Boolean> Login(AccountLoginDto accountDto)
-        {
-            var account = await _accountDAO.GetAccountByEmailAsync(accountDto.Email);
+            var account = await AccountDAO.Instance.GetAccountByEmailAsync(accountDto.Email);
             if (account == null)
             {
                 return false;
@@ -35,7 +32,41 @@ namespace RentNest.Service.Implements
             }
             return false;
         }
-        public async Task<Account?> GetAccountByEmailAsync(string email) => await _accountDAO.GetAccountByEmailAsync(email);
-        public void Update(Account account) => _accountDAO.Update(account);
+        public async Task<Account?> GetAccountByEmailAsync(string email) => await AccountDAO.Instance.GetAccountByEmailAsync(email);
+        public void Update(Account account) => AccountDAO.Instance.Update(account);
+        public async Task<Account> CreateGoogleAccountAsync(GoogleAccountRegisterDto dto)
+        {
+            var account = new Account
+            {
+                Email = dto.Email,
+                AuthProvider = AuthProviders.Google,
+                AuthProviderId = dto.GoogleId,
+                Role = dto.Role,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            try
+            {
+                await AccountDAO.Instance.AddAccount(account);
+
+                var userProfile = new UserProfile
+                {
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName,
+                    Address = dto.Address,
+                    CreatedAt = DateTime.UtcNow,
+                    AccountId = account.AccountId
+                };
+
+                await UserProfileDAO.Instance.AddUserProfile(userProfile);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi tạo tài khoản Google: " + ex.Message);
+            }
+
+            return account;
+        }
+
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using RentNest.Common.Helper.Mail;
+using RentNest.Core.Configs;
 using MimeKit;
 using MailKit.Security;
 namespace RentNest.Service.Implements

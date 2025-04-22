@@ -1,0 +1,67 @@
+﻿@model RentNest.Core.DTO.GoogleAccountRegisterDto
+@{
+    ViewData["Title"] = "Hoàn tất đăng ký";
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<section class="ftco-section contact-section ftco-no-pb" style="padding: 8em 0">
+    <div class="container">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8 heading-section text-center ftco-animate">
+                <h2 class="mb-4" style="font-family: system-ui;">Chào mừng bạn đến với BlueHouse!</h2>
+                <p>Vui lòng cung cấp thông tin để hoàn tất quá trình đăng ký và sử dụng dịch vụ.</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8 ftco-animate">
+                <form asp-controller="Auth" asp-action="CompleteRegistration" method="post" class="bg-light p-4 p-md-5 contact-form">
+                    <input asp-for="Email" type="hidden" />
+                    <input asp-for="GoogleId" type="hidden" />
+                    <input asp-for="FirstName" type="hidden" />
+                    <input asp-for="LastName" type="hidden" />
+                    <div class="form-group">
+                        <input asp-for="Address" class="form-control" placeholder="Địa chỉ">
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Số điện thoại">
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Bạn là:</label><br />
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" asp-for="Role" value="U" />
+                            <label class="form-check-label">Người thuê</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" asp-for="Role" value="L" />
+                            <label class="form-check-label">Người cho thuê</label>
+                        </div>
+                        <span asp-validation-for="Role" class="text-danger d-block"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Hoàn tất đăng ký" class="btn btn-primary py-3 px-5 btn-block">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+@if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+{
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Đăng ký thành công!',
+            text: '@Html.Raw(TempData["SuccessMessage"])',
+            timer: 2500,
+            showConfirmButton: false
+        }).then(() => {
+            window.location.href = '@Html.Raw(TempData["RedirectUrl"])';
+        });
+    </script>
+}

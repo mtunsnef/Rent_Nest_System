@@ -17,6 +17,7 @@ Release/
 
 # VSCode
 .vscode/
+.vs/
 
 # ASP.NET Secrets
 appsettings.Development.json

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RentNest.Infrastructure.DataAccess
+namespace RentNest.Infrastructure.Repositories.Implements
 {
-    internal class BaseDAO
+    internal class AccountRepository
     {
     }
 }

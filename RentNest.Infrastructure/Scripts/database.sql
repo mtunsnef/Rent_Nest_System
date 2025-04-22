@@ -7,7 +7,7 @@ GO
 -- Table: Account
 CREATE TABLE Account (
     account_id INT IDENTITY(1,1) PRIMARY KEY,
-    username NVARCHAR(100) NULL UNIQUE,
+    username NVARCHAR(100) NULL,
     email NVARCHAR(255) NOT NULL UNIQUE,
     password NVARCHAR(255) NULL,
     is_active CHAR(1) NOT NULL DEFAULT 'A' CHECK (is_active IN ('A', 'D')),  --A is active, D is disabled
@@ -21,6 +21,9 @@ CREATE TABLE Account (
     role CHAR(1) NOT NULL CHECK (role IN ('U', 'A', 'S', 'L')) -- U=User, S = Staff, A=Admin, L=Landlord
 );
 
+CREATE UNIQUE INDEX UX_Account_Username
+ON Account (Username)
+WHERE Username IS NOT NULL;
 
 -- Table: UserProfile
 CREATE TABLE UserProfile (
