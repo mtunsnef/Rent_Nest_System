@@ -2,6 +2,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RentNest.Core.Consts;
 using RentNest.Core.Domains;
 using RentNest.Core.DTO;
 using RentNest.Service.Implements;
@@ -19,7 +20,7 @@ namespace RentNest.Web.Controllers
             _accountService = accountService;
             _mailService = mailService;
         }
-        [Authorize(AuthenticationSchemes = "CookieAuth", Roles = "U,L")]
+        [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.User},{UserRoles.Landlord}")]
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail()
         {
@@ -47,13 +48,13 @@ namespace RentNest.Web.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-        [Authorize(AuthenticationSchemes = "CookieAuth", Roles = "U,L")]
+        [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.User},{UserRoles.Landlord}")]
         [HttpGet]
         public IActionResult UpdatePassword()
         {
             return View();
         }
-        [Authorize(AuthenticationSchemes = "CookieAuth", Roles = "U,L")]
+        [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.User},{UserRoles.Landlord}")]
         [HttpPost]
         public async Task<IActionResult> UpdatePassword([FromForm] ChangePasswordDto model)
         {

@@ -2,19 +2,19 @@
     ViewData["Title"] = "Access Denied";
 }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="~/css/home/accessdenied/main.css">
-    <div class="container">
-        <div class="access-denied-card">
-            <div class="card-body">
-                <div class="icon-box">
-                    <i class="fas fa-exclamation-circle"></i>
-                </div>
-                <h2>Access Denied</h2>
-                <p class="text-muted">You do not have permission to access this page.</p>
-            <a style="color: white" href="/Home" class="text-muted btn-secondary">
-                    <i class="fas fa-home"></i> Back to Home Page
-                </a>
-            </div>
+<!-- Font Awesome CDN (nếu chưa có) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="~/css/css/accessdenied/main.css">
+
+<section class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow p-5 text-center access-card">
+        <div>
+            <i class="fas fa-exclamation-circle fa-4x text-danger mb-4 pulse-icon"></i>
         </div>
+        <h3 class="text-danger font-weight-bold">Access Denied</h3>
+        <p>You do not have permission to access this page.</p>
+        <a href="javascript:history.back()" class="btn btn-go-back mt-3">
+            <i class="fas fa-home"></i> Go Back
+        </a>
     </div>
+</section>

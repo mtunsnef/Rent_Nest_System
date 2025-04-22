@@ -1,4 +1,6 @@
 ﻿@model RentNest.Core.DTO.GoogleAccountRegisterDto
+@using RentNest.Core.Consts
+
 @{
     ViewData["Title"] = "Hoàn tất đăng ký";
 }
@@ -33,11 +35,11 @@
                     <div class="form-group">
                         <label>Bạn là:</label><br />
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" asp-for="Role" value="U" />
+                            <input class="form-check-input" type="radio" asp-for="Role" value="@UserRoles.User" />
                             <label class="form-check-label">Người thuê</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" asp-for="Role" value="L" />
+                            <input class="form-check-input" type="radio" asp-for="Role" value="@UserRoles.Landlord" />
                             <label class="form-check-label">Người cho thuê</label>
                         </div>
                         <span asp-validation-for="Role" class="text-danger d-block"></span>
