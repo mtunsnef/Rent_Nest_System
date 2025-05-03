@@ -6,7 +6,7 @@
 
 <section class="ftco-section contact-section ftco-no-pb" id="login-section" style="padding: 10em !important">
     <div class="container">
-        <div class="row justify-content-center mb-5 pb-3">
+        <div class="row justify-content-center pb-3">
             <div class="col-md-7 heading-section text-center ftco-animate">
                 <span class="subheading">Đăng nhập</span>
                 <h2 style="font-family: system-ui;" class="mb-4">Chào mừng bạn trở lại!</h2>
@@ -17,11 +17,16 @@
         <div class="row justify-content-center block-9">
             <div class="col-md-7 text-center order-md-last d-flex ftco-animate">
                 <form asp-controller="Auth" asp-action="Login" method="post" class="bg-light p-4 p-md-5 contact-form">
-                    <div style="width: 100%; text-align: center; margin-bottom: 20px;">
+                    <div style="display: flex; width: 100%; text-align: center; margin-bottom: 20px; justify-content: space-between;">
                         <a asp-controller="Auth" asp-action="ExternalLogin" asp-route-provider="Google"
-                            class="btn btn-danger btn-block" style="background-color: #f54859;">
+                            class="btn btn-block" style="background-color: #f54859; color: #fff;" >
                             <img src="/images/login/icons/icon-google.png" alt="GOOGLE"
                                 style="width: 20px; margin-right: 10px;"> Đăng nhập với Google
+                        </a>
+                        <a asp-controller="Auth" asp-action="ExternalLogin" asp-route-provider="Facebook"
+                           class="btn btn-block" style="margin-top: 0rem !important; background-color: #3b5998; color: #fff;">
+                            <img src="/images/login/icons/icon-facebook.png" alt="FACEBOOK"
+                                 style="width: 20px; margin-right: 10px;"> Đăng nhập với Facebook
                         </a>
                     </div>
 

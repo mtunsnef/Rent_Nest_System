@@ -1,6 +1,5 @@
 ﻿using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using RentNest.Core.Configs;
 using RentNest.Core.Consts;
 using RentNest.Core.Domains;
@@ -14,24 +13,30 @@ namespace RentNest.Web
     {
         public static void Main(string[] args)
         {
+
             var builder = WebApplication.CreateBuilder(args);
-            Env.Load(); //load file .env
+
+            //load file .env
+            var webRoot = builder.Environment.ContentRootPath;   
+            var solutionRoot = Path.GetFullPath(Path.Combine(webRoot, ".."));
+            var envPath = Path.Combine(solutionRoot, ".env");
+
+            Env.Load(envPath);
 
             builder.Services.AddDbContext<RentNestSystemContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
             builder.Services.AddTransient<MailService>();
+
             //Service
             builder.Services.AddScoped<IAccountService, AccountService>();
+
             //DAO
             builder.Services.AddScoped<AccountDAO>(); //????
 
             //Config
-           
-            builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).AddEnvironmentVariables();
-            builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("Authentication:Google"));
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
             //su dung cache de luu session
@@ -50,23 +55,25 @@ namespace RentNest.Web
             {
                 options.DefaultAuthenticateScheme = AuthSchemes.Cookie;
                 options.DefaultSignInScheme = AuthSchemes.Cookie;
-                options.DefaultChallengeScheme = AuthSchemes.Google;
             })
-              .AddCookie(AuthSchemes.Cookie, config =>
-              {
-                  config.LoginPath = "/Auth/Login";
-                  config.AccessDeniedPath = "/Auth/AccessDenied";
-              })
-              .AddGoogle(AuthSchemes.Google, options =>
-              {
-                  var googleAuthSettings = builder.Configuration
-                      .GetSection("Authentication:Google")
-                      .Get<GoogleAuthSettings>();
+                .AddCookie(AuthSchemes.Cookie, config =>
+                {
+                    config.LoginPath = "/Auth/Login";
+                    config.AccessDeniedPath = "/Auth/AccessDenied";
+                })
+                .AddGoogle(AuthSchemes.Google, options =>
+                {
+                    options.ClientId = AuthSettings.GoogleClientId;
+                    options.ClientSecret = AuthSettings.GoogleClientSecret;
+                    options.CallbackPath = "/Auth/signIn-google";
+                })
+                .AddFacebook(AuthSchemes.Facebook, options =>
+                {
+                    options.AppId = AuthSettings.FacebookAppId;
+                    options.AppSecret = AuthSettings.FacebookAppSecret;
+                    options.CallbackPath = "/Auth/signIn-facebook";
+                });
 
-                  options.ClientId = googleAuthSettings.ClientId;
-                  options.ClientSecret = googleAuthSettings.ClientSecret;
-                  options.CallbackPath = googleAuthSettings.CallbackPath;
-              });
 
             builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 

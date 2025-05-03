@@ -10,5 +10,6 @@ namespace RentNest.Core.Consts
     {
         public const string Local = "local";
         public const string Google = "google";
+        public const string Facebook = "facebook";
     }
 }

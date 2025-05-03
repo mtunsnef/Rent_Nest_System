@@ -2755,6 +2755,7 @@ textarea.form-control {
 .btn:hover {
     color: #212529;
     text-decoration: none;
+    opacity: 0.8;
 }
 
 .btn:focus, .btn.focus {
