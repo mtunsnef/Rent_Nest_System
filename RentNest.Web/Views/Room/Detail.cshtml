@@ -120,7 +120,17 @@
                         <tr>
                             <th scope="row">Vị trí</th>
                             <td>
-                                <div id="map"></div>
+                                @{
+                                    var encodedAddress = System.Net.WebUtility.UrlEncode(ViewData["Address"]?.ToString());
+                                }
+                                <div style="position: relative;">
+                                    <div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden;">
+                                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;"
+                                                loading="lazy" allowfullscreen
+                                                src="https://maps.google.com/maps?q=@encodedAddress&z=15&output=embed">
+                                        </iframe>
+                                    </div>
+                                </div>
                             </td>
                         </tr><!-- END TR-->
                     </tbody>
@@ -212,30 +222,4 @@
         </div>
     </div>
 </section> <!-- .section -->
-<script src="https://maps.gomaps.pro/maps/api/js?key=@ViewData["GoogleMapsAPIKey"]"></script>
-<script>
-    function initMap() {
-        var geocoder = new google.maps.Geocoder();
-        var address = "@ViewData["Address"]";
 
-        var map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 15,
-            center: { lat: 0, lng: 0 }
-        });
-
-        geocoder.geocode({ 'address': address }, function (results, status) {
-            if (status === 'OK') {
-                map.setCenter(results[0].geometry.location);
-                new google.maps.Marker({
-                    map: map,
-                    position: results[0].geometry.location,
-                    title: "Our Location"
-                });
-            } else {
-                console.error("Geocode was not successful: " + status);
-            }
-        });
-    }
-
-    window.onload = initMap;
-</script>
