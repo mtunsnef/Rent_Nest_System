@@ -1,4 +1,5 @@
 ﻿using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.EntityFrameworkCore;
 using RentNest.Core.Configs;
 using RentNest.Core.Consts;
@@ -72,6 +73,15 @@ namespace RentNest.Web
                     options.AppId = AuthSettings.FacebookAppId;
                     options.AppSecret = AuthSettings.FacebookAppSecret;
                     options.CallbackPath = "/Auth/signIn-facebook";
+                    options.Events = new OAuthEvents
+                    {
+                        OnRemoteFailure = context =>
+                        {
+                            context.Response.Redirect("/Auth/Login");
+                            context.HandleResponse();
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
 
