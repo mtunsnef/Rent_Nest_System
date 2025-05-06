@@ -128,7 +128,8 @@ namespace RentNest.Web.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, name ?? ""),
-                new Claim(ClaimTypes.Email, email ?? "")
+                new Claim(ClaimTypes.Email, email ?? ""),
+                new Claim(ClaimTypes.Role, account.Role)
             };
 
             var identity = new ClaimsIdentity(claims, scheme);
