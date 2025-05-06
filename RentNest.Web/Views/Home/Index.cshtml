@@ -1,28 +1,105 @@
 ﻿@{
 	ViewData["Title"] = "Trang chủ";
 }
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <section class="hero-wrap js-fullheight" style="background-image: url('images/bg_2.jpg');" data-section="home"
 	data-stellar-background-ratio="0.5">
 	<div class="overlay"></div>
 	<div class="container">
 		<div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start"
 			data-scrollax-parent="true">
-			<div class="col-md-5 ftco-animate" data-scrollax=" properties: { translateY: '70%' }">
-				<h1 style="font-family: system-ui;" class="mb-5"
+			<div class="col-md-8 ftco-animate" data-scrollax=" properties: { translateY: '70%' }">
+				<h1 style="font-family: system-ui; font-weight: 700;" class="mb-4"
 					data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">
-					Ngôi nhà mơ ước của
-					bạn,
-					ĐÀ NẴNG
+					Ngôi nhà mơ ước của bạn, ĐÀ NẴNG
 				</h1>
-				<p class="mb-5" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">
-					Tìm thuê nhà trọ
-					hoàn hảo – dễ dàng, nhanh chóng và tiện lợi.
+				<p class="mb-4" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">
+					Tìm thuê nhà trọ hoàn hảo – dễ dàng, nhanh chóng và tiện lợi.
 				</p>
+				<!-- Form tìm kiếm bắt đầu -->
+
+				<!-- Form tìm kiếm kết thúc -->
+
 			</div>
+			<div class="col-md-12">
+				<form>
+					<div class="row g-2 align-items-end">
+						<!-- Province -->
+						<div class="col-md">
+							<label for="provinceDropdown" style="color:black; font-weight:500;">
+								Province <span style="color:red;">*</span>
+							</label>
+							<select id="provinceDropdown" class="form-control" required
+								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+								<option value="">Select a province...</option>
+							</select>
+							<input type="hidden" id="provinceName" />
+							<div class="invalid-feedback">Please select a province.</div>
+						</div>
+
+						<!-- District -->
+						<div class="col-md">
+							<label for="districtDropdown" style="color:black; font-weight:500;">
+								District <span style="color:red;">*</span>
+							</label>
+							<select id="districtDropdown" class="form-control" required
+								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+								<option value="">Select a district...</option>
+							</select>
+							<input type="hidden" id="districtName" />
+							<div class="invalid-feedback">Please select a district.</div>
+						</div>
+
+						<!-- Ward -->
+						<div class="col-md">
+							<label for="wardDropdown" style="color:black; font-weight:500;">
+								Ward <span style="color:red;">*</span>
+							</label>
+							<select id="wardDropdown" class="form-control" required
+								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+								<option value="">Select a ward...</option>
+							</select>
+							<input type="hidden" id="wardName" />
+							<div class="invalid-feedback">Please select a ward.</div>
+						</div>
+
+						<!-- Area -->
+						<div class="col-md">
+							<label for="area" style="color:black; font-weight:500;">Diện tích (m²)</label>
+							<input type="number" class="form-control" id="area" name="area" min="0" step="0.1"
+								placeholder="Diện tích (m²)"
+								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+						</div>
+
+						<!-- Price -->
+						<div class="col-md">
+							<label for="price" style="color:black; font-weight:500;">Giá tiền (VNĐ)</label>
+							<input type="number" class="form-control" id="price" name="price" min="0" step="1000"
+								placeholder="Giá tiền (VNĐ)"
+								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+						</div>
+
+						<!-- Quantity -->
+						<div class="col-md">
+							<label for="quantity" style="color:black; font-weight:500;">SL</label>
+							<input type="number" class="form-control" id="quantity" name="quantity" min="1" step="1"
+								placeholder="SL"
+								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+						</div>
+
+						<!-- Submit -->
+						<div class="col-auto d-flex align-items-end">
+							<button type="submit" class="btn btn-primary px-4 h-100">Tìm</button>
+						</div>
+					</div>
+				</form>
+
+			</div>
+
 		</div>
 	</div>
+
 </section>
+
 @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
 {
 	<script>
@@ -582,7 +659,8 @@
 				<span class="subheading">Liên hệ</span>
 				<h2 style="font-family: system-ui;" class="mb-4">Liên hệ với chúng tôi</h2>
 				<p>
-					Chúng tôi luôn sẵn sàng hỗ trợ bạn trong việc tìm kiếm nhà trọ phù hợp một cách nhanh chóng và an
+					Chúng tôi luôn sẵn sàng hỗ trợ bạn trong việc tìm kiếm nhà trọ phù hợp một cách nhanh chóng và
+					an
 					toàn. Hãy liên hệ ngay để được tư vấn chi tiết!
 				</p>
 			</div>
@@ -662,3 +740,7 @@
 		</div>
 	</div>
 </section>
+@section script {
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="~/js/address.js"></script>
+}
