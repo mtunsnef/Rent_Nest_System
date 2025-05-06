@@ -1,4 +1,6 @@
-﻿<div class="bg-black top" style="padding-bottom: 0.15rem; padding-top: 0.15rem">
+﻿@using RentNest.Core.Consts
+
+<div class="bg-black top" style="padding-bottom: 0.15rem; padding-top: 0.15rem">
 	<div class="container">
 		<div class="row no-gutters d-flex align-items-start align-items-center px-md-0">
 			<div class="col-lg-12 d-block">
@@ -55,15 +57,16 @@
 		</div>
 	</div>
 </div>
-<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light site-navbar-target"
-	id="ftco-navbar">
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light site-navbar-target" id="ftco-navbar">
 	<div class="container">
+		<!-- Logo -->
 		<a class="navbar-brand d-flex align-items-center" href="/">
 			<img src="~/images/blue-house-logo-2.png" alt="Logo" style="height: 40px; width: auto; margin-right: 10px;">
 			<span>BlueHouse</span>
 		</a>
+
 		<button class="navbar-toggler js-fh5co-nav-toggle fh5co-nav-toggle" type="button" data-toggle="collapse"
-			data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+				data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="oi oi-menu"></span> Menu
 		</button>
 
@@ -71,15 +74,30 @@
 			<ul class="navbar-nav nav ml-auto">
 				<li class="nav-item"><a href="/Home" class="nav-link"><span>Trang chủ</span></a></li>
 				<li class="nav-item"><a href="/Service" class="nav-link"><span>Dịch vụ</span></a></li>
-				<li class="nav-item">
-					<a href="/Room" class="nav-link"><span>Danh sách phòng</span></a>
-				</li>
+				<li class="nav-item"><a href="/Room" class="nav-link"><span>Danh sách phòng</span></a></li>
 				<li class="nav-item"><a href="/About" class="nav-link"><span>Về chúng tôi</span></a></li>
 				<li class="nav-item"><a href="/Contact" class="nav-link"><span>Liên hệ</span></a></li>
 			</ul>
 		</div>
+
+		@{
+			var isLandlord = User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Landlord);
+		}
+		@if (isLandlord)
+		{
+			<div class="ml-3 d-none d-lg-block">
+				<a href="/Room/Post" class="btn btn-primary px-4 py-2"
+				   style="position: absolute; top: 18px; right: 48px;">
+					<svg data-type="monochrome" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1.3em" height="1.3em" fill="none" style="margin-right: 7px;"><g fill="currentColor"><path d="M3.25488 5.07344C3.25488 4.07932 4.06077 3.27344 5.05488 3.27344H13.0549C13.4967 3.27344 13.8549 3.63161 13.8549 4.07344C13.8549 4.51527 13.4967 4.87344 13.0549 4.87344H5.05488C4.94443 4.87344 4.85488 4.96298 4.85488 5.07344V19.0734C4.85488 19.1839 4.94443 19.2734 5.05488 19.2734H19.0549C19.1653 19.2734 19.2549 19.1839 19.2549 19.0734V11.0734C19.2549 10.6316 19.6131 10.2734 20.0549 10.2734C20.4967 10.2734 20.8549 10.6316 20.8549 11.0734V19.0734C20.8549 20.0676 20.049 20.8734 19.0549 20.8734H5.05488C4.06077 20.8734 3.25488 20.0676 3.25488 19.0734V5.07344Z"></path><path d="M17.081 2.86123C17.5886 2.35355 18.4118 2.35355 18.9194 2.86123L21.2123 5.15412C21.72 5.6618 21.72 6.48492 21.2123 6.9926L12.8588 15.3462C12.5212 15.6837 12.0634 15.8734 11.586 15.8734H9.5002C8.78223 15.8734 8.2002 15.2913 8.2002 14.5734V12.4876C8.2002 12.0102 8.38984 11.5523 8.7274 11.2148L17.081 2.86123ZM18.0002 4.20473L9.85877 12.3462C9.82127 12.3837 9.8002 12.4345 9.8002 12.4876V14.2734H11.586C11.639 14.2734 11.6899 14.2523 11.7274 14.2148L19.8688 6.07336L18.0002 4.20473Z"></path></g></svg>
+					Đăng tin
+				</a>
+			</div>
+		}
+
 	</div>
 </nav>
+
+
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
 		let currentPath = window.location.pathname.toLowerCase();

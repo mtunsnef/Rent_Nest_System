@@ -1,0 +1,924 @@
+﻿@{
+    ViewData["Title"] = "Đăng tin cho thuê";
+}
+<section class="ftco-section contact-section ftco-no-pb mb-4" style="padding: 8em 0">
+    <div class="container">
+        <!-- TIÊU ĐỀ VÀ BƯỚC -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h4 class="font-weight-bold mb-0" style="font-family: system-ui;">Tạo tin đăng</h4>
+                <small class="text-muted">Bước <span id="current-step">1</span>. Thông tin cơ bản</small>
+            </div>
+            <div>
+                <button type="button" class="btn btn-outline-secondary btn-sm me-2">
+                    <i class="bi bi-eye"></i> Xem trước
+                </button>
+                <button type="button" class="btn btn-outline btn-sm">Quay về</button>
+            </div>
+        </div>
+
+        <!-- PROGRESS BAR -->
+        <div class="progress mb-4" style="height: 4px;">
+            <div id="progress-bar" class="progress-bar bg-danger" role="progressbar" style="width: 33%; height:4px;"></div>
+        </div>
+
+        <!-- FORM BƯỚC -->
+        <div class="row justify-content-center">
+            <div class="col-md-10 ftco-animate">
+                <form method="post" enctype="multipart/form-data" class="bg-light p-4 p-md-5 contact-form">
+                    <!-- Bước 1 -->
+                    <div class="step step-1">
+                        <div class="row justify-content-between">
+                            <div class="col-md-12">
+                                <h5 class="font-weight-bold mb-3">Địa chỉ</h5>
+                                <div class="form-group">
+                                    <label>Địa chỉ <span class="text-danger">*</span></label>
+                                    <div id="selectedAddressDisplay" class="form-control d-flex align-items-center cursor required-field" role="button" data-bs-toggle="modal" data-bs-target="#addressSelect" tabindex="0">
+                                        Chọn địa chỉ
+                                    </div>
+                                    <small class="text-danger error-message" style="display:none;"></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thông tin chính -->
+                        <h5 class="font-weight-bold mt-4">Thông tin chính</h5>
+                        <div class="form-group">
+                            <label>Loại chuyên mục <span class="text-danger">*</span></label>
+                            <select class="form-control required-field">
+                                <option value="">-- Chọn loại chuyên mục --</option>
+                                <option value="phongtro">Phòng trọ, Nhà trọ</option>
+                                <option value="nhanguyencan">Nhà thuê nguyên căn</option>
+                                <option value="chungcu">Căn hộ chung cư</option>
+                            </select>
+                            <small class="text-danger error-message" style="display:none;"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Diện tích <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" class="form-control required-field" placeholder="Nhập diện tích">
+                                <span class="input-group-text">m²</span>
+                            </div>
+                            <small class="text-danger error-message" style="display:none;"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Mức giá <span class="text-danger">*</span></label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control price-input required-field" placeholder="Nhập mức giá" data-target="gia" data-suggest="true">
+                                <span class="input-group-text">VNĐ</span>
+                            </div>
+                            <div class="suggestions mt-2" data-suggest="gia"></div>
+                            <div class="summary text-muted" data-summary="gia"></div>
+                            <small class="text-danger error-message" style="display:none;"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Số tiền cọc</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control price-input" placeholder="Nhập số tiền cọc" data-target="coc">
+                                <span class="input-group-text">VNĐ</span>
+                            </div>
+                        </div>
+
+
+                        <!-- Thông tin khác -->
+                        <h5 class="d-inline-block font-weight-bold mt-4">
+                            Thông tin khác
+                        </h5><label> (không bắt buộc)</label>
+
+                        <div class="form-group">
+                            <label>Tình trạng nội thất</label>
+                            <select id="furnitureSelect" class="form-control">
+                                <option value="">-- Chọn tình trạng nội thất --</option>
+                                <option value="none">Không có nội thất</option>
+                                <option value="basic">Nội thất cơ bản</option>
+                                <option value="full">Nội thất đầy đủ</option>
+                            </select>
+                        </div>
+
+                        <div id="furnitureFeatures" class="form-group mt-2" style="display: none;">
+                            <label>Đặc điểm nổi bật</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Có gác" id="featureLoft">
+                                        <label class="form-check-label" for="featureLoft">Có gác</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Có kệ bếp" id="featureKitchen">
+                                        <label class="form-check-label" for="featureKitchen">Có kệ bếp</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Có máy lạnh" id="featureAC">
+                                        <label class="form-check-label" for="featureAC">Có máy lạnh</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Có máy giặt" id="featureWasher">
+                                        <label class="form-check-label" for="featureWasher">Có máy giặt</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="Có tủ lạnh" id="featureFridge">
+                                        <label class="form-check-label" for="featureFridge">Có tủ lạnh</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>Số phòng ngủ</label>
+                                <input type="number" class="form-control" placeholder="Nhập số phòng ngủ">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Số phòng tắm/vệ sinh</label>
+                                <input type="number" class="form-control" placeholder="Nhập số phòng tắm">
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label>Mức giá điện</label>
+                            <select class="form-control">
+                                <option value="">-- Chọn mức giá điện --</option>
+                                <option value="provider">Theo nhà cung cấp</option>
+                                <option value="owner">Do chủ nhà quy định</option>
+                                <option value="agreement">Thỏa thuận</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Mức giá nước</label>
+                            <select class="form-control">
+                                <option value="">-- Chọn mức giá nước --</option>
+                                <option value="provider">Theo nhà cung cấp</option>
+                                <option value="owner">Do chủ nhà quy định</option>
+                                <option value="agreement">Thỏa thuận</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Mức giá Internet</label>
+                            <select class="form-control">
+                                <option value="">-- Chọn mức giá Internet --</option>
+                                <option value="provider">Theo nhà cung cấp</option>
+                                <option value="owner">Do chủ nhà quy định</option>
+                                <option value="agreement">Thỏa thuận</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label class="fw-bold d-block mb-2">Tiện ích</label>
+                            <div id="amenities" class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-outline-dark amenity-btn mr-4 rounded-pill shadow-none" data-value="Camera">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#000000" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M18.15,4.94A2.09,2.09,0,0,0,17,5.2l-8.65,5a2,2,0,0,0-.73,2.74l1.5,2.59a2,2,0,0,0,2.73.74l1.8-1a2.49,2.49,0,0,0,1.16,1V18a2,2,0,0,0,2,2H22V18H16.81V16.27A2.49,2.49,0,0,0,18,12.73l2.53-1.46a2,2,0,0,0,.74-2.74l-1.5-2.59a2,2,0,0,0-1.59-1M6.22,13.17,2,13.87l.75,1.3,2,3.46.75,1.3,2.72-3.3Z" />
+                                        </svg>
+                                        <span class="ml-2">Camera</span>
+                                    </div>
+                                </button>
+
+
+                                <button type="button" class="btn btn-outline-dark amenity-btn mr-4 rounded-pill shadow-none" data-value="Bảo vệ">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <svg width="20" height="20" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" fill="#000000">
+                                            <path class="st0" d="M429.823,409.401c-11.741-17.577-29.574-27.295-46.322-33.618c-8.41-3.157-16.624-5.492-23.859-7.474 c-7.227-1.965-13.508-3.618-17.725-5.213c-7.384-2.738-15.186-6.289-20.628-10.112c-2.722-1.899-4.81-3.856-6.027-5.517 c-1.225-1.702-1.562-2.878-1.578-3.906c0-7.103,0-15.974,0-27.666c9.447-10.508,23.021-26.794,28.595-52.618 c1.949-0.88,3.873-1.875,5.731-3.166c4.62-3.19,8.542-7.819,11.864-14.116c3.346-6.323,6.306-14.405,9.463-25.463 c1.603-5.607,2.343-10.474,2.343-14.815c0.008-4.999-1.028-9.332-2.911-12.85c-2.482-4.678-6.29-7.457-9.701-9.002l7.703-11.478 v-12.727c0.732-0.995,1.2-1.908,1.085-2.631v-27.567l19.6-39.184c4.966-9.932,1.127-22.018-8.666-27.263L265.693,2.43 c-6.05-3.24-13.327-3.24-19.378,0L133.21,63.015c-9.784,5.245-13.624,17.331-8.657,27.263l19.6,39.209v27.543 c-0.123,0.748,0.288,1.66,1.085,2.696v12.662l7.704,11.46c-0.798,0.354-1.62,0.757-2.467,1.275 c-2.664,1.644-5.352,4.218-7.235,7.745c-1.883,3.519-2.919,7.851-2.91,12.85c0,4.341,0.74,9.208,2.343,14.815 c4.226,14.726,8.041,24.238,12.982,31.218c2.475,3.461,5.287,6.24,8.345,8.361c1.858,1.29,3.783,2.286,5.731,3.166 c5.574,25.824,19.148,42.111,28.595,52.618c0,11.692,0,20.562,0,27.666c0,0.872-0.354,2.13-1.702,3.93 c-1.989,2.672-6.108,5.912-11,8.657c-4.876,2.771-10.483,5.18-15.391,6.907c-5.764,2.047-15.054,4.168-25.455,7.153 c-15.629,4.522-34.111,11.033-49.149,23.925c-7.506,6.446-14.092,14.544-18.729,24.607c-4.636,10.056-7.301,22.01-7.292,35.986 c0,3.248,0.14,6.602,0.428,10.072c0.222,2.434,1.142,4.407,2.236,6.034c2.064,3.042,4.81,5.295,8.246,7.622 c6.019,3.979,14.364,7.876,25.043,11.699c31.958,11.396,84.881,21.829,150.449,21.846c53.268,0,98.232-6.914,130.329-15.605 c16.057-4.349,28.875-9.118,38.141-13.878c4.646-2.393,8.394-4.768,11.37-7.358c1.488-1.316,2.795-2.688,3.889-4.325 c1.094-1.627,2.015-3.6,2.228-6.034c0.288-3.461,0.428-6.816,0.428-10.046C442.419,436.114,437.633,421.093,429.823,409.401z M231.936,137.544c0-13.294,10.77-24.065,24.073-24.065c13.286,0,24.056,10.77,24.056,24.065v2.31 c0,13.287-10.77,24.065-24.056,24.065c-13.303,0-24.073-10.778-24.073-24.065V137.544z M236.466,460.639l-54.806-86.517 c4.991-2.088,10.104-4.727,14.84-7.777l31.366,45.104l15.128-28.455L236.466,460.639z M227.117,398.837l-25.273-36.332 c2.31-1.891,4.505-3.897,6.306-6.256c2.54-3.33,4.472-7.49,4.596-12.218l35.386,15.276L227.117,398.837z M212.795,336.887 c0-6.462,0-14.142,0-23.761v-2.77l-1.858-2.072c-9.874-10.993-23.234-25.586-27.871-51.516l-0.732-4.144l-3.955-1.414 c-2.524-0.896-4.439-1.817-6.116-2.984c-2.475-1.743-4.72-4.127-7.342-9.011c-2.59-4.86-5.328-12.119-8.328-22.65 c-1.324-4.604-1.792-8.181-1.792-10.845c0.008-3.083,0.6-4.884,1.2-6.026c0.913-1.653,2.032-2.36,3.454-2.936 c0.642-0.246,1.29-0.378,1.842-0.468l14.873,22.157l6.363-37.285l0.699-2.336c19.42,6.159,44.644,11.1,72.779,11.1 c28.06,0,53.366-4.9,72.794-11.041l0.674,2.277l6.364,37.285l14.873-22.141c0.937,0.148,2.195,0.46,3.166,1.102 c0.83,0.535,1.504,1.151,2.121,2.286c0.6,1.142,1.192,2.943,1.209,6.026c0,2.664-0.477,6.24-1.792,10.845 c-3.988,14.059-7.564,22.231-10.853,26.77c-1.644,2.293-3.149,3.724-4.818,4.892c-1.677,1.168-3.592,2.089-6.116,2.984 l-3.963,1.414l-0.724,4.144c-4.636,25.93-17.998,40.524-27.871,51.516l-1.858,2.072v2.77c0,9.62,0,17.299,0,23.761l-43.204,18.655 L212.795,336.887z M299.262,344.031c0.107,4.572,1.883,8.707,4.342,12.012c1.841,2.483,4.053,4.636,6.47,6.585l-25.191,36.208 l-21.006-39.53L299.262,344.031z M275.543,460.655l-6.528-77.653l15.12,28.447l31.308-45.022c1.044,0.667,2.089,1.324,3.182,1.949 c3.789,2.154,7.794,3.98,11.798,5.664L275.543,460.655z"></path> </g> </g></svg>
+                                        <span class="ml-2">Bảo vệ</span>
+                                    </div>
+                                </button>
+                                
+                                <button type="button" class="btn btn-outline-dark amenity-btn mr-4 rounded-pill shadow-none" data-value="PCCC">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <svg fill="#000000" width="20" height="20" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M3.769 2.219c0 12.51 2.325 21.765 12.301 27.524 9.74-5.624 12.333-14.98 12.333-27.524-8.027 1.434-16.13 1.605-24.634 0zM15.418 26.291c-3.641-0.127-10.029-10.743-4.945-16.553v0c-1.002 5.844 2.052 6.275 3.534 4.025 1.415-2.147-1.625-6.169 3.935-7.828-2.974 3.633 2.465 13.228 3.773 6.499 3.858 7.819-2.473 13.99-6.298 13.857zM19.736 21.46c0 2.845-1.681 5.152-3.755 5.152s-3.755-2.306-3.755-5.152 1.681-5.152 3.755-5.152 3.755 2.306 3.755 5.152z"></path>
+                                        </svg>
+                                        <span class="ml-2">PCCC</span>
+                                    </div>
+                                </button>
+
+                                <button type="button" class="btn btn-outline-dark amenity-btn mr-4 rounded-pill shadow-none" data-value="Thang máy">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <svg fill="#000000" width="20" height="20" viewBox="0 0 38 38" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 37.383 49.85" xml:space="preserve" stroke="#000000">
+                                            <path d="M0,17.307v30.678c0,1.028,0.827,1.865,1.846,1.865h15.738V15.441H1.846C0.827,15.441,0,16.278,0,17.307z"></path> <path d="M35.536,15.441H19.798v34.408h15.738c1.019,0,1.847-0.837,1.847-1.864V17.307C37.383,16.278,36.555,15.441,35.536,15.441z"></path> <path d="M6.663,6.128c0.303,0.529,0.801,1.397,1.103,1.927L8.57,9.47c0.308,0.531,0.802,0.531,1.104,0l0.81-1.415 c0.303-0.529,0.801-1.397,1.103-1.927l0.805-1.415c0.308-0.531,0.058-0.962-0.551-0.962h-1.009V0.237 C10.832,0.108,10.725,0,10.599,0H7.651c-0.13,0-0.232,0.107-0.232,0.236v3.515H6.406c-0.606,0-0.856,0.431-0.553,0.962L6.663,6.128 z"></path> <path d="M25.541,6.119h1.012v3.514c0,0.129,0.105,0.233,0.23,0.233h2.947c0.129,0,0.233-0.104,0.233-0.233V6.119h1.013 c0.604,0,0.855-0.436,0.553-0.967l-0.809-1.41c-0.303-0.529-0.802-1.401-1.104-1.933L28.811,0.4c-0.307-0.53-0.801-0.53-1.103,0 l-0.81,1.41c-0.303,0.531-0.801,1.403-1.104,1.933l-0.805,1.41C24.684,5.684,24.932,6.119,25.541,6.119z"></path>
+                                        </svg>
+                                        <span class="ml-2">Thang máy</span>
+                                    </div>
+                                </button>
+
+                                <button type="button" class="btn btn-outline-dark amenity-btn mr-4 rounded-pill shadow-none" data-value="Hầm để xe">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <svg fill="#000000" width="20" height="20" viewBox="0 0 15 15" version="1.1" id="parking-garage" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10.5,10.14c-0.6637,0.4788-1.4732,0.7121-2.29,0.66h-1.9V14h-1.9V5h3.92c0.7801-0.0414,1.5484,0.2041,2.16,0.69c0.5779,0.5595,0.875,1.3483,0.81,2.15C11.4042,8.6892,11.1088,9.5388,10.5,10.14z M9,6.9C8.711,6.6881,8.3579,6.5822,8,6.6H6.31v2.65H8c0.3612,0.0191,0.717-0.0947,1-0.32c0.2559-0.2675,0.3867-0.6308,0.36-1C9.4072,7.5493,9.274,7.1684,9,6.9z M14.41,4.21c0.114-0.2486,0.007-0.5427-0.24-0.66L7.5,0.45l-6.71,3.1C0.5387,3.666,0.429,3.9637,0.545,4.215C0.661,4.4663,0.9587,4.576,1.21,4.46l0,0L7.5,1.55l6.29,2.9c0.2486,0.114,0.5427,0.007,0.66-0.24H14.41z"></path>
+                                        </svg>
+                                        <span class="ml-2">Hầm để xe</span>
+                                    </div>
+                                </button>
+                                <!-- thêm tiện ích khác nếu cần -->
+                            </div>
+
+                            <!-- Input ẩn để submit dữ liệu -->
+                            <input type="hidden" name="selectedAmenities" id="selectedAmenities">
+                        </div>
+
+
+
+                        <!-- Thông tin liên hệ -->
+                        <h5 class="font-weight-bold mt-4">Thông tin liên hệ</h5>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Họ tên</label>
+                                <input type="text" class="form-control" placeholder="Nhập họ tên">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Số điện thoại</label>
+                                <input type="text" class="form-control" placeholder="Nhập số điện thoại">
+                            </div>
+                        </div>
+
+
+                        <!-- Tiêu đề và tin đăng -->
+                        <div class="form-group">
+                            <label>Tiêu đề <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control required-field" id="titleInput" placeholder="Nhập tiêu đề">
+                            <small class="text-danger error-message" style="display:none;">Tiêu đề không được để trống</small>
+                            <small class="form-text text-muted">
+                                <span id="titleCount" style="display:none;">0/99</span> (Tối thiểu 30 ký tự, tối đa 99 ký tự)
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nội dung tin đăng <span class="text-danger">*</span></label>
+                            <textarea class="form-control required-field" id="contentInput" rows="8" placeholder="Nhập nội dung tin đăng"></textarea>
+                            <small class="text-danger error-message" style="display:none;">Nội dung không được để trống</small>
+                            <small class="form-text text-muted">
+                                <span id="contentCount" style="display:none;">0/5000</span> (Tối thiểu 50 ký tự, tối đa 5000 ký tự)
+                            </small>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary float-end mt-3" id="nextStepBtn" onclick="nextStep()" disabled>Tiếp tục</button>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Bước 2 -->
+                    <div class="step step-2 d-none">
+                        <h5 class="font-weight-bold mb-3 mt-4">Thông tin khác</h5>
+                        <div class="border border-primary rounded p-4 text-center bg-light mb-3">
+                            <label for="imageUpload" class="d-block cursor">
+                                <svg viewBox="0 0 24 24" width="50" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M13 5H9.32843C8.79799 5 8.28929 5.21071 7.91421 5.58579L7.08579 6.41421C6.71071 6.78929 6.20201 7 5.67157 7H4C2.89543 7 2 7.89543 2 9L2 19C2 20.1046 2.89543 21 4 21H18C19.1046 21 20 20.1046 20 19V12M17 5H23M20 8V2M11 18C13.2091 18 15 16.2091 15 14C15 11.7909 13.2091 10 11 10C8.79086 10 7 11.7909 7 14C7 16.2091 8.79086 18 11 18Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                                <div class="mt-2">Tải ảnh từ thiết bị</div>
+                            </label>
+                            <input type="file" id="imageUpload" multiple accept="image/*" class="d-none">
+                        </div>
+
+                        <small class="d-block mb-2 text-muted">
+                            • Tải lên tối thiểu 3 ảnh và tối đa 20 ảnh trong một bài đăng<br>
+                            • Dung lượng ảnh tối đa 10MB<br>
+                            • Hình ảnh phải liên quan đến phòng trọ, nhà cho thuê<br>
+                            • Không chèn văn bản, số điện thoại lên ảnh
+                        </small>
+
+                        <div id="preview" class="d-flex flex-wrap gap-2"></div>
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary mt-3" onclick="prevStep()">Quay lại</button>
+                            <button type="button" class="btn btn-primary float-end mt-3" id="nextStepBtn" onclick="nextStep()">Tiếp tục</button>
+                        </div>
+                    </div>
+
+                    <!-- Bước 3 -->
+                    <div class="step step-3 d-none">
+                        <h5 class="font-weight-bold mb-3 mt-4">Hoàn tất</h5>
+                        <p>Kiểm tra lại thông tin trước khi đăng tin.</p>
+                        <div class="form-group text-center mt-4">
+                            <button type="button" class="btn btn-secondary mx-2" onclick="prevStep()">Quay lại</button>
+                            <button type="button" class="btn btn-light mx-2">Lưu nháp</button>
+                            <input type="submit" value="Đăng tin" class="btn btn-success mx-2">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="myToast" class="toast position-fixed hide m-3" role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 999;bottom: 0;right: 0;">
+        <div class="toast-header justify-content-between">
+            <strong class="me-auto">Thông báo</strong>
+            <button type="button" class="btn-close ms-2 mb-1" aria-label="Close" onclick="hideToast()"></button>
+        </div>
+        <div class="toast-body">
+            Bạn chỉ được upload tối đa 20 ảnh!
+        </div>
+    </div>
+
+
+</section>
+
+<!-- Modal address buoc 1 -->
+<div class="modal fade" id="addressSelect" tabindex="-1" aria-labelledby="addressSelectLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title fs-5" id="addressSelectLabel">Chọn Địa Chỉ</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+               
+                <!-- Quận/Huyện -->
+                <div class="mb-3">
+                    <label for="districtSelect" class="form-label">Quận/Huyện <span class="text-danger">*</span></label>
+                    <select class="form-control" id="districtSelect" onchange="loadCommunes()">
+                        <option value="">-- Chọn Quận/Huyện --</option>
+                    </select>
+                </div>
+
+                <!-- Phường/Xã -->
+                <div class="mb-3">
+                    <label for="communeSelect" class="form-label">Phường/Xã <span class="text-danger">*</span></label>
+                    <select class="form-control" id="communeSelect">
+                        <option value="">-- Chọn Phường/Xã --</option>
+                    </select>
+                </div>
+
+                <!-- Đường -->
+                <div class="mb-3">
+                    <label for="streetInput" class="form-label">Đường/Phố (không bắt buộc)</label>
+                    <input type="text" class="form-control" id="streetInput" placeholder="Nhập tên đường">
+                </div>
+
+                <!-- Google Maps -->
+                <div class="mb-3">
+                    <label class="form-label">Địa chỉ hiển thị trên tin đăng</label>
+                    <div style="position: relative; padding-bottom: 80%; height: 0; overflow: hidden; border-radius: 8px;">
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;"
+                                loading="lazy" allowfullscreen
+                                src="https://maps.google.com/maps?q=&z=15&output=embed">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="confirmAddressBtn">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+{
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Đăng tin thành công!',
+            text: '@Html.Raw(TempData["SuccessMessage"])',
+            timer: 2500,
+            showConfirmButton: false
+        }).then(() => {
+            window.location.href = '@Html.Raw(TempData["RedirectUrl"])';
+        });
+    </script>
+}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+    //step 
+    let currentStep = 1;
+    function showStep(step) {
+        document.querySelectorAll('.step').forEach((el, idx) => {
+            el.classList.toggle('d-none', idx + 1 !== step);
+        });
+        document.getElementById('current-step').innerText = step;
+        const progress = (step / 3) * 100;
+        document.getElementById('progress-bar').style.width = progress + '%';
+    }
+    function nextStep() {
+        if (currentStep < 3) {
+            currentStep++;
+            showStep(currentStep);
+        }
+    }
+    function prevStep() {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    }
+    showStep(currentStep);
+
+    //price suggesstion
+     function parseFormattedNumber(str) {
+        return parseFloat(str.replace(/\./g, '').replace(/[^0-9]/g, ''));
+    }
+
+    function formatInputNumber(num) {
+        return num.toLocaleString('vi-VN');
+    }
+
+     document.querySelectorAll('.price-input').forEach(input => {
+        const key = input.dataset.target;
+        const suggestEnabled = input.dataset.suggest === "true";
+        const suggestionBox = document.querySelector(`[data-suggest="${key}"]`);
+        const summaryBox = document.querySelector(`[data-summary="${key}"]`);
+
+        input.addEventListener('input', function () {
+            let raw = parseFormattedNumber(input.value);
+            if (!raw) {
+                if (suggestionBox) suggestionBox.innerHTML = '';
+                if (summaryBox) summaryBox.innerHTML = '';
+                return;
+            }
+
+            input.value = formatInputNumber(raw);
+
+            if (suggestEnabled && suggestionBox) {
+                suggestionBox.innerHTML = '';
+                suggestionBox.classList.add('show');
+
+                const multipliers = [100, 1000, 10000];
+                multipliers.forEach(mul => {
+                    const suggestion = raw * mul;
+                    const label = formatCurrencyLabel(suggestion);
+
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'btn btn-outline-secondary btn-sm rounded-pill me-2 mb-1 mr-3 mt-2';
+                    button.textContent = label;
+
+                    button.addEventListener('click', () => {
+                        input.value = formatInputNumber(suggestion);
+                        if (summaryBox)
+                            summaryBox.innerHTML = `<small>Tổng trị giá <strong>${formatCurrencyLabel(suggestion)}</strong></small>`;
+                        suggestionBox.classList.remove('show');
+                    });
+
+                    suggestionBox.appendChild(button);
+                });
+            }
+
+            if (summaryBox)
+                summaryBox.innerHTML = `<small>Tổng trị giá <strong>${formatCurrencyLabel(raw)}</strong></small>`;
+        });
+
+        input.addEventListener('focus', () => {
+            if (suggestEnabled && suggestionBox && input.value.trim() !== '') {
+                suggestionBox.classList.add('show');
+            }
+        });
+
+        input.addEventListener('keypress', function (e) {
+            if (!/\d/.test(e.key)) {
+                e.preventDefault(); 
+            }
+        });
+        document.addEventListener('click', (e) => {
+            if (suggestEnabled && suggestionBox &&
+                !input.contains(e.target) && !suggestionBox.contains(e.target)) {
+                suggestionBox.classList.remove('show');
+            }
+        });
+    });
+
+    function formatCurrencyLabel(value) {
+        if (value >= 1_000_000_000) {
+            return `${(value / 1_000_000_000).toLocaleString('vi-VN')} tỷ / tháng`;
+        } else if (value >= 1_000_000) {
+            return `${(value / 1_000_000).toLocaleString('vi-VN')} triệu / tháng`;
+        } else if (value >= 1_000) {
+            return `${(value / 1_000).toLocaleString('vi-VN')} nghìn / tháng`;
+        } else {
+            return `${value.toLocaleString('vi-VN')} đ / tháng`;
+        }
+    }
+
+    //dac diem noi bat
+    const furnitureSelect = document.getElementById('furnitureSelect');
+    const furnitureFeatures = document.getElementById('furnitureFeatures');
+
+    furnitureSelect.addEventListener('change', function () {
+        const selected = this.value;
+
+        if (selected === 'basic') {
+            furnitureFeatures.style.display = 'block';
+        } else {
+            furnitureFeatures.style.display = 'none';
+            // Reset các checkbox khi không chọn 'basic'
+            furnitureFeatures.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        }
+    });
+
+    //tien ich
+    const amenityButtons = document.querySelectorAll('.amenity-btn');
+    const hiddenInput = document.getElementById('selectedAmenities');
+
+    let selectedAmenities = [];
+
+    amenityButtons.forEach(button => {
+        const value = button.getAttribute('data-value');
+        const svg = button.querySelector('svg');
+
+        button.addEventListener('click', () => {
+            const isSelected = selectedAmenities.includes(value);
+
+            if (isSelected) {
+                selectedAmenities = selectedAmenities.filter(v => v !== value);
+                button.classList.remove('btn-dark');
+                button.classList.add('btn-outline-dark');
+                if (svg) svg.setAttribute('fill', '#000000');
+            } else {
+                selectedAmenities.push(value);
+                button.classList.remove('btn-outline-dark');
+                button.classList.add('btn-dark');
+                if (svg) svg.setAttribute('fill', '#ffffff');
+            }
+
+            hiddenInput.value = selectedAmenities.join(',');
+        });
+
+        button.addEventListener('mouseenter', () => {
+            const isSelected = selectedAmenities.includes(value);
+            if (!isSelected && svg) {
+                svg.setAttribute('fill', '#ffffff');
+            }
+        });
+
+        button.addEventListener('mouseleave', () => {
+            const isSelected = selectedAmenities.includes(value);
+            if (!isSelected && svg) {
+                svg.setAttribute('fill', '#000000');
+            }
+        });
+    });
+
+    //load anh0
+     function showToast(message) {
+        const toast = document.getElementById('myToast');
+        toast.querySelector('.toast-body').textContent = message;
+        toast.classList.remove('hide');
+        toast.classList.add('showing');
+
+        setTimeout(() => {
+            toast.classList.remove('showing');
+            toast.classList.add('show');
+        }, 300);
+
+        setTimeout(() => {
+            hideToast();
+        }, 3000);
+    }
+
+    function hideToast() {
+        const toast = document.getElementById('myToast');
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+    }
+
+    function checkStep2Images() {
+        const imageCount = preview.querySelectorAll('div.position-relative').length;
+        const nextButton = document.querySelector('.step-2 button.btn-primary');
+
+        if (imageCount >= 3) {
+            nextButton.disabled = false;
+        } else {
+            nextButton.disabled = true;
+        }
+    }
+
+
+    const imageUpload = document.getElementById('imageUpload');
+    const preview = document.getElementById('preview');
+    const maxImages = 20;
+    document.querySelector('.step-2 button.btn-primary').disabled = true;
+
+    imageUpload.addEventListener('change', function () {
+        const currentImages = preview.querySelectorAll('div.position-relative').length;
+        const newImages = Array.from(this.files).filter(file => file.type.startsWith('image/'));
+
+        if (currentImages + newImages.length > maxImages) {
+            showToast('Bạn chỉ được upload tối đa 20 ảnh!');
+            this.value = '';
+            return;
+        }
+
+        newImages.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const div = document.createElement('div');
+                div.className = 'position-relative mr-3';
+                div.style.width = '100px';
+
+                div.innerHTML = `
+                    <img src="${e.target.result}" class="img-thumbnail mb-2" style="width:100px; height:100px; object-fit:cover;">
+                    <div class="position-absolute bg-dark rounded-circle d-flex justify-content-center align-items-center"
+                         style="width:24px; height:24px; transform: translate(50%, -50%); cursor:pointer; top: 4px; right: 4px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="white" viewBox="0 0 16 16">
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </div>
+                `;
+
+                preview.appendChild(div);
+                checkStep2Images();
+            };
+            reader.readAsDataURL(file);
+        });
+
+        this.value = '';
+    });
+
+    preview.addEventListener('click', function (e) {
+        if (e.target.closest('.position-absolute')) {
+            const btn = e.target.closest('.position-absolute');
+            btn.parentElement.remove();
+            checkStep2Images();
+        }
+    });
+
+    //load quan huyen dn
+    document.addEventListener('DOMContentLoaded', function() {
+        const districtSelect = document.getElementById('districtSelect');
+        const communeSelect = document.getElementById('communeSelect');
+        const streetInput = document.getElementById('streetInput');
+
+        const mapContainer = document.querySelector('#addressSelect iframe').parentElement;
+        const mapIframe = document.querySelector('#addressSelect iframe');
+
+        mapContainer.style.display = 'none';
+
+        communeSelect.disabled = true;
+        streetInput.disabled = true;
+
+        function updateMap() {
+            const districtText = districtSelect.options[districtSelect.selectedIndex].text;
+            const communeText = communeSelect.options[communeSelect.selectedIndex].text;
+            const streetText = streetInput.value.trim();
+
+            if (districtSelect.value && communeSelect.value) {
+                let fullAddress = `${streetText ? streetText + ', ' : ''}${communeText}, ${districtText}, Đà Nẵng`;
+                let mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(fullAddress)}&z=15&output=embed`;
+                mapIframe.src = mapUrl;
+                mapContainer.style.display = 'block';
+            } else {
+                mapContainer.style.display = 'none';
+            }
+        }
+
+        function loadDistricts() {
+            fetch('https://esgoo.net/api-tinhthanh/2/48.htm')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error === 0) {
+                        districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
+                        communeSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+                        communeSelect.disabled = true;
+                        streetInput.value = '';
+                        streetInput.disabled = true;
+
+                        data.data.forEach(district => {
+                            const option = document.createElement('option');
+                            option.value = district.id;
+                            option.textContent = district.full_name;
+                            districtSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => console.error('Lỗi load quận/huyện:', error));
+        }
+
+        function loadCommunes() {
+            const districtId = districtSelect.value;
+            if (!districtId) {
+                communeSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+                communeSelect.disabled = true;
+                streetInput.value = '';
+                streetInput.disabled = true;
+                updateMap();
+                return;
+            }
+
+            fetch(`https://esgoo.net/api-tinhthanh/3/${districtId}.htm`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error === 0) {
+                        communeSelect.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>';
+                        communeSelect.disabled = false;
+                        streetInput.value = '';
+                        streetInput.disabled = true;
+
+                        data.data.forEach(commune => {
+                            const option = document.createElement('option');
+                            option.value = commune.id;
+                            option.textContent = commune.full_name;
+                            communeSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => console.error('Lỗi load phường/xã:', error));
+        }
+
+        districtSelect.addEventListener('change', function() {
+            loadCommunes();
+            updateMap();
+        });
+
+        communeSelect.addEventListener('change', function() {
+            if (communeSelect.value) {
+                streetInput.disabled = false;
+            } else {
+                streetInput.value = '';
+                streetInput.disabled = true;
+            }
+            updateMap();
+        });
+
+        streetInput.addEventListener('input', updateMap);
+        loadDistricts();
+    });
+
+    //confirm dia chi
+    document.addEventListener('DOMContentLoaded', function() {
+        const districtSelect = document.getElementById('districtSelect');
+        const communeSelect = document.getElementById('communeSelect');
+        const streetInput = document.getElementById('streetInput');
+        const confirmBtn = document.getElementById('confirmAddressBtn');
+        const selectedAddressDisplay = document.getElementById('selectedAddressDisplay');
+
+        confirmBtn.disabled = true;
+
+        function checkEnableConfirmButton() {
+            if (districtSelect.value && communeSelect.value) {
+                confirmBtn.disabled = false;
+            } else {
+                confirmBtn.disabled = true;
+            }
+        }
+
+        districtSelect.addEventListener('change', checkEnableConfirmButton);
+        communeSelect.addEventListener('change', checkEnableConfirmButton);
+
+        confirmBtn.addEventListener('click', function() {
+            const districtText = districtSelect.options[districtSelect.selectedIndex].text;
+            const communeText = communeSelect.options[communeSelect.selectedIndex].text;
+            const streetText = streetInput.value.trim();
+
+            const fullAddress = `${streetText ? streetText + ', ' : ''}${communeText}, ${districtText}, Đà Nẵng`;
+            selectedAddressDisplay.textContent = fullAddress;
+        });
+    });
+   
+
+    //valid
+    document.addEventListener("DOMContentLoaded", function () {
+        const requiredFields = document.querySelectorAll('.required-field');
+        const nextBtn = document.getElementById('nextStepBtn');
+        const titleInput = document.getElementById('titleInput');
+        const contentInput = document.getElementById('contentInput');
+        const titleCount = document.getElementById('titleCount');
+        const contentCount = document.getElementById('contentCount');
+
+        const TITLE_MIN = 30, TITLE_MAX = 99;
+        const CONTENT_MIN = 50, CONTENT_MAX = 5000;
+
+        function updateCharCount(input, count, max) {
+            if (input.value.length > max) input.value = input.value.substring(0, max);
+            const length = input.value.length;
+            count.textContent = `${length}/${max}`;
+            count.style.display = length > 0 ? 'inline' : 'none';
+        }
+
+        function showError(field, message) {
+            const errorSpan = field.parentElement.querySelector('.error-message');
+            if (errorSpan) {
+                errorSpan.textContent = message;
+                errorSpan.style.display = 'block';
+            }
+        }
+
+        function hideError(field) {
+            const errorSpan = field.parentElement.querySelector('.error-message');
+            if (errorSpan) errorSpan.style.display = 'none';
+        }
+
+        function validateField(field) {
+            let value = '';
+            if (field.tagName === 'DIV') value = field.textContent.trim();
+            else value = field.value.trim();
+
+            let isValid = true;
+
+            if (field === titleInput) {
+                if (value.length < TITLE_MIN) {
+                    showError(field, `Tiêu đề tối thiểu ${TITLE_MIN} ký tự`);
+                    isValid = false;
+                } else {
+                    hideError(field);
+                }
+            } else if (field === contentInput) {
+                if (value.length < CONTENT_MIN) {
+                    showError(field, `Nội dung tối thiểu ${CONTENT_MIN} ký tự`);
+                    isValid = false;
+                } else {
+                    hideError(field);
+                }
+            } else if (field.id === 'selectedAddressDisplay') {
+                if (value === '' || value === 'Chọn địa chỉ') {
+                    showError(field, 'Địa chỉ không được để trống');
+                    isValid = false;
+                } else {
+                    hideError(field);
+                }
+            } else if (field.tagName === 'SELECT') {
+                if (value === '' || value === '-- Chọn loại chuyên mục --') {
+                    showError(field, 'Loại chuyên mục không được để trống');
+                    isValid = false;
+                } else {
+                    hideError(field);
+                }
+            } else if (field.placeholder === 'Nhập diện tích') {
+                if (value === '') {
+                    showError(field, 'Diện tích không được để trống');
+                    isValid = false;
+                } else {
+                    hideError(field);
+                }
+            } else if (field.placeholder === 'Nhập mức giá') {
+                if (value === '') {
+                    showError(field, 'Mức giá không được để trống');
+                    isValid = false;
+                } else {
+                    hideError(field);
+                }
+            } else {
+                if (value === '') {
+                    showError(field, 'Trường này không được để trống');
+                    isValid = false;
+                } else {
+                    hideError(field);
+                }
+            }
+
+            checkForm(); 
+            return isValid;
+        }
+
+        function checkForm() {
+            let allValid = true;
+            requiredFields.forEach(field => {
+                if (!isFieldValid(field)) allValid = false;
+            });
+            nextBtn.disabled = !allValid;
+        }
+
+        function isFieldValid(field) {
+            let value = '';
+            if (field.tagName === 'DIV') value = field.textContent.trim();
+            else value = field.value.trim();
+
+            if (field === titleInput) return value.length >= TITLE_MIN;
+            if (field === contentInput) return value.length >= CONTENT_MIN;
+            if (field.id === 'selectedAddressDisplay') return value !== '' && value !== 'Chọn địa chỉ';
+            if (field.tagName === 'SELECT') return value !== '' && value !== '-- Chọn loại chuyên mục --';
+            if (field.placeholder === 'Nhập diện tích') return value !== '';
+            if (field.placeholder === 'Nhập mức giá') return value !== '';
+            return value !== '';
+        }
+
+        requiredFields.forEach(field => {
+            if (field.tagName === 'SELECT' || field.tagName === 'INPUT') {
+                field.addEventListener('change', () => {
+                    validateField(field);
+                });
+            }
+
+            if (field.tagName === 'INPUT' || field.tagName === 'TEXTAREA') {
+                field.addEventListener('input', () => {
+                    if (field === titleInput) updateCharCount(titleInput, titleCount, TITLE_MAX);
+                    if (field === contentInput) updateCharCount(contentInput, contentCount, CONTENT_MAX);
+                });
+                field.addEventListener('blur', () => {
+                    validateField(field);
+                });
+            }
+
+            if (field.tagName === 'DIV') {
+                field.addEventListener('DOMSubtreeModified', () => {
+                    validateField(field);
+                });
+                field.addEventListener('blur', () => {
+                    validateField(field);
+                });
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            requiredFields.forEach(field => validateField(field));
+        });
+    });
+
+
+</script>

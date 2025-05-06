@@ -1,4 +1,4 @@
-﻿@model RentNest.Core.DTO.GoogleAccountRegisterDto
+﻿@model RentNest.Core.DTO.ExternalAccountRegisterDto
 @using RentNest.Core.Consts
 
 @{
@@ -19,7 +19,8 @@
             <div class="col-md-8 ftco-animate">
                 <form asp-controller="Auth" asp-action="CompleteRegistration" method="post" class="bg-light p-4 p-md-5 contact-form">
                     <input asp-for="Email" type="hidden" />
-                    <input asp-for="GoogleId" type="hidden" />
+                    <input asp-for="AuthProvider" type="hidden" />
+                    <input asp-for="AuthProviderId" type="hidden" />
                     <input asp-for="FirstName" type="hidden" />
                     <input asp-for="LastName" type="hidden" />
                     <div class="form-group">
