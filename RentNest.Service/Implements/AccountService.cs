@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using RentNest.Common.UtilHelper;
 using RentNest.Core.Consts;
 using RentNest.Core.Domains;
 using RentNest.Core.DTO;
@@ -19,18 +20,8 @@ namespace RentNest.Service.Implements
             {
                 return false;
             }
-            // hash with SHA256
-            string hashPassword;
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(accountDto.Password));
-                hashPassword = BitConverter.ToString(bytes).Replace("-", "").ToLower();
-            }
-            if (hashPassword.Equals(account!.Password))
-            {
-                return true;
-            }
-            return false;
+            var checkLogin = BCrypt.Net.BCrypt.Verify(accountDto.Password, account.Password);
+            return checkLogin;
         }
         public async Task<Account?> GetAccountByEmailAsync(string email) => await AccountDAO.Instance.GetAccountByEmailAsync(email);
         public void Update(Account account) => AccountDAO.Instance.Update(account);
