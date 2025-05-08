@@ -353,7 +353,7 @@ template {
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
     margin-bottom: 0.5rem;
-    font-family: inherit;
+    font-family: system-ui;
     font-weight: 500;
     line-height: 1.2;
     color: inherit;
@@ -12723,7 +12723,7 @@ h1, h2, h3, h4, h5,
     height: 52px !important;
     background: #fff !important;
     color: #000000 !important;
-    font-size: 18px;
+    font-size: 16px;
     border-radius: 5px;
     -webkit-box-shadow: none !important;
     box-shadow: none !important;
