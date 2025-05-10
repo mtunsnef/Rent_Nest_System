@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using RentNest.Core.Consts;
 using RentNest.Core.DTO;
@@ -39,7 +40,7 @@ namespace RentNest.Web.Controllers
             // set authen 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, account.Email),
+                new Claim(ClaimTypes.Email, account.Email),
                 new Claim(ClaimTypes.Role, account.Role)
             };
             var identity = new ClaimsIdentity(claims, AuthSchemes.Cookie);
@@ -116,8 +117,8 @@ namespace RentNest.Web.Controllers
                 TempData["Email"] = email;
                 TempData["FirstName"] = firstName ?? name;
                 TempData["LastName"] = lastName ?? "";
-                TempData["ExternalId"] = externalId;
-                TempData["Provider"] = provider;
+                TempData["AuthProviderId"] = externalId;
+                TempData["AuthProvider"] = provider;
 
                 return RedirectToAction("CompleteRegistration", "Auth");
             }
@@ -133,9 +134,7 @@ namespace RentNest.Web.Controllers
             };
 
             var identity = new ClaimsIdentity(claims, scheme);
-            var principalUser = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync(AuthSchemes.Cookie, principalUser);
+            await HttpContext.SignInAsync(AuthSchemes.Cookie, new ClaimsPrincipal(identity));
 
             TempData["SuccessMessage"] = "Đăng nhập thành công!";
             TempData["RedirectUrl"] = Url.Action("Index", "Home");
@@ -153,11 +152,11 @@ namespace RentNest.Web.Controllers
         [HttpGet]
         public IActionResult CompleteRegistration()
         {
-            // Lấy TempData vào model
-            var dto = new GoogleAccountRegisterDto
+            var dto = new ExternalAccountRegisterDto
             {
-                Email = TempData["Email"]?.ToString()!,
-                GoogleId = TempData["GoogleId"]?.ToString()!,
+                Email = TempData["Email"]?.ToString() ?? "",
+                AuthProvider = TempData["AuthProvider"]?.ToString() ?? "", 
+                AuthProviderId = TempData["AuthProviderId"]?.ToString() ?? "",
                 FirstName = TempData["FirstName"]?.ToString(),
                 LastName = TempData["LastName"]?.ToString()
             };
@@ -166,34 +165,44 @@ namespace RentNest.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CompleteRegistration(GoogleAccountRegisterDto dto)
+        public async Task<IActionResult> CompleteRegistration(ExternalAccountRegisterDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return View(dto);
             }
 
-            var account = await _accountService.CreateGoogleAccountAsync(dto);
+            var scheme = dto.AuthProvider.ToLower() switch
+            {
+                "google" => AuthSchemes.Google,
+                "facebook" => AuthSchemes.Facebook,
+                _ => throw new InvalidOperationException("Provider không hợp lệ.")
+            };
 
-            var authenticateResult = await HttpContext.AuthenticateAsync(AuthSchemes.Google);
-            var externalPrincipal = authenticateResult.Principal;
+            var authResult = await HttpContext.AuthenticateAsync(scheme);
+            var externalPrincipal = authResult.Principal;
 
             if (externalPrincipal == null)
             {
-                TempData["ErrorMessage"] = "Không thể xác thực tài khoản Google.";
+                TempData["ErrorMessage"] = $"Không thể xác thực tài khoản {dto.AuthProvider}.";
                 return RedirectToAction("Login", "Auth");
             }
 
-            var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.NameIdentifier, dto.GoogleId),
-                    new Claim(ClaimTypes.Name, $"{dto.FirstName} {dto.LastName}"),
-                    new Claim(ClaimTypes.GivenName, dto.FirstName ?? ""),
-                    new Claim(ClaimTypes.Surname, dto.LastName ?? ""),
-                    new Claim(ClaimTypes.Email, dto.Email),
-                };
+            dto.AuthProviderId = externalPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var identity = new ClaimsIdentity(claims, AuthSchemes.Google);
+            var account = await _accountService.CreateExternalAccountAsync(dto);
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, dto.AuthProviderId),
+                new Claim(ClaimTypes.Name, $"{dto.FirstName} {dto.LastName}"),
+                new Claim(ClaimTypes.GivenName, dto.FirstName ?? ""),
+                new Claim(ClaimTypes.Surname, dto.LastName ?? ""),
+                new Claim(ClaimTypes.Email, dto.Email),
+                new Claim(ClaimTypes.Role, account.Role)
+            };
+
+            var identity = new ClaimsIdentity(claims, scheme);
             var principal = new ClaimsPrincipal(identity);
 
             await HttpContext.SignInAsync(AuthSchemes.Cookie, principal);
@@ -202,11 +211,12 @@ namespace RentNest.Web.Controllers
             HttpContext.Session.SetString("AccountName", $"{dto.FirstName} {dto.LastName}");
             HttpContext.Session.SetString("Email", dto.Email);
 
-            TempData["SuccessMessage"] = "Đăng ký tài khoản thành công!";
+            TempData["SuccessRegisMessage"] = "Đăng ký tài khoản thành công! Đang chuyển hướng bạn đến trang chủ...";
             TempData["RedirectUrl"] = Url.Action("Index", "Home");
 
             return RedirectToAction("Login", "Auth");
         }
+
 
 
     }

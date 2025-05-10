@@ -43,28 +43,6 @@ CREATE TABLE UserProfile (
         ON DELETE CASCADE
 );
 
--- Table: LandLordVerification
-CREATE TABLE LandLordVerification (
-    verification_id INT IDENTITY(1,1) PRIMARY KEY,
-    id_card_number VARCHAR(50) NOT NULL,
-    id_card_front_url VARCHAR(255) NOT NULL,
-    id_card_back_url VARCHAR(255) NOT NULL,
-    status CHAR(1) DEFAULT 'P' CHECK (status IN ('P', 'A', 'R')), -- P=Pending, A=Approved, R=Rejected
-    submitted_at DATETIME,
-    updated_at DATETIME,
-	verified_at DATETIME,
-	rejection_reason TEXT,
-    account_id INT UNIQUE,
-    verified_by INT,
-    CONSTRAINT FK_LandlordVerification_Account FOREIGN KEY (account_id)
-        REFERENCES Account(account_id)
-        ON DELETE NO ACTION,  
-    CONSTRAINT FK_VerifiedBy_Admin FOREIGN KEY (verified_by)
-        REFERENCES Account(account_id)
-        ON DELETE SET NULL
-);
-
-
 -- Table: PaymentMethod
 CREATE TABLE PaymentMethod (
     method_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -142,7 +120,7 @@ CREATE TABLE AccommodationDetails (
     has_parking BIT DEFAULT 0,
     has_security BIT DEFAULT 0,
     has_elevator BIT DEFAULT 0,
-    furniture_status VARCHAR(100),
+    furniture_status VARCHAR(100) ,
     is_pets_allowed BIT DEFAULT 0,
     is_smoking_allowed BIT DEFAULT 0,
     has_washing_machine BIT DEFAULT 0,
@@ -231,4 +209,3 @@ CREATE TABLE PostApprovals (
         REFERENCES Account(account_id)
         ON DELETE NO ACTION
 );
-

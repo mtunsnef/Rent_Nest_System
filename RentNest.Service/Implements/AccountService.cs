@@ -25,13 +25,13 @@ namespace RentNest.Service.Implements
         }
         public async Task<Account?> GetAccountByEmailAsync(string email) => await AccountDAO.Instance.GetAccountByEmailAsync(email);
         public void Update(Account account) => AccountDAO.Instance.Update(account);
-        public async Task<Account> CreateGoogleAccountAsync(GoogleAccountRegisterDto dto)
+        public async Task<Account> CreateExternalAccountAsync(ExternalAccountRegisterDto dto)
         {
             var account = new Account
             {
                 Email = dto.Email,
-                AuthProvider = AuthProviders.Google,
-                AuthProviderId = dto.GoogleId,
+                AuthProvider = dto.AuthProvider.ToLower(),
+                AuthProviderId = dto.AuthProviderId,
                 Role = dto.Role,
                 CreatedAt = DateTime.UtcNow
             };
@@ -39,7 +39,6 @@ namespace RentNest.Service.Implements
             try
             {
                 await AccountDAO.Instance.AddAccount(account);
-
                 var userProfile = new UserProfile
                 {
                     FirstName = dto.FirstName,
@@ -48,16 +47,15 @@ namespace RentNest.Service.Implements
                     CreatedAt = DateTime.UtcNow,
                     AccountId = account.AccountId
                 };
-
                 await UserProfileDAO.Instance.AddUserProfile(userProfile);
             }
             catch (Exception ex)
             {
-                throw new Exception("Lỗi khi tạo tài khoản Google: " + ex.Message);
+                throw new Exception("Lỗi khi tạo tài khoản: " + ex.Message);
             }
-
             return account;
         }
+
 
     }
 }

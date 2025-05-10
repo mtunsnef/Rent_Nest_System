@@ -36,7 +36,7 @@ namespace RentNest.Web.Controllers
         public IActionResult Contact()
         {
             ViewData["GoogleMapsAPIKey"] = _configuration["GoogleMapsAPIKey"];
-            ViewData["Address"] = "Khu đô thị FPT City, Ngũ Hành Sơn, Da Nang 550000, Vietnam";
+            ViewData["Address"] = "Đại Học FPT, Hòa Hải, Ngũ Hành Sơn, Da Nang 550000, Vietnam";
             ViewData["Email"] = "bluedream.company@email.com";
             ViewData["Phone"] = "(+84) 941 673 660";
             ViewData["Website"] = "blueHouseDaNang.com";

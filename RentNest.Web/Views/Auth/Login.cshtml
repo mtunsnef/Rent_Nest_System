@@ -56,6 +56,20 @@
                         </script>
                     }
 
+                    @if (!string.IsNullOrEmpty(TempData["SuccessRegisMessage"] as string))
+                    {
+                        <script>
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Đăng ký thành công!',
+                                text: '@Html.Raw(TempData["SuccessRegisMessage"])', 
+                                timer: 2500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = '@Html.Raw(TempData["RedirectUrl"])';
+                            });
+                        </script>
+                    }
                     <div class="form-group">
                         <input asp-for="Email" type="email" class="form-control" placeholder="Email của bạn">
                     </div>
