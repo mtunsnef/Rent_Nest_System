@@ -31,6 +31,7 @@ namespace RentNest.Web
 
             //Service
             builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IAzureOpenAIService, AzureOpenAIService>();
 
             //DAO
             builder.Services.AddScoped<AccountDAO>(); //????

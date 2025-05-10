@@ -19,10 +19,5 @@ namespace RentNest.Web.Controllers
             return View();
         }
 
-        [Route("/Post")]
-        public IActionResult Post()
-        {
-            return View();
-        }
     }
 }

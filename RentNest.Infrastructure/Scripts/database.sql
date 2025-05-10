@@ -209,4 +209,3 @@ CREATE TABLE PostApprovals (
         REFERENCES Account(account_id)
         ON DELETE NO ACTION
 );
-
