@@ -6,6 +6,8 @@ using RentNest.Core.Configs;
 using RentNest.Core.Consts;
 using RentNest.Core.Domains;
 using RentNest.Infrastructure.DataAccess;
+using RentNest.Infrastructure.Repositories.Implements;
+using RentNest.Infrastructure.Repositories.Interfaces;
 using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
 
@@ -28,6 +30,13 @@ namespace RentNest.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            //DAO
+            builder.Services.AddScoped<AccountDAO>();
+            builder.Services.AddScoped<UserProfileDAO>();
+
+            //Repository
+            builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
             //Service
             builder.Services.AddScoped<IMailService, MailService>();

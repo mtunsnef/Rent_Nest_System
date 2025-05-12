@@ -7,18 +7,32 @@ namespace RentNest.Infrastructure.Repositories.Implements
 {
     public class AccountRepository : IAccountRepository
     {
+        private readonly AccountDAO _accountDAO;
+        private readonly UserProfileDAO _userProfileDAO;
+        public AccountRepository(AccountDAO accountDAO, UserProfileDAO userProfileDAO)
+        {
+            _accountDAO = accountDAO;
+            _userProfileDAO = userProfileDAO;
+        }
         public async Task<bool> Login(AccountLoginDto accountDto)
         {
-            var account = await AccountDAO.Instance.GetAccountByEmailAsync(accountDto.Email);
+            var account = await _accountDAO.GetAccountByEmailAsync(accountDto.Email);
             if (account == null)
-            {
                 return false;
-            }
-            var checkLogin = BCrypt.Net.BCrypt.Verify(accountDto.Password, account.Password);
-            return checkLogin;
+
+            return BCrypt.Net.BCrypt.Verify(accountDto.Password, account.Password);
         }
-        public async Task<Account?> GetAccountByEmailAsync(string email) => await AccountDAO.Instance.GetAccountByEmailAsync(email);
-        public async Task Update(Account account) => await AccountDAO.Instance.Update(account);
+
+        public async Task<Account?> GetAccountByEmailAsync(string email)
+        {
+            return await _accountDAO.GetAccountByEmailAsync(email);
+        }
+
+        public async Task Update(Account account)
+        {
+            await _accountDAO.UpdateAsync(account);
+        }
+
         public async Task<Account> CreateExternalAccountAsync(ExternalAccountRegisterDto dto)
         {
             var account = new Account
@@ -32,7 +46,8 @@ namespace RentNest.Infrastructure.Repositories.Implements
 
             try
             {
-                await AccountDAO.Instance.AddAccount(account);
+                await _accountDAO.AddAsync(account);
+
                 var userProfile = new UserProfile
                 {
                     FirstName = dto.FirstName,
@@ -41,7 +56,8 @@ namespace RentNest.Infrastructure.Repositories.Implements
                     CreatedAt = DateTime.UtcNow,
                     AccountId = account.AccountId
                 };
-                await UserProfileDAO.Instance.AddUserProfile(userProfile);
+
+                await _userProfileDAO.AddAsync(userProfile);
             }
             catch (Exception ex)
             {

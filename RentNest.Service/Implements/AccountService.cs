@@ -7,31 +7,31 @@ namespace RentNest.Service.Implements
 {
     public class AccountService : IAccountService
     {
-        private readonly IAccountRepository iAccountRepository;
+        private readonly IAccountRepository _accountRepository;
 
-        public AccountService()
+        public AccountService(IAccountRepository accountRepository)
         {
-            iAccountRepository = new AccountRepository();
+            _accountRepository = accountRepository;
         }
 
         public async Task<Account> CreateExternalAccountAsync(ExternalAccountRegisterDto dto)
         {
-            return await iAccountRepository.CreateExternalAccountAsync(dto);
+            return await _accountRepository.CreateExternalAccountAsync(dto);
         }
 
         public async Task<Account?> GetAccountByEmailAsync(string email)
         {
-            return await iAccountRepository.GetAccountByEmailAsync(email);
+            return await _accountRepository.GetAccountByEmailAsync(email);
         }
 
         public async Task<bool> Login(AccountLoginDto accountDto)
         {
-            return await iAccountRepository.Login(accountDto);
+            return await _accountRepository.Login(accountDto);
         }
 
         public async Task Update(Account account)
         {
-            await iAccountRepository.Update(account);
+            await _accountRepository.Update(account);
         }
     }
 }
