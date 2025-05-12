@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace RentNest.Core.Configs
 {
-    public static class AzureOpenAISettings
+    public class AzureOpenAISettings
     {
-        public static readonly string Endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
-        public static readonly string DeploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT")!;
-        public static readonly string ApiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY")!;
+        public required string Endpoint { get; set; }
+        public required string DeploymentName { get; set; }
+        public required string ApiKey { get; set; }
     }
 }

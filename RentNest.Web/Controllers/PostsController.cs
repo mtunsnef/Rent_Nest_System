@@ -19,6 +19,7 @@ namespace RentNest.Web.Controllers
         {
             _azureOpenAIService = azureOpenAIService;
         }
+
         [Route("/Post")]
         public async Task<IActionResult> Post()
         {

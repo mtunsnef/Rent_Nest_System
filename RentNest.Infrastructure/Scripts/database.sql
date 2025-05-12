@@ -252,3 +252,10 @@ CREATE TABLE Payment (
         REFERENCES PostPackageDetails(id)
         ON DELETE NO ACTION
 );
+
+
+INSERT INTO AccommodationType (type_name, description)
+VALUES 
+    ('Phòng trọ, Nhà trọ', 'Loại hình cho thuê phòng trọ hoặc nhà trọ, phù hợp cho sinh viên, người đi làm'),
+    ('Nhà thuê nguyên căn', 'Cho thuê toàn bộ căn nhà, phù hợp cho gia đình hoặc nhóm người'),
+    ('Căn hộ chung cư', 'Cho thuê căn hộ trong các tòa nhà chung cư, tiện nghi đầy đủ');

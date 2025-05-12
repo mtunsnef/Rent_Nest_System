@@ -5644,6 +5644,20 @@ a.badge-dark:hover, a.badge-dark:focus {
     border-radius: 0.3rem;
 }
 
+.discount-badge {
+    position: absolute;
+    top: -5px;
+    left: 85px;
+    background-color: rgb(220, 53, 69);
+    color: white;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 15px;
+    transform: rotate(15deg);
+    z-index: 10;
+}
+
 @media (min-width: 576px) {
     .jumbotron {
         padding: 4rem 2rem;
@@ -7129,6 +7143,26 @@ button.bg-dark:focus {
 
 .border-0 {
     border: 0 !important;
+}
+
+.border-1 {
+    border: 1px solid;
+}
+
+.border-2 {
+    border: 2px solid;
+}
+
+.border-3 {
+    border: 3px solid;
+}
+
+.border-4 {
+    border: 4px solid;
+}
+
+.border-5 {
+    border: 5px solid;
 }
 
 .border-top-0 {
@@ -12758,7 +12792,7 @@ textarea.form-control {
     background: #4b69bd !important;
 }
 
-.bg-secondary {
+.bg-secondary-2 {
     background: #e88941 !important;
 }
 

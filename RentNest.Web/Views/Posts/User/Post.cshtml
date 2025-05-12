@@ -7,7 +7,10 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
                 <h4 class="font-weight-bold mb-0" style="font-family: system-ui;">Tạo tin đăng</h4>
-                <small class="text-muted">Bước <span id="current-step">1</span>. Thông tin cơ bản</small>
+                <small class="text-muted">
+                    Bước <span id="current-step">1</span>.
+                    <span id="step-label"></span>
+                </small>
             </div>
             <div>
                 <button type="button" class="btn btn-outline-secondary btn-sm me-2">
@@ -307,14 +310,270 @@
 
                     <!-- Bước 3 -->
                     <div class="step step-3 d-none">
-                        <h5 class="font-weight-bold mb-3 mt-4">Hoàn tất</h5>
-                        <p>Kiểm tra lại thông tin trước khi đăng tin.</p>
-                        <div class="form-group text-center mt-4">
+                        <h5 class="font-weight-bold mb-4">
+                            Sắp xong rồi! Vui lòng chọn phương thức đăng tin dưới đây.
+                        </h5>
+
+                        <!-- Tabs lựa chọn kiểu đăng -->
+                        <div class="d-flex align-items-center mb-4">
+                            <label>Chọn gói đăng</label>
+                            <div class="ml-5 dropdown">
+                                <button class="btn btn-outline-dark rounded-pill dropdown-toggle" type="button" id="packageTypeBtn" data-bs-toggle="dropdown">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
+                                        <path d="M14 3h-1V1h-1v2H4V1H3v2H2a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1z" />
+                                        <path d="M15 6H1v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6z" />
+                                    </svg>
+                                    <span id="packageTypeText">Trả theo ngày</span>
+                                </button>
+
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" data-package="ngay">Trả theo ngày</a></li>
+                                    <li><a class="dropdown-item" href="#" data-package="tuan">Trả theo tuần</a></li>
+                                    <li><a class="dropdown-item" href="#" data-package="thang">Trả theo tháng</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        
+
+                        <!-- Chọn loại tin -->
+                        <div class="mb-4">
+                            <label>Chọn loại tin</label>
+                                <div class="package-options d-none" id="package-ngay">
+                                    <div class="card border-danger p-3 border-1" style="width: 12rem;border-radius: 15px;" data-price-ngay="11700">
+                                        <div class="font-weight-bold text-danger">VIP Kim Cương</div>
+                                        <div class="badge bg-danger text-white mt-2">x30 lượt liên hệ</div>
+                                        <div class="font-weight-bold text-dark mt-2">11.700 đ/ngày</div>
+                                    </div>
+
+                                    <div class="card border-warning p-3 border-1" style="width: 12rem;border-radius: 15px;" data-price-ngay="7900">
+                                        <div class="font-weight-bold text-warning">VIP Vàng</div>
+                                        <div class="badge bg-warning text-white mt-2">x15 lượt liên hệ</div>
+                                        <div class="font-weight-bold text-dark mt-2">7.900 đ/ngày</div>
+                                    </div>
+
+                                    <div class="card border-info p-3 border-1" style="width: 12rem;border-radius: 15px;" data-price-ngay="4500">
+                                        <div class="font-weight-bold text-info">VIP Bạc</div>
+                                        <div class="badge bg-info text-white mt-2">x8 lượt liên hệ</div>
+                                        <div class="font-weight-bold text-dark mt-2">4.500 đ/ngày</div>
+                                    </div>
+
+                                    <div class="card border-secondary p-3 border-1" style="width: 12rem;border-radius: 15px;" data-price-ngay="2000">
+                                        <div class="font-weight-bold text-dark">Tin thường</div>
+                                        <div class="badge bg-secondary text-white mt-2">Bình thường</div>
+                                        <div class="font-weight-bold text-dark mt-2">2.000 đ/ngày</div>
+                                    </div>
+                                </div>
+
+                                <!-- Nội dung trả theo tuần -->
+                                <div class="package-options d-none" id="package-tuan">
+                                    <div class="card border-danger p-3 border-1" style="width: 12rem;border-radius: 15px;" data-price-tuan="81900">
+                                        <div class="font-weight-bold text-danger">VIP Kim Cương</div>
+                                        <div class="badge bg-danger text-white mt-2">x30 lượt liên hệ</div>
+                                        <div class="font-weight-bold text-dark mt-2">81.900 đ/tuần</div>
+                                    </div>
+
+                                    <div class="card border-warning p-3 border-1" style="width: 12rem;border-radius: 15px;" data-price-tuan="55300">
+                                        <div class="font-weight-bold text-warning">VIP Vàng</div>
+                                        <div class="badge bg-warning text-white mt-2">x15 lượt liên hệ</div>
+                                        <div class="font-weight-bold text-dark mt-2">55.300 đ/tuần</div>
+                                    </div>
+
+                                    <div class="card border-info p-3 border-1" style="width: 12rem;border-radius: 15px;" data-price-tuan="31500">
+                                        <div class="font-weight-bold text-info">VIP Bạc</div>
+                                        <div class="badge bg-info text-white mt-2">x8 lượt liên hệ</div>
+                                        <div class="font-weight-bold text-dark mt-2">31.500 đ/tuần</div>
+                                    </div>
+
+                                    <div class="card border-secondary p-3 border-1" style="width: 12rem;border-radius: 15px;" data-price-tuan="14000">
+                                        <div class="font-weight-bold text-dark">Tin thường</div>
+                                        <div class="badge bg-secondary text-white mt-2">Bình thường</div>
+                                        <div class="font-weight-bold text-dark mt-2">14.000 đ/tuần</div>
+                                    </div>
+                                </div>
+
+                                <!-- Nội dung trả theo tháng -->
+                                <div class="package-options d-none" id="package-thang">
+                                    <div class="card border-danger p-3 border-1" style="width: 12rem;border-radius: 15px;" data-price-thang="245700">
+                                        <div class="font-weight-bold text-danger">VIP Kim Cương</div>
+                                        <div class="badge bg-danger text-white mt-2">x30 lượt liên hệ</div>
+                                        <div class="font-weight-bold text-dark mt-2">245.700 đ/tháng</div>
+                                    </div>
+
+                                    <div class="card border-warning p-3 border-1" style="width: 12rem;border-radius: 15px;" data-price-thang="177750">
+                                        <div class="font-weight-bold text-warning">VIP Vàng</div>
+                                        <div class="badge bg-warning text-white mt-2">x15 lượt liên hệ</div>
+                                        <div class="font-weight-bold text-dark mt-2">177.750 đ/tháng</div>
+                                    </div>
+
+                                    <div class="card border-info p-3 border-1" style="width: 12rem;border-radius: 15px;" data-price-thang="108000">
+                                        <div class="font-weight-bold text-info">VIP Bạc</div>
+                                        <div class="badge bg-info text-white mt-2">x8 lượt liên hệ</div>
+                                        <div class="font-weight-bold text-dark mt-2">108.000 đ/tháng</div>
+                                    </div>
+
+                                    <div class="card border-secondary p-3 border-1" style="width: 12rem;border-radius: 15px;" data-price-thang="51000">
+                                        <div class="font-weight-bold text-dark">Tin thường</div>
+                                        <div class="badge bg-secondary text-white mt-2">Bình thường</div>
+                                        <div class="font-weight-bold text-dark mt-2">51.000 đ/tháng</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        <!-- Chọn thời gian -->
+                        <div class="mb-4">
+                            <h6>Đăng dài ngày hơn, tiết kiệm hơn!</h6>
+                             <!-- Gói ngày -->
+                            <div id="duration-ngay" class="d-none">
+                                <div class="duration-card card border p-3 mr-3 cursor" style="border-radius: 20px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="duration-ngay" data-duration="7" checked>
+                                        <label class="form-check-label text-dark cursor">
+                                            7 ngày <br><strong></strong>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="duration-card card border p-3 mr-3 cursor" style="border-radius: 20px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="duration-ngay" data-duration="10">
+                                        <label class="form-check-label text-dark cursor">
+                                            10 ngày <br><strong></strong>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="duration-card card border p-3 mr-3 cursor" style="border-radius: 20px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="duration-ngay" data-duration="15">
+                                        <label class="form-check-label text-dark cursor">
+                                            15 ngày <br><strong></strong>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="duration-card card border p-3 mr-3 cursor" style="border-radius: 20px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="duration-ngay" data-duration="30">
+                                        <label class="form-check-label text-dark cursor">
+                                            30 ngày <br><strong></strong>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Gói tuần -->
+                            <div id="duration-tuan" class="d-none">
+                                <div class="duration-card card border p-3 mr-3 cursor" style="border-radius: 20px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="duration-tuan" checked data-duration="1">
+                                        <label class="form-check-label text-dark cursor">
+                                            1 tuần <br><strong></strong>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="duration-card card border p-3 mr-3 cursor" style="border-radius: 20px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="duration-tuan" data-duration="2">
+                                        <label class="form-check-label text-dark cursor">
+                                            2 tuần <br><strong></strong>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="duration-card card border p-3 mr-3 cursor" style="border-radius: 20px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="duration-tuan" data-duration="3">
+                                        <label class="form-check-label text-dark cursor">
+                                            3 tuần <br><strong></strong>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="duration-card card border p-3 mr-3 cursor" style="border-radius: 20px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="duration-tuan" data-duration="4">
+                                        <label class="form-check-label text-dark cursor">
+                                            4 tuần <br><strong></strong>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gói tháng -->
+                            <div id="duration-thang" class="d-none">
+                                <div class="duration-card card border p-3 mr-3 cursor" style="border-radius: 20px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="duration-thang" checked data-duration="1">
+                                        <label class="form-check-label text-dark cursor">
+                                            1 tháng <br><strong></strong>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="duration-card card border p-3 mr-3 cursor" style="border-radius: 20px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="duration-thang" data-duration="2">
+                                        <label class="form-check-label text-dark cursor">
+                                            2 tháng <br><strong></strong>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="duration-card card border p-3 mr-3 cursor" style="border-radius: 20px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="duration-thang" data-duration="3">
+                                        <label class="form-check-label text-dark cursor">
+                                            3 tháng <br><strong></strong>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="duration-card card border p-3 mr-3 cursor" style="border-radius: 20px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="duration-thang" data-duration="4">
+                                        <label class="form-check-label text-dark cursor">
+                                            4 tháng <br><strong></strong>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ngày bắt đầu và giờ đăng -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label>Ngày bắt đầu</label>
+                                <input type="date" class="form-control" id="startDate">
+                                <small id="endDateLabel" class="text-muted mt-1 d-block"></small>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Hẹn giờ đăng tin</label>
+                                <select class="form-control" id="scheduleSelect" disabled>
+                                    <option>Đăng ngay bây giờ</option>
+                                    <option>Chọn giờ cụ thể</option>
+                                </select>
+                                <small id="scheduleNote" class="text-muted mt-1 d-block">Chỉ áp dụng cho tin VIP</small>
+                            </div>
+
+                        </div>
+
+                        <!-- Chọn khuyến mãi -->
+                        <div class="mb-4">
+                            <a href="#" class="d-flex justify-content-between align-items-center border p-3 text-decoration-none text-dark rounded">
+                                <div>
+                                    <i class="bi bi-tag"></i> <strong>Khuyến mãi</strong>
+                                </div>
+                                <span class="text-primary">Chọn khuyến mãi <i class="bi bi-chevron-right"></i></span>
+                            </a>
+                        </div>
+
+                        <!-- Tổng tiền -->
+                        <div class="d-flex justify-content-between align-items-center rounded">
+                            <h3 class="text-dark"><strong>Tổng tiền</strong></h3>
+                            <h3 class="ext-danger font-weight-bolder" id="total-price">0 đ</h3>
+                        </div>
+
+                        <!-- Nút hành động -->
+                        <div class="text-center mt-4">
                             <button type="button" class="btn btn-secondary mx-2" onclick="prevStep()">Quay lại</button>
                             <button type="button" class="btn btn-light mx-2">Lưu nháp</button>
-                            <input type="submit" value="Đăng tin" class="btn btn-success mx-2">
+                            <input type="submit" value="Thanh toán" class="btn btn-success mx-2">
                         </div>
                     </div>
+
                 </form>
             </div>
         </div>
@@ -328,8 +587,6 @@
             Bạn chỉ được upload tối đa 20 ảnh!
         </div>
     </div>
-
-
 </section>
 
 <!-- Modal address buoc 1 -->
@@ -462,4 +719,432 @@
             furnitureFeatures.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
         }
     });
+
+    //load card package/duration
+    document.addEventListener('DOMContentLoaded', function () {
+        restrictStartDateToToday();
+        const defaultPackage = 'ngay';
+        loadPackageAndDuration(defaultPackage);
+
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const selectedPackage = this.getAttribute('data-package'); // 'ngay', 'tuan', 'thang'
+                const selectedText = this.textContent.trim();
+
+                document.getElementById('packageTypeText').textContent = selectedText;
+
+                loadPackageAndDuration(selectedPackage);
+            });
+        });
+    });
+
+    function loadPackageAndDuration(packageType) {
+        document.querySelectorAll('.package-options').forEach(div => {
+            div.classList.add('d-none');
+            div.classList.remove('d-flex', 'flex-wrap', 'gap-4', 'justify-content-between');
+        });
+        document.querySelectorAll('[id^="duration-"]').forEach(div => {
+            div.classList.add('d-none');
+            div.classList.remove('d-flex', 'gap-4', 'justify-content-center');
+        });
+
+        const packageDiv = document.getElementById(`package-${packageType}`);
+        const durationDiv = document.getElementById(`duration-${packageType}`);
+
+        if (packageDiv) {
+            packageDiv.classList.remove('d-none');
+            packageDiv.classList.add('d-flex', 'flex-wrap', 'gap-4', 'justify-content-between');
+            enableCardSelection(packageDiv);
+            enableVipScheduleToggle(`package-${packageType}`); 
+        }
+
+        if (durationDiv) {
+            durationDiv.classList.remove('d-none');
+            durationDiv.classList.add('d-flex', 'gap-4', 'justify-content-center');
+            enableDurationSelection(durationDiv);
+            updateTotalPrice(); 
+        }
+    }
+
+
+    function enableCardSelection(container) {
+        const cards = container.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('click', function () {
+                cards.forEach(c => {
+                    c.classList.remove('border-3');
+                    c.classList.add('border-1');
+                });
+                this.classList.remove('border-1');
+                this.classList.add('border-3');
+            });
+        });
+
+        const defaultCard = Array.from(cards).find(card =>
+            card.textContent.includes("Tin thường")
+        );
+        if (defaultCard) {
+            cards.forEach(c => c.classList.remove('border-3'));
+            defaultCard.classList.remove('border-1');
+            defaultCard.classList.add('border-3');
+        }
+    }
+
+    function enableDurationSelection(container) {
+        const cards = container.querySelectorAll('.duration-card');
+
+        cards.forEach(card => {
+            card.addEventListener('click', function () {
+                const radio = this.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.checked = true;
+
+                    radio.dispatchEvent(new Event('change'));
+
+                    cards.forEach(c => c.classList.remove('border-3', 'border-secondary'));
+                    this.classList.add('border-3', 'border-secondary');
+
+                    const duration = parseInt(radio.dataset.duration);
+                    if (!isNaN(duration)) {
+                        updateEndDate(duration);
+                    }
+                }
+            });
+        });
+
+        if (cards.length > 0) {
+            cards.forEach(c => c.classList.remove('border-3', 'border-secondary'));
+            const firstCard = cards[0];
+            firstCard.classList.add('border-3', 'border-secondary');
+
+            const firstRadio = firstCard.querySelector('input[type="radio"]');
+            if (firstRadio) {
+                firstRadio.checked = true;
+
+                firstRadio.dispatchEvent(new Event('change'));
+
+                const duration = parseInt(firstRadio.dataset.duration);
+                if (!isNaN(duration)) {
+                    updateEndDate(duration);
+                }
+            }
+        }
+    }
+
+    //valid date
+    function restrictStartDateToToday() {
+        const startDateInput = document.getElementById("startDate");
+        const today = new Date().toISOString().split('T')[0];
+
+        startDateInput.min = today;
+        startDateInput.value = today; 
+    }
+
+    function updateEndDate(durationValue) {
+        const startDateInput = document.getElementById("startDate");
+        const endDateLabel = document.getElementById("endDateLabel");
+
+        if (!startDateInput || !endDateLabel) return;
+
+        const startDate = new Date(startDateInput.value);
+        if (isNaN(startDate)) return;
+
+        const visibleDuration = document.querySelector('[id^="duration-"]:not(.d-none)');
+        const checkedRadio = visibleDuration?.querySelector('input[type="radio"]:checked');
+
+        let totalDays = 0;
+        if (checkedRadio) {
+            const name = checkedRadio.name;
+            const val = parseInt(checkedRadio.dataset.duration);
+            if (!isNaN(val)) {
+                if (name === "duration-ngay") {
+                    totalDays = val;
+                } else if (name === "duration-tuan") {
+                    totalDays = val * 7;
+                } else if (name === "duration-thang") {
+                    totalDays = val * 30;
+                }
+            }
+        }
+
+        const finalDuration = totalDays > 0 ? totalDays : durationValue;
+
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + finalDuration);
+
+        const formatted = endDate.toLocaleDateString('vi-VN', {
+            day: '2-digit', month: '2-digit', year: 'numeric'
+        });
+        endDateLabel.textContent = `Kết thúc ngày ${formatted}`;
+    }
+
+    function handleDateChange() {
+        const startDateInput = document.getElementById("startDate");
+        const scheduleSelect = document.getElementById("scheduleSelect");
+
+        if (!startDateInput || !scheduleSelect) return;
+
+        const selectedDate = new Date(startDateInput.value);
+        const now = new Date();
+
+        if (isNaN(selectedDate)) return;
+
+        const isToday = selectedDate.toDateString() === now.toDateString();
+
+        scheduleSelect.innerHTML = "";
+        scheduleSelect.disabled = false;
+
+        if (isToday) {
+            const optionNow = document.createElement("option");
+            optionNow.textContent = "Đăng ngay bây giờ";
+            optionNow.value = "now";
+            scheduleSelect.appendChild(optionNow);
+
+            let nextHour = now.getHours() + 1;
+            for (let h = nextHour; h <= 23; h++) {
+                const opt = document.createElement("option");
+                opt.value = h;
+                opt.textContent = `${h}:00`;
+                scheduleSelect.appendChild(opt);
+            }
+        } else {
+            for (let h = 0; h <= 23; h++) {
+                const opt = document.createElement("option");
+                opt.value = h;
+                opt.textContent = `${h}:00`;
+                scheduleSelect.appendChild(opt);
+            }
+        }
+
+        const visibleDuration = document.querySelector('[id^="duration-"]:not(.d-none)');
+        const checked = visibleDuration?.querySelector('input[type="radio"]:checked');
+        if (checked) {
+            const duration = parseInt(checked.dataset.duration);
+            if (!isNaN(duration)) {
+                updateEndDate(duration);
+            }
+        }
+    }
+
+    document.getElementById("startDate").addEventListener("change", handleDateChange);
+    document.addEventListener("DOMContentLoaded", function () {
+        const startDateInput = document.getElementById("startDate");
+        if (!startDateInput.value) {
+            const today = new Date().toISOString().split('T')[0];
+            startDateInput.value = today;
+        }
+        handleDateChange();
+    });
+
+    //enable hen gio dat lich
+    function enableVipScheduleToggle(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const cards = container.querySelectorAll('.card');
+
+        cards.forEach(card => {
+            card.addEventListener('click', function () {
+                cards.forEach(c => {
+                    c.classList.remove('border-3');
+                    c.classList.add('border-1');
+                });
+                this.classList.remove('border-1');
+                this.classList.add('border-3');
+
+                const isVip = this.textContent.includes("VIP");
+                const scheduleSelect = document.getElementById("scheduleSelect");
+                const scheduleNote = document.getElementById("scheduleNote");
+
+                scheduleSelect.disabled = !isVip;
+                scheduleNote.textContent = isVip ? "" : "Chỉ áp dụng cho tin VIP";
+
+                const priceNgay = parseInt(this.dataset.priceNgay);
+                const priceTuan = parseInt(this.dataset.priceTuan);
+                const priceThang = parseInt(this.dataset.priceThang);
+
+                if (!isNaN(priceNgay)) {
+                    updateDurationPrices(priceNgay, 'ngay');
+                }
+                if (!isNaN(priceTuan)) {
+                    updateDurationPrices(priceTuan, 'tuan');
+                }
+                if (!isNaN(priceThang)) {
+                    updateDurationPrices(priceThang, 'thang');
+                }
+
+                const visibleDuration = document.querySelector('[id^="duration-"]:not(.d-none)');
+                const checked = visibleDuration?.querySelector('input[type="radio"]:checked');
+                    if (checked && checked.dataset.duration) {
+                    const duration = parseInt(checked.dataset.duration);
+                    if (!isNaN(duration)) {
+                        updateEndDate(duration);
+                    }
+                }
+            });
+        });
+
+        const defaultCard = Array.from(cards).find(card =>
+            card.textContent.includes("Tin thường")
+        );
+        if (defaultCard) {
+            cards.forEach(c => c.classList.remove('border-3'));
+            defaultCard.classList.remove('border-1');
+            defaultCard.classList.add('border-3');
+            defaultCard.click();
+        }
+    }
+
+    //update price
+    function calculateDailyDiscountedPrice(basePrice, duration) {
+        let discountRate = 0;
+
+        if (duration >= 30) discountRate = 0.15;  // 15%
+        else if (duration >= 15) discountRate = 0.10;  // 10%
+        else if (duration >= 10) discountRate = 0.05;  // 5%
+
+        const total = basePrice * duration;
+        const discounted = total - (total * discountRate);
+
+        return Math.round(discounted);
+    }
+
+    function calculateWeeklyDiscountedPrice(basePrice, duration) {
+        let discountRate = 0;
+
+        if (duration === 2) discountRate = 0.05;
+        else if (duration === 3) discountRate = 0.10;
+        else if (duration === 4) discountRate = 0.15;
+
+        const total = basePrice * duration;
+        const discounted = total - (total * discountRate);
+
+        return Math.round(discounted);
+    }
+
+
+    function calculateMonthlyDiscountedPrice(basePrice, duration) {
+        let discountRate = 0;
+
+        if (duration === 1) discountRate = 0.15;
+        else if (duration === 2) discountRate = 0.20;
+        else if (duration === 3) discountRate = 0.25;
+        else if (duration === 4) discountRate = 0.30;
+
+        const total = basePrice * duration;
+        const discounted = total - (total * discountRate);
+
+        return Math.round(discounted);
+    }
+
+
+    function updateTotalPrice() {
+        const visibleDuration = document.querySelector('[id^="duration-"]:not(.d-none)');
+        const selectedRadio = visibleDuration?.querySelector('input[type="radio"]:checked');
+            if (selectedRadio) {
+                const label = selectedRadio.closest('.duration-card').querySelector('label');
+            if (label) {
+                const strongTag = label.querySelector('strong');
+                if (strongTag) {
+                    document.getElementById('total-price').textContent = strongTag.textContent;
+                }
+            }
+        }
+    }
+
+    function updateDurationPrices(basePrice, type) {
+        const nameSelector = {
+            'ngay': 'duration-ngay',
+            'tuan': 'duration-tuan',
+            'thang': 'duration-thang'
+        }[type];
+
+        const discountFunction = {
+            'ngay': calculateDailyDiscountedPrice,
+            'tuan': calculateWeeklyDiscountedPrice,
+            'thang': calculateMonthlyDiscountedPrice
+        }[type];
+
+        const discountRateFunction = {
+            'ngay': getDailyDiscountRate,
+            'tuan': getWeeklyDiscountRate,
+            'thang': getMonthlyDiscountRate
+        }[type];
+
+        const unit = {
+            'ngay': 'ngày',
+            'tuan': 'tuần',
+            'thang': 'tháng'
+        }[type];
+
+        const radios = document.querySelectorAll(`.duration-card input[name="${nameSelector}"]`);
+        radios.forEach(radio => {
+            const label = radio.closest('.duration-card').querySelector('label');
+            const card = radio.closest('.duration-card');
+            const duration = parseInt(radio.dataset.duration);
+
+            if (!isNaN(duration) && label) {
+                const price = discountFunction(basePrice, duration);
+                const discountRate = discountRateFunction(duration);
+                const numberOfUnits = duration; 
+                label.innerHTML = `${numberOfUnits} ${unit} <br><strong>${price.toLocaleString('vi-VN')} đ</strong>`;
+
+                // Tạo hoặc cập nhật badge giảm giá
+                let badge = card.querySelector('.discount-badge');
+                if (discountRate > 0) {
+                    const percentText = `-${discountRate * 100}%`;
+                    if (!badge) {
+                        badge = document.createElement('span');
+                        badge.classList.add('discount-badge');
+                        card.style.position = 'relative';
+                        card.appendChild(badge);
+                    }
+                    badge.textContent = percentText;
+                } else {
+                    if (badge) badge.remove();  // Không giảm giá thì gỡ badge đi
+                }
+            }
+        });
+
+        updateTotalPrice();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.duration-card input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', updateTotalPrice);
+        });
+    });
+
+    function updateDiscountBadge(durationCard, discountPercentage) {
+        const discountBadge = durationCard.querySelector('.discount-badge');
+        if (discountBadge) {
+            discountBadge.textContent = `-${discountPercentage}%`;
+        }
+    }
+    
+    function getDailyDiscountRate(duration) {
+        if (duration >= 30) return 0.15;
+        if (duration >= 15) return 0.10;
+        if (duration >= 10) return 0.05;
+        return 0;
+    }
+
+    function getWeeklyDiscountRate(duration) {
+        if (duration === 4) return 0.15;
+        if (duration === 3) return 0.10;
+        if (duration === 2) return 0.05;
+        return 0;
+    }
+
+    function getMonthlyDiscountRate(duration) {
+        if (duration === 4) return 0.30;
+        if (duration === 3) return 0.25;
+        if (duration === 2) return 0.20;
+        if (duration === 1) return 0.15;
+        return 0;
+    }
+
+
 </script>

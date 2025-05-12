@@ -6,14 +6,21 @@ using System.Threading.Tasks;
 
 namespace RentNest.Core.Configs
 {
-    public static class AuthSettings
+    public class AuthSettings
     {
-        //Google
-        public static readonly string GoogleClientId = Environment.GetEnvironmentVariable("Authentication_Google_ClientId")!;
-        public static readonly string GoogleClientSecret = Environment.GetEnvironmentVariable("Authentication_Google_ClientSecret")!;
+        public GoogleAuth Google { get; set; } = new();
+        public FacebookAuth Facebook { get; set; } = new();
 
-        //Facebook
-        public static readonly string FacebookAppId = Environment.GetEnvironmentVariable("Authentication_Facebook_AppId")!;
-        public static readonly string FacebookAppSecret = Environment.GetEnvironmentVariable("Authentication_Facebook_AppSecret")!;
+        public class GoogleAuth
+        {
+            public string ClientId { get; set; } = default!;
+            public string ClientSecret { get; set; } = default!;
+        }
+
+        public class FacebookAuth
+        {
+            public string AppId { get; set; } = default!;
+            public string AppSecret { get; set; } = default!;
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using BCrypt.Net;
 
-namespace RentNest.Common.UtilHelper
+namespace RentNest.Core.UtilHelper
 {
     public static class PasswordHelper
     {

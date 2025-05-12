@@ -3,20 +3,21 @@ using Azure;
 using OpenAI.Chat;
 using RentNest.Core.Configs;
 using RentNest.Service.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using RentNest.Core.DTO;
-using RentNest.Common.UtilHelper;
 using RentNest.Core.Consts;
+using Microsoft.Extensions.Options;
 
 namespace RentNest.Service.Implements
 {
     public class AzureOpenAIService : IAzureOpenAIService
     {
+        private readonly AzureOpenAISettings _setting;
+
+        public AzureOpenAIService(IOptions<AzureOpenAISettings> setting)
+        {
+            _setting = setting.Value;
+        }
 
         public async Task<string> GenerateDataPostAsync(PostDataAIDto model)
         {
@@ -28,14 +29,14 @@ namespace RentNest.Service.Implements
                                            .Replace("{style}", style);
 
             var messages = new List<ChatMessage>
-        {
-            new SystemChatMessage(promptText)
-        };
+            {
+                new SystemChatMessage(promptText)
+            };
 
             var client = new AzureOpenAIClient(
-                new Uri(AzureOpenAISettings.Endpoint),
-                new AzureKeyCredential(AzureOpenAISettings.ApiKey));
-            var chatClient = client.GetChatClient(AzureOpenAISettings.DeploymentName);
+                new Uri(_setting.Endpoint),
+                new AzureKeyCredential(_setting.ApiKey));
+            var chatClient = client.GetChatClient(_setting.DeploymentName);
 
             var response = await chatClient.CompleteChatAsync(messages);
             var result = response.Value.Content[0].Text;
