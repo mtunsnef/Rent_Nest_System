@@ -11,5 +11,7 @@ public partial class TimeUnitPackage
 
     public string? Description { get; set; }
 
+    public string? Data { get; set; }
+
     public virtual ICollection<PackagePricing> PackagePricings { get; set; } = new List<PackagePricing>();
 }

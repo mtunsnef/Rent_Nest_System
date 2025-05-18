@@ -34,14 +34,27 @@ namespace RentNest.Web
             //DAO
             builder.Services.AddScoped<AccountDAO>();
             builder.Services.AddScoped<UserProfileDAO>();
+            builder.Services.AddScoped<AccommodationTypeDAO>();
+            builder.Services.AddScoped<UserProfileDAO>();
+            builder.Services.AddScoped<AmenitiesDAO>();
+            builder.Services.AddScoped<TimeUnitPackageDAO>();
+            builder.Services.AddScoped<PackagePricingDAO>();
 
             //Repository
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+            builder.Services.AddScoped<IAccommodationTypeRepository, AccommodationTypeRepository>();
+            builder.Services.AddScoped<IAmenitiesRepository, AmenitiesRepository>();
+            builder.Services.AddScoped<ITimeUnitPackageRepository, TimeUnitPackageRepository>();
+            builder.Services.AddScoped<IPackagePricingRepository, PackagePricingRepository>();
 
             //Service
             builder.Services.AddScoped<IMailService, MailService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IAzureOpenAIService, AzureOpenAIService>();
+            builder.Services.AddScoped<IAccommodationTypeService, AccommodationTypeService>();
+            builder.Services.AddScoped<IAmenitiesSerivce, AmenitiesService>();
+            builder.Services.AddScoped<ITimeUnitPackageService, TimeUnitPackageService>();
+            builder.Services.AddScoped<IPackagePricingService, PackagePricingService>();
 
             //Config
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));

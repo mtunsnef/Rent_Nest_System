@@ -33,6 +33,8 @@ public partial class Accommodation
 
     public int TypeId { get; set; }
 
+    public virtual ICollection<AccommodationAmenity> AccommodationAmenities { get; set; } = new List<AccommodationAmenity>();
+
     public virtual AccommodationDetail? AccommodationDetail { get; set; }
 
     public virtual ICollection<AccommodationImage> AccommodationImages { get; set; } = new List<AccommodationImage>();

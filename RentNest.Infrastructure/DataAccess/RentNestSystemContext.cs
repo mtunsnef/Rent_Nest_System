@@ -18,6 +18,8 @@ public partial class RentNestSystemContext : DbContext
 
     public virtual DbSet<Accommodation> Accommodations { get; set; }
 
+    public virtual DbSet<AccommodationAmenity> AccommodationAmenities { get; set; }
+
     public virtual DbSet<AccommodationDetail> AccommodationDetails { get; set; }
 
     public virtual DbSet<AccommodationImage> AccommodationImages { get; set; }
@@ -25,6 +27,8 @@ public partial class RentNestSystemContext : DbContext
     public virtual DbSet<AccommodationType> AccommodationTypes { get; set; }
 
     public virtual DbSet<Account> Accounts { get; set; }
+
+    public virtual DbSet<Amenity> Amenities { get; set; }
 
     public virtual DbSet<FavoritePost> FavoritePosts { get; set; }
 
@@ -61,19 +65,17 @@ public partial class RentNestSystemContext : DbContext
                 .AddJsonFile("appsettings.json", true, true).Build();
         return configuration["ConnectionStrings:DefaultConnectionString"];
     }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Accommodation>(entity =>
         {
-            entity.HasKey(e => e.AccommodationId).HasName("PK__Accommod__004EC325CE368A5F");
+            entity.HasKey(e => e.AccommodationId).HasName("PK__Accommod__004EC32568628C1C");
 
             entity.ToTable("Accommodation");
 
             entity.Property(e => e.AccommodationId).HasColumnName("accommodation_id");
             entity.Property(e => e.Address)
                 .HasMaxLength(255)
-                .IsUnicode(false)
                 .HasColumnName("address");
             entity.Property(e => e.Area).HasColumnName("area");
             entity.Property(e => e.CreatedAt)
@@ -83,9 +85,7 @@ public partial class RentNestSystemContext : DbContext
             entity.Property(e => e.DepositAmount)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("deposit_amount");
-            entity.Property(e => e.Description)
-                .IsUnicode(false)
-                .HasColumnName("description");
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.MaxOccupancy).HasColumnName("max_occupancy");
             entity.Property(e => e.OwnerId).HasColumnName("owner_id");
             entity.Property(e => e.Price)
@@ -99,7 +99,6 @@ public partial class RentNestSystemContext : DbContext
                 .HasColumnName("status");
             entity.Property(e => e.Title)
                 .HasMaxLength(150)
-                .IsUnicode(false)
                 .HasColumnName("title");
             entity.Property(e => e.TypeId).HasColumnName("type_id");
             entity.Property(e => e.UpdatedAt)
@@ -121,46 +120,59 @@ public partial class RentNestSystemContext : DbContext
                 .HasConstraintName("FK_Accommodation_Type");
         });
 
+        modelBuilder.Entity<AccommodationAmenity>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Accommod__3213E83F642AFD4D");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AccommodationId).HasColumnName("accommodation_id");
+            entity.Property(e => e.AmenityId).HasColumnName("amenity_id");
+
+            entity.HasOne(d => d.Accommodation).WithMany(p => p.AccommodationAmenities)
+                .HasForeignKey(d => d.AccommodationId)
+                .HasConstraintName("FK_Amenities_Accommodation");
+
+            entity.HasOne(d => d.Amenity).WithMany(p => p.AccommodationAmenities)
+                .HasForeignKey(d => d.AmenityId)
+                .HasConstraintName("FK_Amenities");
+        });
+
         modelBuilder.Entity<AccommodationDetail>(entity =>
         {
-            entity.HasKey(e => e.DetailId).HasName("PK__Accommod__38E9A2242C487D4E");
+            entity.HasKey(e => e.DetailId).HasName("PK__Accommod__38E9A22467219D85");
 
-            entity.HasIndex(e => e.AccommodationId, "UQ__Accommod__004EC324C2F7663D").IsUnique();
+            entity.HasIndex(e => e.AccommodationId, "UQ__Accommod__004EC32420577D2E").IsUnique();
 
             entity.Property(e => e.DetailId).HasColumnName("detail_id");
             entity.Property(e => e.AccommodationId).HasColumnName("accommodation_id");
+            entity.Property(e => e.BathroomCount)
+                .HasDefaultValue(0)
+                .HasColumnName("bathroom_count");
+            entity.Property(e => e.BedroomCount)
+                .HasDefaultValue(0)
+                .HasColumnName("bedroom_count");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
             entity.Property(e => e.FurnitureStatus)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("furniture_status");
             entity.Property(e => e.HasAirConditioner)
                 .HasDefaultValue(false)
                 .HasColumnName("has_air_conditioner");
-            entity.Property(e => e.HasElevator)
+            entity.Property(e => e.HasKitchenCabinet)
                 .HasDefaultValue(false)
-                .HasColumnName("has_elevator");
-            entity.Property(e => e.HasKitchen)
+                .HasColumnName("has_kitchen_cabinet");
+            entity.Property(e => e.HasLoft)
                 .HasDefaultValue(false)
-                .HasColumnName("has_kitchen");
-            entity.Property(e => e.HasParking)
+                .HasColumnName("has_loft");
+            entity.Property(e => e.HasRefrigerator)
                 .HasDefaultValue(false)
-                .HasColumnName("has_parking");
-            entity.Property(e => e.HasSecurity)
-                .HasDefaultValue(false)
-                .HasColumnName("has_security");
+                .HasColumnName("has_refrigerator");
             entity.Property(e => e.HasWashingMachine)
                 .HasDefaultValue(false)
                 .HasColumnName("has_washing_machine");
-            entity.Property(e => e.IsPetsAllowed)
-                .HasDefaultValue(false)
-                .HasColumnName("is_pets_allowed");
-            entity.Property(e => e.IsSmokingAllowed)
-                .HasDefaultValue(false)
-                .HasColumnName("is_smoking_allowed");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
@@ -168,12 +180,12 @@ public partial class RentNestSystemContext : DbContext
 
             entity.HasOne(d => d.Accommodation).WithOne(p => p.AccommodationDetail)
                 .HasForeignKey<AccommodationDetail>(d => d.AccommodationId)
-                .HasConstraintName("FK_AccommodationDetails_Accommodation");
+                .HasConstraintName("FK_Details_Accommodation");
         });
 
         modelBuilder.Entity<AccommodationImage>(entity =>
         {
-            entity.HasKey(e => e.ImageId).HasName("PK__Accommod__DC9AC955573F4AE5");
+            entity.HasKey(e => e.ImageId).HasName("PK__Accommod__DC9AC95501F8F662");
 
             entity.ToTable("AccommodationImage");
 
@@ -199,32 +211,30 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<AccommodationType>(entity =>
         {
-            entity.HasKey(e => e.TypeId).HasName("PK__Accommod__2C000598EF13673B");
+            entity.HasKey(e => e.TypeId).HasName("PK__Accommod__2C00059886F2249B");
 
             entity.ToTable("AccommodationType");
 
-            entity.HasIndex(e => e.TypeName, "UQ__Accommod__543C4FD956C21583").IsUnique();
+            entity.HasIndex(e => e.TypeName, "UQ__Accommod__543C4FD96D786073").IsUnique();
 
             entity.Property(e => e.TypeId).HasColumnName("type_id");
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
-                .IsUnicode(false)
                 .HasColumnName("description");
             entity.Property(e => e.TypeName)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("type_name");
         });
 
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.AccountId).HasName("PK__Account__46A222CD40A7CF35");
+            entity.HasKey(e => e.AccountId).HasName("PK__Account__46A222CD07E03A04");
 
             entity.ToTable("Account");
 
-            entity.HasIndex(e => e.Email, "UQ__Account__AB6E61647465DE31").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Account__AB6E6164B566FDF2").IsUnique();
 
-            entity.HasIndex(e => e.AuthProviderId, "UQ__Account__C82CBBE9C07EA279").IsUnique();
+            entity.HasIndex(e => e.AuthProviderId, "UQ__Account__C82CBBE9A41CE12D").IsUnique();
 
             entity.HasIndex(e => e.Username, "UX_Account_Username")
                 .IsUnique()
@@ -269,9 +279,22 @@ public partial class RentNestSystemContext : DbContext
                 .HasColumnName("username");
         });
 
+        modelBuilder.Entity<Amenity>(entity =>
+        {
+            entity.HasKey(e => e.AmenityId).HasName("PK__Amenitie__E908452DBCD1DD3C");
+
+            entity.Property(e => e.AmenityId).HasColumnName("amenity_id");
+            entity.Property(e => e.AmenityName)
+                .HasMaxLength(100)
+                .HasColumnName("amenity_name");
+            entity.Property(e => e.IconSvg)
+                .IsUnicode(false)
+                .HasColumnName("iconSvg");
+        });
+
         modelBuilder.Entity<FavoritePost>(entity =>
         {
-            entity.HasKey(e => e.FavoriteId).HasName("PK__Favorite__46ACF4CBCC42FA1C");
+            entity.HasKey(e => e.FavoriteId).HasName("PK__Favorite__46ACF4CB9EA49921");
 
             entity.ToTable("FavoritePost");
 
@@ -297,7 +320,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PackagePricing>(entity =>
         {
-            entity.HasKey(e => e.PricingId).HasName("PK__PackageP__A25A9FB7C22430F4");
+            entity.HasKey(e => e.PricingId).HasName("PK__PackageP__A25A9FB7FC81B24F");
 
             entity.ToTable("PackagePricing");
 
@@ -338,7 +361,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => e.PaymentId).HasName("PK__Payment__ED1FC9EA20C28183");
+            entity.HasKey(e => e.PaymentId).HasName("PK__Payment__ED1FC9EAA05E95B5");
 
             entity.ToTable("Payment");
 
@@ -384,7 +407,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PaymentMethod>(entity =>
         {
-            entity.HasKey(e => e.MethodId).HasName("PK__PaymentM__747727B627819EB5");
+            entity.HasKey(e => e.MethodId).HasName("PK__PaymentM__747727B696760F17");
 
             entity.ToTable("PaymentMethod");
 
@@ -399,13 +422,12 @@ public partial class RentNestSystemContext : DbContext
                 .HasColumnName("is_active");
             entity.Property(e => e.MethodName)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("method_name");
         });
 
         modelBuilder.Entity<Post>(entity =>
         {
-            entity.HasKey(e => e.PostId).HasName("PK__Post__3ED78766D19FEDC9");
+            entity.HasKey(e => e.PostId).HasName("PK__Post__3ED78766425ED2BF");
 
             entity.ToTable("Post");
 
@@ -445,13 +467,12 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PostApproval>(entity =>
         {
-            entity.HasKey(e => e.ApprovalId).HasName("PK__PostAppr__C94AE61A02337BA6");
+            entity.HasKey(e => e.ApprovalId).HasName("PK__PostAppr__C94AE61A6B85498A");
 
             entity.Property(e => e.ApprovalId).HasColumnName("approval_id");
             entity.Property(e => e.ApprovedByAccountId).HasColumnName("approved_by_account_id");
             entity.Property(e => e.Note)
                 .HasMaxLength(255)
-                .IsUnicode(false)
                 .HasColumnName("note");
             entity.Property(e => e.PostId).HasColumnName("post_id");
             entity.Property(e => e.ProcessedAt)
@@ -479,7 +500,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PostPackageDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PostPack__3213E83F703B6E65");
+            entity.HasKey(e => e.Id).HasName("PK__PostPack__3213E83FF0F20B5C");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedAt)
@@ -519,7 +540,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PostPackageType>(entity =>
         {
-            entity.HasKey(e => e.PackageTypeId).HasName("PK__PostPack__DFBEE40A0B9184AF");
+            entity.HasKey(e => e.PackageTypeId).HasName("PK__PostPack__DFBEE40AC386C709");
 
             entity.ToTable("PostPackageType");
 
@@ -529,18 +550,17 @@ public partial class RentNestSystemContext : DbContext
                 .HasColumnName("description");
             entity.Property(e => e.PackageTypeName)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("package_type_name");
             entity.Property(e => e.Priority).HasColumnName("priority");
         });
 
         modelBuilder.Entity<PromoCode>(entity =>
         {
-            entity.HasKey(e => e.PromoId).HasName("PK__PromoCod__84EB4CA5F3344F7E");
+            entity.HasKey(e => e.PromoId).HasName("PK__PromoCod__84EB4CA5A997DA63");
 
             entity.ToTable("PromoCode");
 
-            entity.HasIndex(e => e.Code, "UQ__PromoCod__357D4CF927D7D0D8").IsUnique();
+            entity.HasIndex(e => e.Code, "UQ__PromoCod__357D4CF9D950FBF5").IsUnique();
 
             entity.Property(e => e.PromoId).HasColumnName("promo_id");
             entity.Property(e => e.Code)
@@ -577,7 +597,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PromoUsage>(entity =>
         {
-            entity.HasKey(e => e.PromoUsageId).HasName("PK__PromoUsa__60E8C6380F014412");
+            entity.HasKey(e => e.PromoUsageId).HasName("PK__PromoUsa__60E8C638B1CA274A");
 
             entity.ToTable("PromoUsage");
 
@@ -606,27 +626,30 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<TimeUnitPackage>(entity =>
         {
-            entity.HasKey(e => e.TimeUnitId).HasName("PK__TimeUnit__8304AF47BB5A00A3");
+            entity.HasKey(e => e.TimeUnitId).HasName("PK__TimeUnit__8304AF4737F0EEAD");
 
             entity.ToTable("TimeUnitPackage");
 
             entity.Property(e => e.TimeUnitId).HasColumnName("time_unit_id");
+            entity.Property(e => e.Data)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("data");
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .HasColumnName("description");
             entity.Property(e => e.TimeUnitName)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasColumnName("time_unit_name");
         });
 
         modelBuilder.Entity<UserProfile>(entity =>
         {
-            entity.HasKey(e => e.ProfileId).HasName("PK__UserProf__AEBB701F8532BD20");
+            entity.HasKey(e => e.ProfileId).HasName("PK__UserProf__AEBB701F61E73369");
 
             entity.ToTable("UserProfile");
 
-            entity.HasIndex(e => e.AccountId, "UQ__UserProf__46A222CCDEDA1ADD").IsUnique();
+            entity.HasIndex(e => e.AccountId, "UQ__UserProf__46A222CCB14D318C").IsUnique();
 
             entity.Property(e => e.ProfileId).HasColumnName("profile_id");
             entity.Property(e => e.AccountId).HasColumnName("account_id");
@@ -653,7 +676,6 @@ public partial class RentNestSystemContext : DbContext
                 .HasColumnName("last_name");
             entity.Property(e => e.Occupation)
                 .HasMaxLength(100)
-                .IsUnicode(false)
                 .HasColumnName("occupation");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")

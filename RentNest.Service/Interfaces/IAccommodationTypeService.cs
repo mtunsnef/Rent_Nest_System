@@ -1,4 +1,4 @@
-﻿using RentNest.Core.DTO;
+﻿using RentNest.Core.Domains;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace RentNest.Service.Interfaces
 {
-    public interface IAzureOpenAIService
+    public interface IAccommodationTypeService
     {
-        Task<string> GenerateDataPost(PostDataAIDto model);
+        Task<IEnumerable<AccommodationType>> GetAllAsync();
     }
 }

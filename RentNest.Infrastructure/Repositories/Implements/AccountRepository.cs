@@ -1,5 +1,6 @@
 ﻿using RentNest.Core.Domains;
 using RentNest.Core.DTO;
+using RentNest.Core.UtilHelper;
 using RentNest.Infrastructure.DataAccess;
 using RentNest.Infrastructure.Repositories.Interfaces;
 
@@ -16,11 +17,21 @@ namespace RentNest.Infrastructure.Repositories.Implements
         }
         public async Task<bool> Login(AccountLoginDto accountDto)
         {
-            var account = await _accountDAO.GetAccountByEmailAsync(accountDto.Email);
-            if (account == null)
-                return false;
+            try
+            {
+                var user = await _accountDAO.GetAccountByEmailAsync(accountDto.Email);
 
-            return BCrypt.Net.BCrypt.Verify(accountDto.Password, account.Password);
+                if (user == null || !PasswordHelper.VerifyPassword(accountDto.Password, user.Password))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi đăng nhập: " + ex.Message);
+            }
         }
 
         public async Task<Account?> GetAccountByEmailAsync(string email)

@@ -1,47 +1,44 @@
-﻿function setupAmenityButton({
-    button,
-    selectedList,
-    hiddenInput,
-    value
-}) {
+﻿const amenityButtons = document.querySelectorAll('.amenity-btn');
+const hiddenInput = document.getElementById('selectedAmenities');
+
+// Thiết lập sự kiện cho từng nút tiện ích
+function setupAmenityButton({ button, hiddenInput, value }) {
     const svg = button.querySelector('svg');
+    const name = button.dataset.name || button.querySelector('span')?.innerText?.trim();
 
     button.addEventListener('click', () => {
-        const isSelected = selectedList.includes(value);
+        const isSelected = button.classList.contains('active');
 
         if (isSelected) {
-            const index = selectedList.indexOf(value);
-            if (index > -1) selectedList.splice(index, 1);
-            button.classList.remove('btn-dark');
+            button.classList.remove('active', 'btn-dark');
             button.classList.add('btn-outline-dark');
             if (svg) svg.setAttribute('fill', '#000000');
         } else {
-            selectedList.push(value);
+            button.classList.add('active', 'btn-dark');
             button.classList.remove('btn-outline-dark');
-            button.classList.add('btn-dark');
             if (svg) svg.setAttribute('fill', '#ffffff');
         }
 
-        if (hiddenInput) hiddenInput.value = selectedList.join(',');
+        // Cập nhật giá trị hidden input sau mỗi lần click
+        const activeBtns = document.querySelectorAll('.amenity-btn.active');
+        const values = Array.from(activeBtns).map(btn => btn.dataset.value);
+        hiddenInput.value = values.join(',');
     });
 
     button.addEventListener('mouseenter', () => {
-        const isSelected = selectedList.includes(value);
-        if (!isSelected && svg) {
+        if (!button.classList.contains('active') && svg) {
             svg.setAttribute('fill', '#ffffff');
         }
     });
 
     button.addEventListener('mouseleave', () => {
-        const isSelected = selectedList.includes(value);
-        if (!isSelected && svg) {
+        if (!button.classList.contains('active') && svg) {
             svg.setAttribute('fill', '#000000');
         }
     });
 }
 
-
-//button for AI
+// Thiết lập nút AI
 function setupAIButton(button) {
     const svg = button.querySelector('svg');
 
@@ -54,21 +51,16 @@ function setupAIButton(button) {
     });
 }
 
-const amenityButtons = document.querySelectorAll('.amenity-btn');
-const hiddenInput = document.getElementById('selectedAmenities');
-let selectedAmenities = [];
-
+// Khởi tạo
 amenityButtons.forEach(button => {
     const value = button.getAttribute('data-value');
     setupAmenityButton({
         button,
-        selectedList: selectedAmenities,
         hiddenInput: hiddenInput,
         value: value
     });
 });
 
-//button AI
 const createWithAIButton = document.getElementById('createWithAI');
 if (createWithAIButton) {
     setupAIButton(createWithAIButton);

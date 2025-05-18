@@ -19,7 +19,7 @@ namespace RentNest.Infrastructure.DataAccess
             _dbSet = _context.Set<TEntity>();
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
+        public virtual async Task<List<TEntity>> GetAllAsync()
             => await _dbSet.ToListAsync();
 
         public virtual async Task<TEntity?> GetByIdAsync(object id)

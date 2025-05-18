@@ -3,7 +3,7 @@
     setLoadingState(btn, true);
 
     try {
-        const data = collectFormData();
+        const data = collectAIFormData();
         console.log('Dữ liệu gửi lên:', data);
 
         const response = await fetch('/Posts/GeneratePostWithAI', {
@@ -29,14 +29,14 @@
     }
 });
 
-function collectFormData() {
+function collectAIFormData() {
     const form = document.getElementById('filterForm');
-    const inputs = form.querySelectorAll('input, select, textarea');
+    const inputs = form.querySelectorAll('input, textarea');
+    const selects = form.querySelectorAll('select');
     const data = {};
 
     inputs.forEach(input => {
         const { name, type, checked, value } = input;
-
         if (!name || name === "__RequestVerificationToken") return;
 
         if (['checkbox', 'radio'].includes(type)) {
@@ -44,6 +44,19 @@ function collectFormData() {
         } else if (value) {
             data[name] = value;
         }
+    });
+
+    selects.forEach(select => {
+        const name = select.name;
+        const selectedOption = select.options[select.selectedIndex];
+
+        if (!name || !selectedOption) return;
+
+        const value = selectedOption.value;
+        const displayName = selectedOption.dataset.name || selectedOption.text.trim();
+
+        data[name] = value;
+        data[`${name}_text`] = displayName;
     });
 
     const addressDisplay = document.getElementById('selectedAddressDisplay');
@@ -57,8 +70,26 @@ function collectFormData() {
         data['aiStyle'] = aiStyle.value;
     }
 
+    const amenityBtns = document.querySelectorAll('.amenity-btn.active');
+    const selectedAmenities = [];
+    const selectedAmenityNames = [];
+
+    amenityBtns.forEach(btn => {
+        const value = btn.dataset.value;
+        const name = btn.dataset.name || btn.querySelector('span')?.innerText?.trim();
+
+        if (value) selectedAmenities.push(value);
+        if (name) selectedAmenityNames.push(name);
+    });
+
+    if (selectedAmenities.length > 0) {
+        data['selectedAmenities'] = selectedAmenities.join(',');
+        data['selectedAmenities_text'] = selectedAmenityNames.join(', ');
+    }
+
     return data;
 }
+
 
 function setLoadingState(button, isLoading) {
     if (!button) return;

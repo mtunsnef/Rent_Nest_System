@@ -19,10 +19,10 @@ namespace RentNest.Service.Implements
             _setting = setting.Value;
         }
 
-        public async Task<string> GenerateDataPostAsync(PostDataAIDto model)
+        public async Task<string> GenerateDataPost(PostDataAIDto model)
         {
             var jsonData = JsonSerializer.Serialize(model);
-            var style = model.Style;
+            var style = model.AiStyle;
 
             var promptTemplate = PromptAI.Prompt;
             var promptText = promptTemplate.Replace("{json_data}", jsonData)
