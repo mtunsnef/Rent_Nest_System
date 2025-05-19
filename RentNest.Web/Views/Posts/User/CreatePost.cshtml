@@ -331,7 +331,50 @@
                             <button type="button" class="btn btn-primary float-end mt-3" id="nextStepBtn3">Tiếp tục</button>
                         </div>
                     </div>
-                     @await Html.PartialAsync("Client/_PaymentSummary")
+
+
+                    @* summary payment *@
+                    <div id="paymentSummary" class="d-none mt-4">
+                        <h5 class="font-weight-bold mb-4">Thông tin thanh toán</h5>
+                        <div class="d-flex mb-3 p-3 border rounded position-relative">
+                            <div class="position-relative mr-3" style="width: 80px; height: 80px;">
+                                <img src="" alt="Ảnh preview" class="rounded" style="width: 80px; height: 80px; object-fit: cover;">
+                                <span id="packageBadgeVIP" class="badge position-absolute" style=" color: #fff; top: 5px; position: absolute; left: 4px;">
+                                    VIP
+                                </span>
+                            </div>
+                            <div>
+                                <strong style="font-family: system-ui" id="postTitle"></strong><br>
+                                <small id="postAddress"></small>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <p style="font-family: system-ui">Loại tin: <strong id="summaryPackageType"></strong></p>
+                                <p style="font-family: system-ui">Thanh toán: <strong id="summaryPaymentType"></strong></p>
+                                <p style="font-family: system-ui">Đơn giá: <strong id="summaryUnitPrice"></strong></p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p style="font-family: system-ui">Số ngày đăng: <strong id="summaryDuration"></strong></p>
+                                <p style="font-family: system-ui">Thời gian đăng: <strong id="summaryStart"></strong></p>
+                                <p style="font-family: system-ui">Thời gian kết thúc: <strong id="summaryEnd"></strong></p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between border-top pt-3">
+                            <strong>Phí đăng tin</strong>
+                            <strong id="summaryTotalPrice">675.000 đ</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mt-3">
+                            <h4><strong>Tổng tiền</strong></h4>
+                            <h4 class="text-danger font-weight-bolder" id="summaryTotalAmount"></h4>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="button" class="btn btn-secondary mr-2" onclick="backToEdit()">Quay lại chỉnh sửa</button>
+                            <input type="button" value="Thanh toán" id="testCollectFormBtn" class="btn btn-success mx-2" />
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

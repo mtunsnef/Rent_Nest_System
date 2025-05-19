@@ -18,12 +18,13 @@
 	<link rel="stylesheet" href="~/css/style.css">
 	<link rel="icon" type="image/png" href="~/images/blue-house-logo.png">
 </head>
-@RenderSection("script", required: false)
 
+@await Component.InvokeAsync("ChatBoxAI")
+@RenderSection("script", required: false)
 <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
-	@Html.Partial("Client/_Header")
+	@Html.Partial("LayoutClient/_Header")
 	@RenderBody()
-	@Html.Partial("Client/_Footer")
+	@Html.Partial("LayoutClient/_Footer")
 
 	<!-- loader -->
 	<div id="ftco-loader" class="show fullscreen">

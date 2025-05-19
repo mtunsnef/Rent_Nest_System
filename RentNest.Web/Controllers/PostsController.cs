@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using RentNest.Core.Domains;
+using RentNest.Core.Consts;
 using RentNest.Core.DTO;
-using RentNest.Infrastructure.DataAccess;
-using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
 using RentNest.Web.Models;
 
 namespace RentNest.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.Landlord}")]
     public class PostsController : Controller
     {
         private readonly IAzureOpenAIService _azureOpenAIService;
