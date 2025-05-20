@@ -2,8 +2,8 @@
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RentNest.Core.UtilHelper;
 using RentNest.Core.Consts;
-using RentNest.Core.Domains;
 using RentNest.Core.DTO;
 using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
@@ -14,9 +14,9 @@ namespace RentNest.Web.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountService _accountService;
-        private readonly MailService _mailService;
+        private readonly IMailService _mailService;
 
-        public AccountController(IAccountService accountService, MailService mailService)
+        public AccountController(IAccountService accountService, IMailService mailService)
         {
             _accountService = accountService;
             _mailService = mailService;
@@ -30,8 +30,8 @@ namespace RentNest.Web.Controllers
             var updatePassword = "http://localhost:5216/Account/UpdatePassword";
             MailContent mail = new MailContent
             {
-                To = account.Email,
-                Subject = "Reset Password - Furniture Shop",
+                To = account!.Email,
+                Subject = "Reset Password - BlueTeam",
                 Body = "<h3>Click the link to reset your password:</h3>\n" +
                $"<a href='{updatePassword}'>Reset Password</a>\n" +
                $"<p>If you didn't request this, please ignore this email.</p>"
@@ -66,19 +66,7 @@ namespace RentNest.Web.Controllers
             }
             if (account != null)
             {
-                string hashOldPassword;
-                using (SHA256 sha256 = SHA256.Create())
-                {
-                    byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(model.OldPassword!));
-                    hashOldPassword = BitConverter.ToString(bytes).Replace("-", "").ToLower();
-                }
-                string? hashNewPassword;
-                using (SHA256 sha256 = SHA256.Create())
-                {
-                    byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(model.NewPassword!));
-                    hashNewPassword = BitConverter.ToString(bytes).Replace("-", "").ToLower();
-                }
-                if (!hashOldPassword.Equals(account.Password))
+                if (!PasswordHelper.VerifyPassword(model.OldPassword!, account.Password!))
                 {
                     TempData["ErrorMessage"] = "Mật Khẩu cũ không hợp lệ!";
                     return View(model);
@@ -89,7 +77,7 @@ namespace RentNest.Web.Controllers
                     return View(model);
                 }
 
-                else if (hashNewPassword.Equals(hashOldPassword))
+                else if (model.OldPassword!.Equals(model.NewPassword))
                 {
                     TempData["ErrorMessage"] = "Mật Khẩu mới và Mật Khẩu cũ trùng!";
                     return View(model);
@@ -97,8 +85,8 @@ namespace RentNest.Web.Controllers
                 else
                 {
 
-                    account.Password = hashNewPassword;
-                    _accountService.Update(account);
+                    account.Password = PasswordHelper.HashPassword(model.NewPassword!);
+                    await _accountService.Update(account);
                     TempData["SuccessMessage"] = "Đổi mật khẩu thành công! Đang chuyển hướng đến trang chủ...";
                     TempData["RedirectUrl"] = Url.Action("Index", "Home");
                 }

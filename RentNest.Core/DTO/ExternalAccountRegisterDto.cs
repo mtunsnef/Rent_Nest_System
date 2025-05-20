@@ -7,13 +7,18 @@ using System.Threading.Tasks;
 
 namespace RentNest.Core.DTO
 {
-    public class GoogleAccountRegisterDto
+    public class ExternalAccountRegisterDto
     {
         public string Email { get; set; } = null!;
-        public string GoogleId { get; set; } = null!;
+        public string AuthProvider { get; set; } = null!;
+        public string AuthProviderId { get; set; } = null!;
+
+        [Required(ErrorMessage = "Vui lòng nhập địa chỉ của bạn.")]
         public string? Address { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+
+        [Required(ErrorMessage = "Vui lòng nhập số điện thoại của bạn.")]
         public string? PhoneNumber { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn vai trò của bạn.")]

@@ -10,5 +10,6 @@ namespace RentNest.Core.Consts
     {
         public const string Cookie = "CookieAuth";
         public const string Google = "GoogleAuth";
+        public const string Facebook = "FacebookAuth";
     }
 }

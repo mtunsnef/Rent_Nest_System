@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RentNest.Core.Consts
 {
-    public class UserRoles
+    public static class UserRoles
     {
         public const string Staff = "S";
         public const string User = "U";

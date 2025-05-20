@@ -1,14 +1,15 @@
-﻿using System.Net.Http;
+﻿﻿using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using RentNest.Common.UtilHelper;
+using RentNest.Core.UtilHelper;
 using RentNest.Core.Consts;
 using RentNest.Core.Domains;
 using RentNest.Core.DTO;
 using RentNest.Infrastructure.DataAccess;
+using RentNest.Infrastructure.Repositories.Implements;
 using RentNest.Infrastructure.Repositories.Interfaces;
 using RentNest.Service.Interfaces;
 namespace RentNest.Service.Implements
@@ -20,81 +21,25 @@ namespace RentNest.Service.Implements
         {
             _accountRepository = accountRepository;
         }
+ 
+        public async Task<Account> CreateExternalAccountAsync(ExternalAccountRegisterDto dto)
+        {
+            return await _accountRepository.CreateExternalAccountAsync(dto);
+        }
 
-
-        //public async Task<bool> Login(AccountLoginDto accountDto)
-        //{
-        //    var account = await AccountDAO.Instance.GetAccountByEmailAsync(accountDto.Email);
-        //    if (account == null)
-        //    {
-        //        return false;
-        //    }
-        //    // hash with SHA256
-        //    string hashPassword;
-        //    using (SHA256 sha256 = SHA256.Create())
-        //    {
-        //        byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(accountDto.Password));
-        //        hashPassword = BitConverter.ToString(bytes).Replace("-", "").ToLower();
-        //    }
-        //    if (hashPassword.Equals(account!.Password))
-        //    {
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
-
+        public async Task<Account?> GetAccountByEmailAsync(string email)
+        {
+            return await _accountRepository.GetAccountByEmailAsync(email);
+        }
 
         public async Task<bool> Login(AccountLoginDto accountDto)
         {
-            var account = await AccountDAO.Instance.GetAccountByEmailAsync(accountDto.Email);
-            if (account == null)
-                return false;
-
-            // Use helper instead of direct Bcrypt call
-            if (PasswordHelper.VerifyPassword(accountDto.Password, account.Password))
-            {
-                return true;
-            }
-            return false;
+            return await _accountRepository.Login(accountDto);
         }
 
-
-
-        public async Task<Account?> GetAccountByEmailAsync(string email) => await AccountDAO.Instance.GetAccountByEmailAsync(email);
-        public void Update(Account account) => AccountDAO.Instance.Update(account);
-        public async Task<Account> CreateGoogleAccountAsync(GoogleAccountRegisterDto dto)
+        public async Task Update(Account account)
         {
-            var account = new Account
-            {
-                Email = dto.Email,
-                AuthProvider = AuthProviders.Google,
-                AuthProviderId = dto.GoogleId,
-                Role = dto.Role,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            try
-            {
-                await AccountDAO.Instance.AddAccount(account);
-
-                var userProfile = new UserProfile
-                {
-                    FirstName = dto.FirstName,
-                    LastName = dto.LastName,
-                    Address = dto.Address,
-                    CreatedAt = DateTime.UtcNow,
-                    AccountId = account.AccountId
-                };
-
-                await UserProfileDAO.Instance.AddUserProfile(userProfile);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Lỗi khi tạo tài khoản Google: " + ex.Message);
-            }
-
-            return account;
+            await _accountRepository.Update(account);
         }
 
         public async Task<UserProfile?> GetProfileAsync(int accountId)
@@ -106,7 +51,6 @@ namespace RentNest.Service.Implements
         {
             await _accountRepository.AddUserProfile(userProfile);
         }
-
 
         public async Task UpdateProfileAsync(UserProfile profile)
         {
@@ -135,6 +79,5 @@ namespace RentNest.Service.Implements
 
             return (true, "Cập nhật ảnh đại diện thành công!");
         }
-
-    }
+	}
 }

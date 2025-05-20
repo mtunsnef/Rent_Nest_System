@@ -12,24 +12,26 @@
 	<link rel="stylesheet" href="~/css/owl.theme.default.min.css">
 	<link rel="stylesheet" href="~/css/magnific-popup.css">
 	<link rel="stylesheet" href="~/css/aos.css">
-	<link rel="stylesheet" href="~/css/ionicons.min.css">
+	<link rel="stylesheet" href="~/css/ionicons.min.css">	
 	<link rel="stylesheet" href="~/css/flaticon.css">
 	<link rel="stylesheet" href="~/css/icomoon.css">
 	<link rel="stylesheet" href="~/css/style.css">
-
+	<link rel="icon" type="image/png" href="~/images/blue-house-logo.png">
 </head>
 
+@await Component.InvokeAsync("ChatBoxAI")
+@RenderSection("script", required: false)
 <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
-	@Html.Partial("Client/_Header")
+	@Html.Partial("LayoutClient/_Header")
 	@RenderBody()
-	@Html.Partial("Client/_Footer")
+	@Html.Partial("LayoutClient/_Footer")
 
 	<!-- loader -->
 	<div id="ftco-loader" class="show fullscreen">
 		<svg class="circular" width="48px" height="48px">
 			<circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" />
 			<circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
-					stroke="#F96D00" />
+				stroke="#F96D00" />
 		</svg>
 	</div>
 

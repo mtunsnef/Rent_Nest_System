@@ -8,14 +8,11 @@ using System.Threading.Tasks;
 
 namespace RentNest.Infrastructure.DataAccess
 {
-    public class PostDAO: SingletonBase<PostDAO>
+    public class PostDAO: BaseDAO<PostDAO>
     {
-        private readonly RentNestSystemContext _context;
-        public PostDAO() 
-        {
-            _context = new RentNestSystemContext();
-        }
-        public List<Post> GetAllPostsWithAccommodation()
+        public PostDAO(RentNestSystemContext context) : base(context) { }
+
+		public List<Post> GetAllPostsWithAccommodation()
         {
             return _context.Posts
         .Include(p => p.Accommodation)

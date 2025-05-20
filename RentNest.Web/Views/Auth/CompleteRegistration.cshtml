@@ -1,4 +1,4 @@
-﻿@model RentNest.Core.DTO.GoogleAccountRegisterDto
+﻿@model RentNest.Core.DTO.ExternalAccountRegisterDto
 @using RentNest.Core.Consts
 
 @{
@@ -20,7 +20,8 @@
                 <form asp-controller="Auth" asp-action="CompleteRegistration" method="post" class="bg-light p-4 p-md-5 contact-form">
                     <!-- Hidden fields for Google data -->
                     <input asp-for="Email" type="hidden" />
-                    <input asp-for="GoogleId" type="hidden" />
+                    <input asp-for="AuthProvider" type="hidden" />
+                    <input asp-for="AuthProviderId" type="hidden" />
                     <input asp-for="FirstName" type="hidden" />
                     <input asp-for="LastName" type="hidden" />
 

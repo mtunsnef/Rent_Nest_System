@@ -6,11 +6,12 @@ using Microsoft.Extensions.Options;
 using RentNest.Core.Configs;
 using MimeKit;
 using MailKit.Security;
+using RentNest.Service.Interfaces;
 namespace RentNest.Service.Implements
 {
-    public class MailService
+    public class MailService : IMailService
     {
-        MailSettings _mailSettings;
+        private readonly MailSettings _mailSettings;
         public MailService(IOptions<MailSettings> mailSettings)
         {
             _mailSettings = mailSettings.Value;

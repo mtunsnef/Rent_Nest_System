@@ -1,4 +1,5 @@
 ﻿using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using RentNest.Core.Configs;
@@ -16,35 +17,68 @@ namespace RentNest.Web
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
-            Env.Load(); //load file .env
 
+            var builder = WebApplication.CreateBuilder(args);
+            //load file .env
+            var webRoot = builder.Environment.ContentRootPath;
+            var solutionRoot = Path.GetFullPath(Path.Combine(webRoot, ".."));
+            var envPath = Path.Combine(solutionRoot, ".env");
+            Env.Load(envPath);
+
+            //Add dbcontext
             builder.Services.AddDbContext<RentNestSystemContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddTransient<MailService>();
-            //Service
-            builder.Services.AddScoped<IAccountService, AccountService>();
             //DAO
             builder.Services.AddScoped<AccountDAO>();
-
+            builder.Services.AddScoped<UserProfileDAO>();
+            builder.Services.AddScoped<AccommodationTypeDAO>();
+            builder.Services.AddScoped<UserProfileDAO>();
+            builder.Services.AddScoped<AmenitiesDAO>();
+            builder.Services.AddScoped<TimeUnitPackageDAO>();
+            builder.Services.AddScoped<PackagePricingDAO>();
             builder.Services.AddScoped<RoomDAO>();
-            builder.Services.AddScoped<IRoomRepository, RoomRepository>();
-            builder.Services.AddScoped<IRoomService, RoomService>();
-
             builder.Services.AddScoped<PostDAO>();
-            builder.Services.AddScoped<IPostRepository, PostRepository>();
-            builder.Services.AddScoped<IPostService, PostService>();
 
             //Repository
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-            //Config
+            builder.Services.AddScoped<IAccommodationTypeRepository, AccommodationTypeRepository>();
+            builder.Services.AddScoped<IAmenitiesRepository, AmenitiesRepository>();
+            builder.Services.AddScoped<ITimeUnitPackageRepository, TimeUnitPackageRepository>();
+            builder.Services.AddScoped<IPackagePricingRepository, PackagePricingRepository>();
+            builder.Services.AddScoped<IPostRepository, PostRepository>();
+            builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 
-            builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).AddEnvironmentVariables();
-            builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("Authentication:Google"));
+            //Service
+            builder.Services.AddScoped<IMailService, MailService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IAzureOpenAIService, AzureOpenAIService>();
+            builder.Services.AddScoped<IAccommodationTypeService, AccommodationTypeService>();
+            builder.Services.AddScoped<IAmenitiesSerivce, AmenitiesService>();
+            builder.Services.AddScoped<ITimeUnitPackageService, TimeUnitPackageService>();
+            builder.Services.AddScoped<IPackagePricingService, PackagePricingService>();
+            builder.Services.AddScoped<IRoomService, RoomService>();
+            builder.Services.AddScoped<IPostService, PostService>();
+
+            //Config
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+            builder.Services.Configure<AzureOpenAISettings>(options =>
+            {
+                options.Endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
+                options.DeploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT")!;
+                options.ApiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY")!;
+            });
+            builder.Services.Configure<AuthSettings>(options =>
+            {
+                options.Google.ClientId = Environment.GetEnvironmentVariable("AUTHENTICATION_GOOGLE_CLIENTID")!;
+                options.Google.ClientSecret = Environment.GetEnvironmentVariable("AUTHENTICATION_GOOGLE_CLIENTSECRET")!;
+                options.Facebook.AppId = Environment.GetEnvironmentVariable("AUTHENTICATION_FACEBOOK_APPID")!;
+                options.Facebook.AppSecret = Environment.GetEnvironmentVariable("AUTHENTICATION_FACEBOOK_APPSECRET")!;
+            });
+            builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
             //su dung cache de luu session
             builder.Services.AddDistributedMemoryCache();
@@ -58,31 +92,39 @@ namespace RentNest.Web
             });
 
             //auth
+            var authSettings = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<AuthSettings>>().Value;
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = AuthSchemes.Cookie;
                 options.DefaultSignInScheme = AuthSchemes.Cookie;
-                options.DefaultChallengeScheme = AuthSchemes.Google;
             })
-              .AddCookie(AuthSchemes.Cookie, config =>
-              {
-                  config.LoginPath = "/Auth/Login";
-                  config.AccessDeniedPath = "/Auth/AccessDenied";
-              })
-              .AddGoogle(AuthSchemes.Google, options =>
-              {
-                  var googleAuthSettings = builder.Configuration
-                      .GetSection("Authentication:Google")
-                      .Get<GoogleAuthSettings>();
-
-                  options.ClientId = googleAuthSettings.ClientId;
-                  options.ClientSecret = googleAuthSettings.ClientSecret;
-                  options.CallbackPath = googleAuthSettings.CallbackPath;
-              });
-
-
-			builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
-
+                .AddCookie(AuthSchemes.Cookie, config =>
+                {
+                    config.LoginPath = "/Auth/Login";
+                    config.AccessDeniedPath = "/Auth/AccessDenied";
+                })
+                .AddGoogle(AuthSchemes.Google, options =>
+                {
+                    options.ClientId = authSettings.Google.ClientId;
+                    options.ClientSecret = authSettings.Google.ClientSecret;
+                    options.CallbackPath = "/Auth/signIn-google";
+                })
+                .AddFacebook(AuthSchemes.Facebook, options =>
+                {
+                    options.AppId = authSettings.Facebook.AppId;
+                    options.AppSecret = authSettings.Facebook.AppSecret;
+                    options.CallbackPath = "/Auth/signIn-facebook";
+                    options.Events = new OAuthEvents
+                    {
+                        OnRemoteFailure = context =>
+                        {
+                            context.Response.Redirect("/Auth/Login");
+                            context.HandleResponse();
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.

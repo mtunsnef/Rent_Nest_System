@@ -1,8 +1,9 @@
-﻿using RentNest.Core.Domains;
+using System.Text;
+using RentNest.Core.Domains;
+using RentNest.Core.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RentNest.Service.Interfaces
@@ -13,7 +14,14 @@ namespace RentNest.Service.Interfaces
         Accommodation? GetRoomById(int id);
         AccommodationDetail? GetRoomDetailById(int id);
         int? GetDetailIdByAccommodationId(int accommodationId);
-
+        Task<List<Accommodation>> GetRoomsBySearchDto(string provinceName,
+            string districtName,
+            string wardName,
+            double? area,
+            decimal? minMoney,
+            decimal? maxMoney);
+                Task<string> GetRoomImage(int accommodationId);
+                Task<string> GetRoomType(int accommodationId);
 
     }
 

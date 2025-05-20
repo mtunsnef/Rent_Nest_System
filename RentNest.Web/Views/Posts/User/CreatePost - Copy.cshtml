@@ -1,0 +1,387 @@
+﻿@model RentNest.Web.Models.CreatePostViewModel
+<!-- Thêm trong phần <head> hoặc cuối <body> -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<section class="ftco-section contact-section ftco-no-pb mb-4" style="padding: 8em 0">
+    <div class="container">
+        <!-- TIÊU ĐỀ VÀ BƯỚC -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h4 class="font-weight-bold mb-0" style="font-family: system-ui;">Tạo tin đăng</h4>
+                <small class="text-muted">
+                    Bước <span id="current-step">1</span>.
+                    <span id="step-label"></span>
+                </small>
+            </div>
+            <div>
+                <button type="button" class="btn btn-outline-secondary btn-sm me-2">
+                    <i class="bi bi-eye"></i> Xem trước
+                </button>
+                <button type="button" class="btn btn-outline btn-sm">Quay về</button>
+            </div>
+        </div>
+        <!-- PROGRESS BAR -->
+        <div class="progress mb-4" style="height: 4px;">
+            <div id="progress-bar" class="progress-bar bg-danger" role="progressbar" style="width: 33%; height:4px;"></div>
+        </div>
+
+        <div class="step step-3">
+            <!-- Tabs lựa chọn kiểu đăng -->
+            <div class="d-flex align-items-center mb-4">
+                <label>Chọn gói đăng</label>
+                <div class="ml-5 dropdown d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
+                        <path d="M14 3h-1V1h-1v2H4V1H3v2H2a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1z" />
+                        <path d="M15 6H1v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6z" />
+                    </svg>
+                    <select id="timeUnitDropdown" class="form-control ml-2">
+                        @foreach (var unit in Model.TimeUnitPackages)
+                        {
+                            <option value="@unit.TimeUnitId">Trả theo @unit.TimeUnitName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label>Chọn loại tin</label>
+                <div id="packageTypeContainer" class="d-flex flex-wrap gap-4 justify-content-between"></div>
+            </div>
+
+            <div class="mb-4">
+                <h6>Đăng dài ngày hơn, tiết kiệm hơn!</h6>
+                <div id="durationContainer" class="d-flex gap-4 justify-content-center"></div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label>Ngày bắt đầu</label>
+                    <input type="date" class="form-control" id="startDate">
+                    <small id="endDateLabel" class="text-muted mt-1 d-block"></small>
+                </div>
+                <div class="col-md-6">
+                    <label>Hẹn giờ đăng tin</label>
+                    <select class="form-control" id="scheduleSelect" disabled>
+                    </select>
+                    <small id="scheduleNote" class="text-muted mt-1 d-block">Chỉ áp dụng cho tin VIP</small>
+                </div>
+            </div>
+
+            <!-- Chọn khuyến mãi -->
+            <div class="mb-4">
+                <a href="#" class="d-flex justify-content-between align-items-center border p-3 text-decoration-none text-dark rounded">
+                    <div>
+                        <i class="bi bi-tag"></i> <strong>Khuyến mãi</strong>
+                    </div>
+                    <span class="text-primary">Chọn khuyến mãi <i class="bi bi-chevron-right"></i></span>
+                </a>
+            </div>
+
+            <!-- Tổng tiền -->
+            <div class="d-flex justify-content-between align-items-center rounded">
+                <h3 class="text-dark"><strong>Tổng tiền</strong></h3>
+                <h3 class="ext-danger font-weight-bolder" id="total-price">0 đ</h3>
+            </div>
+
+            <!-- Nút hành động -->
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-secondary mx-2" onclick="prevStep()">Quay lại</button>
+                <button type="button" class="btn btn-light mx-2">Lưu nháp</button>
+                <input type="submit" value="Thanh toán" class="btn btn-success mx-2">
+                <button type="button" id="testCollectFormBtn" class="btn btn-warning mt-3">
+                    Test Thu Thập Dữ Liệu Form
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Modal Khuyến Mãi -->
+<div class="modal fade" id="promotionModal" tabindex="-1" aria-labelledby="promotionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="promotionModalLabel">Chọn khuyến mãi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Ô tìm kiếm -->
+                <div class="input-group mb-3">
+                    <input type="text" id="promotionSearchInput" class="form-control" placeholder="Nhập mã khuyến mãi hoặc tên...">
+                    <button class="btn btn-outline-primary" id="promotionSearchBtn" type="button">Tìm kiếm</button>
+                </div>
+
+                <!-- Danh sách khuyến mãi -->
+                <div id="promotionList">
+                    <!-- Nội dung khuyến mãi sẽ được render tại đây -->
+                    <p class="text-muted">Không có khuyến mãi nào.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        let defaultTimeUnitId = 1; 
+        let defaultPackageTypeName = "Tin thường";
+        let defaultDurationValue = 7;
+
+        $('#timeUnitDropdown').on('change', function () {
+            let timeUnitId = $(this).val();
+                $.get(`/api/v1/package-types/${timeUnitId}`, function (data) {
+                let html = '';
+                    data.forEach(pkg => {
+                    let unitPriceFormatted = pkg.unitPrice ? pkg.unitPrice.toLocaleString() : '';
+
+                    let borderClass = '';
+                    let textClass = '';
+                    let badgeClass = '';
+                    let descriptionText = '';
+
+                    switch (pkg.packageTypeName) {
+                        case 'VIP Kim Cương':
+                            borderClass = 'border-danger';
+                            textClass = 'text-danger';
+                            badgeClass = 'bg-danger';
+                            descriptionText = pkg.description;
+                            break;
+                        case 'VIP Vàng':
+                            borderClass = 'border-warning';
+                            textClass = 'text-warning';
+                            badgeClass = 'bg-warning';
+                            descriptionText = pkg.description;
+                            break;
+                        case 'VIP Bạc':
+                            borderClass = 'border-info';
+                            textClass = 'text-info';
+                            badgeClass = 'bg-info';
+                            descriptionText = pkg.description;
+                            break;
+                        default:
+                            borderClass = 'border-secondary';
+                            textClass = 'text-dark';
+                            badgeClass = 'bg-secondary';
+                            descriptionText = pkg.description;
+                            break;
+                    }
+
+                    html += `
+                        <div class="card ${borderClass} p-3 m-2 package-type-card cursor" data-id="${pkg.packageTypeId}" data-name="${pkg.packageTypeName}" style="width: 12rem; border-radius: 15px;">
+                            <div class="font-weight-bold ${textClass}">${pkg.packageTypeName}</div>
+                            <div class="badge ${badgeClass} text-white mt-2">${descriptionText}</div>
+                            <div class="font-weight-bold text-dark mt-2">${unitPriceFormatted} đ/${pkg.timeUnitName.toLowerCase()}</div>
+                        </div>`;
+                });
+
+                $('#packageTypeContainer').html(html);
+
+                let defaultCard = $(`.package-type-card[data-name='${defaultPackageTypeName}']`);
+                if (defaultCard.length > 0) {
+                    defaultCard.trigger('click');
+                }
+            });
+        });
+
+        $(document).on('click', '.package-type-card', function () {
+            let packageTypeId = $(this).data('id');
+            let timeUnitId = $('#timeUnitDropdown').val();
+
+            $('.package-type-card').removeClass('border-primary border-3');
+            $(this).addClass('border-primary border-3');
+
+                $.get(`/api/v1/durations?timeUnitId=${timeUnitId}&packageTypeId=${packageTypeId}`, function (data) {
+                let html = '';
+
+                let defaultDuration = data.find(d => d.durationValue === defaultDurationValue) || data[0];
+
+                data.forEach(d => {
+                    let isChecked = (d.durationValue === defaultDuration.durationValue) ? 'checked' : '';
+                    html += `
+                        <div class="duration-card card p-3 mr-3 cursor" style="border-radius: 20px;">
+                            <div class="form-check">
+                                <input class="form-check-input duration-radio" type="radio" name="duration" data-duration="${d.durationValue}" ${isChecked}>
+                                <label class="cursor form-check-label">
+                                    ${d.durationValue} ${d.timeUnitName} <br><strong>${d.totalPrice.toLocaleString()} đ</strong>
+                                </label>
+                            </div>
+                            <span class="discount-badge"></span>
+                        </div>`;
+                });
+
+                $('#durationContainer').html(html);
+                let selected = $('#durationContainer input[name="duration"]:checked');
+                selected.closest('.duration-card').addClass('border-1');
+                updateAllDiscountBadges();
+                selected.trigger('change'); // <--- thêm dòng này
+
+            });
+        });
+
+        $(document).on('click', '.duration-card', function (e) {
+            if ($(e.target).is('input[type=radio]')) return;
+            let radio = $(this).find('input[type=radio]');
+            radio.prop('checked', true).trigger('change');
+        });
+
+        $(document).on('change', 'input[name="duration"]', function () {
+            $('.duration-card').removeClass('border-1');
+
+            if (this.checked) {
+                const card = $(this).closest('.duration-card');
+                card.addClass('border-1');
+
+                const priceLabel = card.find('label').html();
+                const match = priceLabel.match(/<strong>([\d,.]+)\s?đ<\/strong>/i);
+
+                if (match && match[1]) {
+                    const rawPrice = match[1].replaceAll('.', '').replaceAll(',', '');
+                    const price = parseInt(rawPrice);
+                    if (!isNaN(price)) {
+                        $('#total-price').text(`${price.toLocaleString()} đ`);
+                    }
+                }
+            }
+        });
+
+        $('#timeUnitDropdown').trigger('change');
+    });
+
+
+    $(document).ready(function () {
+        let today = new Date();
+        let yyyy = today.getFullYear();
+        let mm = String(today.getMonth() + 1).padStart(2, '0');
+        let dd = String(today.getDate()).padStart(2, '0');
+        let todayStr = `${yyyy}-${mm}-${dd}`;
+
+        $('#startDate').val(todayStr);
+        $('#startDate').attr('min', todayStr);
+
+        function generateHourOptions(startHour = 0) {
+            let options = '<option>Đăng ngay bây giờ</option>';
+            for (let h = startHour; h < 24; h++) {
+                let hourStr = h.toString().padStart(2, '0') + ':00';
+                options += `<option value="${hourStr}">${hourStr}</option>`;
+            }
+            return options;
+        }
+
+        function isVipPackage(packageName) {
+            return ['VIP Kim Cương', 'VIP Vàng', 'VIP Bạc'].includes(packageName);
+        }
+
+        function updateScheduleSelect(packageName) {
+            if (isVipPackage(packageName)) {
+                $('#scheduleSelect').prop('disabled', false);
+
+                let selectedDateStr = $('#startDate').val();
+                let selectedDate = new Date(selectedDateStr + 'T00:00:00'); // chuẩn hóa
+
+                let now = new Date();
+
+                if (selectedDate.toDateString() === now.toDateString()) {
+                    let startHour = now.getHours() + 5;
+                    if (startHour > 23) startHour = 23;
+                    $('#scheduleSelect').html(generateHourOptions(startHour));
+                } else if (selectedDate > now) {
+                    $('#scheduleSelect').html(generateHourOptions(0));
+                } else {
+                    $('#scheduleSelect').html(generateHourOptions(0));
+                }
+            } else {
+                $('#scheduleSelect').prop('disabled', true);
+                $('#scheduleSelect').html('<option>Đăng ngay bây giờ</option>');
+            }
+        }
+
+        $(document).on('click', '.package-type-card', function () {
+            let packageName = $(this).data('name');
+            updateScheduleSelect(packageName);
+        });
+
+        $('#startDate').on('change', function () {
+            let activePackageCard = $('.package-type-card.border-primary.border-3');
+            if (activePackageCard.length > 0) {
+                let packageName = activePackageCard.data('name');
+                updateScheduleSelect(packageName);
+            }
+        });
+
+        let defaultPackageCard = $(`.package-type-card[data-name="Tin thường"]`);
+        if (defaultPackageCard.length) {
+            defaultPackageCard.trigger('click');
+        }
+    });
+
+    function calculateDiscount(duration, unit) {
+        duration = parseInt(duration);
+        unit = unit.toLowerCase();
+
+        let durationInDays = duration;
+        if (unit.includes("tuần")) {
+            durationInDays = duration * 7;
+        } else if (unit.includes("tháng")) {
+            durationInDays = duration * 30;
+        }
+        if (durationInDays < 7) return 0;
+        if (durationInDays === 10) return 5;
+        if (durationInDays === 14 || durationInDays === 15 ) return 10;
+        if (durationInDays === 21) return 12;
+        if (durationInDays === 28 || durationInDays === 30) return 15;
+        if (durationInDays === 60) return 20;  // 2 tháng
+        if (durationInDays === 90) return 25;  // 3 tháng
+        if (durationInDays === 120) return 30; // 4 tháng
+
+        return 0;
+    }
+
+    function updateAllDiscountBadges() {
+        $('.duration-card').each(function () {
+            const radio = $(this).find('input.duration-radio');
+            const badge = $(this).find('.discount-badge');
+
+            if (radio.length && badge.length) {
+                const duration = parseInt(radio.data('duration'));
+                const unit = $(this).find('label').text(); // lấy text label chứa "ngày/tuần/tháng"
+
+                const discount = calculateDiscount(duration, unit);
+
+                if (discount > 0) {
+                    badge.text(`-${discount}%`);
+                    badge.show();
+                } else {
+                    badge.hide();
+                }
+            }
+        });
+    }
+
+    $(document).on('click', 'a[href="#"]', function (e) {
+        e.preventDefault();
+
+        if ($(this).text().includes('Khuyến mãi')) {
+            $('#promotionModal').modal('show');
+        }
+    });
+
+    $('#promotionSearchBtn').on('click', function () {
+        let keyword = $('#promotionSearchInput').val().trim();
+
+        /*
+        $.get(`/api/v1/promotions?keyword=${keyword}`, function (data) {
+            let html = '';
+            data.forEach(p => {
+                html += `<div class="p-2 border rounded mb-2">${p.name}</div>`;
+            });
+            $('#promotionList').html(html || '<p class="text-muted">Không tìm thấy khuyến mãi nào.</p>');
+        });
+        */
+
+        // render giả
+        $('#promotionList').html(`
+            <div class="p-2 border rounded mb-2">Khuyến mãi 10% cho bài đăng trên 2 tuần</div>
+            <div class="p-2 border rounded mb-2">Miễn phí 3 ngày đăng VIP Bạc</div>
+        `);
+    });
+
+</script>

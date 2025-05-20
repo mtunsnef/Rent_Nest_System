@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using RentNest.Core.Consts;
 using RentNest.Core.Domains;
 using RentNest.Service.Interfaces;
@@ -22,6 +23,7 @@ namespace RentNest.Web.Controllers
             _roomService = roomService;
 			_postService = postService;
 		}
+        
 		[HttpGet("")]
 		public IActionResult Index()
 		{
@@ -90,5 +92,48 @@ namespace RentNest.Web.Controllers
 
 		}
 
-	}
+        [HttpPost]
+        public async Task<IActionResult> Search([FromForm] string provinceName, string districtName, string wardName, double area, decimal minMoney, decimal maxMoney)
+        {
+            if (ModelState.IsValid)
+            {
+                var rooms = await _roomService.GetRoomsBySearchDto(provinceName, districtName, wardName, area, minMoney, maxMoney);
+                List<RoomCardDto> roomList = new List<RoomCardDto>();
+                foreach (var room in rooms)
+                {
+                    string status;
+
+                    if (room.Status.Contains("A"))
+                    {
+                        status = "Available";
+                    }
+                    else if (room.Status.Contains("I"))
+                    {
+                        status = "Inactive";
+                    }
+                    else
+                    {
+                        status = "Rented";
+                    }
+                    var roomCart = new RoomCardDto
+                    {
+                        RoomTitle = room.Title,
+                        RoomArea = room.Area,
+                        RoomImage = await _roomService.GetRoomImage(room.AccommodationId),
+                        RoomPrice = room.Price,
+                        roomType = await _roomService.GetRoomType(room.TypeId),
+                        RoomAddress = room.Address,
+                        RoomStatus = status
+
+                    };
+                    roomList.Add(roomCart);
+                }
+                TempData["RoomList"] = JsonConvert.SerializeObject(roomList);
+                return RedirectToAction("Index", "Room");
+            }
+
+            return View();
+        }
+
+    }
 }
