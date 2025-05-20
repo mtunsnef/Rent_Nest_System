@@ -8,6 +8,7 @@ using RentNest.Core.DTO;
 using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
 using RentNest.Web.Models;
+using RentNest.Core.Domains;
 
 namespace RentNest.Web.Controllers
 {

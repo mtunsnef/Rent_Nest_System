@@ -14,25 +14,25 @@ namespace RentNest.Web.Controllers
         }
 
         [HttpGet]
-        [Route("/Home")]
+        [Route("/trang-chu")]
         public IActionResult Index()
         {
             return View();
         }
 
-        [Route("/About")]
+        [Route("/ve-chung-toi")]
         public IActionResult About()
         {
             return View();
         }
 
-        [Route("/Service")]
+        [Route("/dich-vu")]
         public IActionResult Service()
         {
             return View();
         }
 
-        [Route("/Contact")]
+        [Route("/lien-he")]
         public IActionResult Contact()
         {
             ViewData["GoogleMapsAPIKey"] = _configuration["GoogleMapsAPIKey"];

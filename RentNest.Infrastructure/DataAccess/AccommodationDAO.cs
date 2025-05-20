@@ -1,18 +1,17 @@
+﻿using Microsoft.EntityFrameworkCore;
+using RentNest.Core.Domains;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using RentNest.Core.Domains;
-using RentNest.Core.DTO;
 
 namespace RentNest.Infrastructure.DataAccess
 {
-    public class RoomDAO : BaseDAO<RoomDAO>
+    public class AccommodationDAO : BaseDAO<AccommodationDAO>
     {
-        public RoomDAO(RentNestSystemContext context) : base(context) { }
-
-        public List<Accommodation> GetAllRooms()
+        public AccommodationDAO(RentNestSystemContext context) : base(context) { }
+        public List<Accommodation> GetAllAccommodation()
         {
             return _context.Accommodations
                 .Include(a => a.AccommodationImages)
@@ -20,8 +19,7 @@ namespace RentNest.Infrastructure.DataAccess
                 .Where(a => a.Status != "I")
                 .ToList();
         }
-
-        public Accommodation? GetRoomById(int id)
+        public Accommodation? GetAccommodationById(int id)
         {
             return _context.Accommodations
                 .Include(a => a.AccommodationImages)
@@ -30,15 +28,14 @@ namespace RentNest.Infrastructure.DataAccess
                 .FirstOrDefault(a => a.AccommodationId == id && a.Status != "I");
         }
 
-		public AccommodationDetail? GetRoomDetailById(int id)
-		{
-			return _context.AccommodationDetails
-				.Include(ad => ad.Accommodation)
-				.ThenInclude(a => a.AccommodationImages)
-				.FirstOrDefault(ad => ad.DetailId == id && ad.Accommodation.Status != "I");
-		}
-
-		public int? GetDetailIdByAccommodationId(int accommodationId)
+        public AccommodationDetail? GetAccommodationDetailById(int id)
+        {
+            return _context.AccommodationDetails
+                .Include(ad => ad.Accommodation)
+                .ThenInclude(a => a.AccommodationImages)
+                .FirstOrDefault(ad => ad.DetailId == id && ad.Accommodation.Status != "I");
+        }
+        public int? GetDetailIdByAccommodationId(int accommodationId)
         {
             return _context.AccommodationDetails
                 .Where(ad => ad.AccommodationId == accommodationId && ad.Accommodation.Status != "I")
@@ -89,12 +86,12 @@ namespace RentNest.Infrastructure.DataAccess
             return await query.ToListAsync();
         }
 
-        public async Task<string> GetRoomImage(int accommodationId)
+        public async Task<string> GetAccommodationImage(int accommodationId)
         {
             var roomImages = await _context.AccommodationImages.Where(i => i.AccommodationId == accommodationId).ToListAsync();
             return roomImages!.Select(i => i.ImageUrl).FirstOrDefault()!;
         }
-        public async Task<string> GetRoomType(int accommodationId)
+        public async Task<string> GetAccommodationType(int accommodationId)
         {
             var roomType = await _context.AccommodationTypes.Where(t => t.TypeId == accommodationId).FirstOrDefaultAsync();
             return roomType!.TypeName;

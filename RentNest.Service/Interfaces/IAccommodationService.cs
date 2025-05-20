@@ -8,20 +8,21 @@ using System.Threading.Tasks;
 
 namespace RentNest.Service.Interfaces
 {
-    public interface IRoomService
+    public interface IAccommodationService
     {
-        List<Accommodation> GetAllRooms();
-        Accommodation? GetRoomById(int id);
-        AccommodationDetail? GetRoomDetailById(int id);
+        List<Accommodation> GetAllAccommodation();
+        Accommodation? GetAccommodationById(int id);
+        AccommodationDetail? GetAccommodationDetailById(int id);
         int? GetDetailIdByAccommodationId(int accommodationId);
-        Task<List<Accommodation>> GetRoomsBySearchDto(string provinceName,
+        Task<List<Accommodation>> GetAccommodationsBySearchDto(
+            string provinceName,
             string districtName,
             string wardName,
             double? area,
             decimal? minMoney,
             decimal? maxMoney);
-                Task<string> GetRoomImage(int accommodationId);
-                Task<string> GetRoomType(int accommodationId);
+        Task<string> GetAccommodationImage(int accommodationId);
+        Task<string> GetAccommodationType(int accommodationId);
 
     }
 

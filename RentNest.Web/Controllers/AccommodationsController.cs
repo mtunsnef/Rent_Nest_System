@@ -2,168 +2,140 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using RentNest.Core.Consts;
 using RentNest.Core.Domains;
+using RentNest.Core.DTO;
+using RentNest.Service.Interfaces;
+using RentNest.Web.Models;
 
 namespace RentNest.Web.Controllers
 {
     public class AccommodationsController : Controller
     {
-        private readonly RentNestSystemContext _context;
-
-        public AccommodationsController(RentNestSystemContext context)
+        private readonly IConfiguration _configuration;
+        private readonly IAccommodationService _accommodationService;
+        private readonly IPostService _postService;
+        public AccommodationsController(IConfiguration configuration, IAccommodationService accommodationService, IPostService postService)
         {
-            _context = context;
+            _configuration = configuration;
+            _accommodationService = accommodationService;
+            _postService = postService;
         }
 
-        // GET: Accommodations
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        [Route("danh-sach-phong-tro")]
+        public IActionResult Index()
         {
-            var rentNestSystemContext = _context.Accommodations.Include(a => a.Owner).Include(a => a.Type);
-            return View(await rentNestSystemContext.ToListAsync());
-        }
+            var posts = _postService.GetAllPostsWithAccommodation();
 
-        // GET: Accommodations/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+
+            var model = posts.Select(p => new AccommodationIndexViewModel
             {
-                return NotFound();
+                Id = p.Accommodation.AccommodationId,
+                Status = p.CurrentStatus,
+                Title = p.Title,
+                Price = p.Accommodation.Price,
+                Address = p.Accommodation.Address,
+                ImageUrl = p.Accommodation.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "default-image.jpg"
+            }).ToList();
+
+            return View(model);
+        }
+
+
+        [HttpGet("chi-tiet/{id:int}")]
+        public IActionResult Detail(int id)
+        {
+
+            var detailId = _accommodationService.GetDetailIdByAccommodationId(id);
+            Console.WriteLine($"AccommodationId = {id}, DetailId = {detailId}");
+
+            if (detailId == null)
+            {
+                return Content("No detailId found");
             }
 
-            var accommodation = await _context.Accommodations
-                .Include(a => a.Owner)
-                .Include(a => a.Type)
-                .FirstOrDefaultAsync(m => m.AccommodationId == id);
-            if (accommodation == null)
+            var room = _accommodationService.GetAccommodationDetailById(detailId.Value);
+
+            if (room == null)
             {
-                return NotFound();
+                return Content("Room detail not found for given detailId");
             }
 
-            return View(accommodation);
+
+            ViewData["GoogleMapsAPIKey"] = _configuration["GoogleMapsAPIKey"];
+            ViewData["Address"] = room.Accommodation?.Address ?? "Đ. Nam Kỳ Khởi Nghĩa, Khu đô thị FPT City, Ngũ Hành Sơn, Đà Nẵng 550000";
+
+            var viewModel = new AccommodationDetailViewModel
+            {
+                DetailId = room.DetailId,
+                HasKitchenCabinet = room.HasKitchenCabinet,
+                HasAirConditioner = room.HasAirConditioner,
+                HasRefrigerator = room.HasRefrigerator,
+                HasWashingMachine = room.HasWashingMachine,
+                HasLoft = room.HasLoft,
+                FurnitureStatus = room.FurnitureStatus,
+                BedroomCount = room.BedroomCount,
+                BathroomCount = room.BathroomCount,
+                CreatedAt = room.CreatedAt,
+                UpdatedAt = room.UpdatedAt,
+                AccommodationId = room.AccommodationId,
+                Title = room.Accommodation?.Title,
+                Price = room.Accommodation?.Price,
+                Description = room.Accommodation?.Description,
+                ImageUrl = room.Accommodation?.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "default-image.jpg"
+            };
+
+            return View(viewModel);
+
         }
 
-        // GET: Accommodations/Create
-        public IActionResult Create()
-        {
-            ViewData["OwnerId"] = new SelectList(_context.Accounts, "AccountId", "AuthProvider");
-            ViewData["TypeId"] = new SelectList(_context.AccommodationTypes, "TypeId", "TypeName");
-            return View();
-        }
-
-        // POST: Accommodations/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AccommodationId,Title,Description,Address,Price,DepositAmount,Area,MaxOccupancy,VideoUrl,Status,CreatedAt,UpdatedAt,OwnerId,TypeId")] Accommodation accommodation)
+        public async Task<IActionResult> Search([FromForm] string provinceName, string districtName, string wardName, double area, decimal minMoney, decimal maxMoney)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(accommodation);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["OwnerId"] = new SelectList(_context.Accounts, "AccountId", "AuthProvider", accommodation.OwnerId);
-            ViewData["TypeId"] = new SelectList(_context.AccommodationTypes, "TypeId", "TypeName", accommodation.TypeId);
-            return View(accommodation);
-        }
-
-        // GET: Accommodations/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var accommodation = await _context.Accommodations.FindAsync(id);
-            if (accommodation == null)
-            {
-                return NotFound();
-            }
-            ViewData["OwnerId"] = new SelectList(_context.Accounts, "AccountId", "AuthProvider", accommodation.OwnerId);
-            ViewData["TypeId"] = new SelectList(_context.AccommodationTypes, "TypeId", "TypeName", accommodation.TypeId);
-            return View(accommodation);
-        }
-
-        // POST: Accommodations/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AccommodationId,Title,Description,Address,Price,DepositAmount,Area,MaxOccupancy,VideoUrl,Status,CreatedAt,UpdatedAt,OwnerId,TypeId")] Accommodation accommodation)
-        {
-            if (id != accommodation.AccommodationId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                var rooms = await _accommodationService.GetAccommodationsBySearchDto(provinceName, districtName, wardName, area, minMoney, maxMoney);
+                List<RoomCardDto> roomList = new List<RoomCardDto>();
+                foreach (var room in rooms)
                 {
-                    _context.Update(accommodation);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AccommodationExists(accommodation.AccommodationId))
+                    string status;
+
+                    if (room.Status.Contains("A"))
                     {
-                        return NotFound();
+                        status = "Available";
+                    }
+                    else if (room.Status.Contains("I"))
+                    {
+                        status = "Inactive";
                     }
                     else
                     {
-                        throw;
+                        status = "Rented";
                     }
+                    var roomCart = new RoomCardDto
+                    {
+                        RoomTitle = room.Title,
+                        RoomArea = room.Area,
+                        RoomImage = await _accommodationService.GetAccommodationImage(room.AccommodationId),
+                        RoomPrice = room.Price,
+                        roomType = await _accommodationService.GetAccommodationType(room.TypeId),
+                        RoomAddress = room.Address,
+                        RoomStatus = status
+
+                    };
+                    roomList.Add(roomCart);
                 }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["OwnerId"] = new SelectList(_context.Accounts, "AccountId", "AuthProvider", accommodation.OwnerId);
-            ViewData["TypeId"] = new SelectList(_context.AccommodationTypes, "TypeId", "TypeName", accommodation.TypeId);
-            return View(accommodation);
-        }
-
-        // GET: Accommodations/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
+                TempData["RoomList"] = JsonConvert.SerializeObject(roomList);
+                return RedirectToAction("Index", "Accommodations");
             }
 
-            var accommodation = await _context.Accommodations
-                .Include(a => a.Owner)
-                .Include(a => a.Type)
-                .FirstOrDefaultAsync(m => m.AccommodationId == id);
-            if (accommodation == null)
-            {
-                return NotFound();
-            }
-
-            return View(accommodation);
-        }
-
-        // POST: Accommodations/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var accommodation = await _context.Accommodations.FindAsync(id);
-            if (accommodation != null)
-            {
-                _context.Accommodations.Remove(accommodation);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool AccommodationExists(int id)
-        {
-            return _context.Accommodations.Any(e => e.AccommodationId == id);
+            return View();
         }
     }
 }
