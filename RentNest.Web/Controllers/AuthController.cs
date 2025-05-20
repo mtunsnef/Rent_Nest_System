@@ -9,6 +9,9 @@ using System.Security.Claims;
 using System.Net.Http;
 using Microsoft.AspNetCore.Authentication.Google;
 using RentNest.Core.Consts;
+using RentNest.Infrastructure.DataAccess;
+using RentNest.Common.UtilHelper;
+using Microsoft.EntityFrameworkCore;
 namespace RentNest.Web.Controllers
 {
     public class AuthController : Controller
@@ -37,30 +40,29 @@ namespace RentNest.Web.Controllers
                 TempData["ErrorMessage"] = "Email hoặc mật khẩu không hợp lệ!";
                 return RedirectToAction("Login", "Auth");
             }
+
             var account = await _accountService.GetAccountByEmailAsync(model.Email);
-            HttpContext.Session.SetString("AccountId", account!.AccountId.ToString());
+            //HttpContext.Session.SetString("AccountId", account!.AccountId.ToString());
+            HttpContext.Session.SetInt32("AccountId", account!.AccountId); // Do this in login
             HttpContext.Session.SetString("AccountName", account.Username!);
             HttpContext.Session.SetString("Email", account.Email);
-            // set authen 
+
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, account.Email),
-                new Claim(ClaimTypes.Role, account.Role)
-            };
+    {
+        new Claim(ClaimTypes.Name, account.Email),
+        new Claim(ClaimTypes.Role, account.Role)
+    };
             var identity = new ClaimsIdentity(claims, AuthSchemes.Cookie);
             var principal = new ClaimsPrincipal(identity);
 
             HttpContext.SignInAsync(AuthSchemes.Cookie, principal).Wait();
+
             TempData["SuccessMessage"] = "Đăng nhập thành công! Đang chuyển hướng đến trang chủ...";
             TempData["RedirectUrl"] = Url.Action("Index", "Home");
 
-
-            // if (response.Content.RoleName == AppRoles.Admin.ToString())
-            // {
-            //     return RedirectToAction("Index", "Admin");
-            // }
             return RedirectToAction("Login", "Auth");
         }
+
 
         public async Task<IActionResult> Logout()
         {
@@ -153,8 +155,27 @@ namespace RentNest.Web.Controllers
                 return View(dto);
             }
 
+            // Step 1: Create the account
             var account = await _accountService.CreateGoogleAccountAsync(dto);
 
+            // Step 2: Create UserProfile
+            var userProfile = new UserProfile
+            {
+                AccountId = account.AccountId,  // Link the UserProfile to the newly created account
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                AvatarUrl = "/images/default-avatar.png", // Default avatar, or allow user to upload later
+                Address = dto.Address,          // Address from the form
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            // Save the UserProfile to the database
+            await _accountService.AddUserProfile(userProfile);
+            TempData["SuccessMessage"] = "Account created successfully!";
+            TempData["RedirectUrl"] = "/Home/Index"; // Redirect to a page after success
+
+            // Step 3: Authenticate user
             var authenticateResult = await HttpContext.AuthenticateAsync(AuthSchemes.Google);
             var externalPrincipal = authenticateResult.Principal;
 
@@ -164,29 +185,99 @@ namespace RentNest.Web.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
+            // Step 4: Set up the user claims
             var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.NameIdentifier, dto.GoogleId),
-                    new Claim(ClaimTypes.Name, $"{dto.FirstName} {dto.LastName}"),
-                    new Claim(ClaimTypes.GivenName, dto.FirstName ?? ""),
-                    new Claim(ClaimTypes.Surname, dto.LastName ?? ""),
-                    new Claim(ClaimTypes.Email, dto.Email),
-                };
+    {
+        new Claim(ClaimTypes.NameIdentifier, dto.GoogleId),
+        new Claim(ClaimTypes.Name, $"{dto.FirstName} {dto.LastName}"),
+        new Claim(ClaimTypes.GivenName, dto.FirstName ?? ""),
+        new Claim(ClaimTypes.Surname, dto.LastName ?? ""),
+        new Claim(ClaimTypes.Email, dto.Email),
+    };
 
             var identity = new ClaimsIdentity(claims, AuthSchemes.Google);
             var principal = new ClaimsPrincipal(identity);
 
             await HttpContext.SignInAsync(AuthSchemes.Cookie, principal);
 
+            // Store account details in session for future use
             HttpContext.Session.SetString("AccountId", account.AccountId.ToString());
             HttpContext.Session.SetString("AccountName", $"{dto.FirstName} {dto.LastName}");
             HttpContext.Session.SetString("Email", dto.Email);
 
+            // Step 5: Redirect to Login page
             TempData["SuccessMessage"] = "Đăng ký tài khoản thành công!";
             TempData["RedirectUrl"] = Url.Action("Index", "Home");
 
             return RedirectToAction("Login", "Auth");
         }
+
+
+        [HttpGet]
+        public IActionResult SignUp()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SignUp(AccountRegisterDto model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            if (model.Password != model.ConfirmPassword)
+            {
+                ModelState.AddModelError("ConfirmPassword", "Passwords do not match.");
+                return View(model);
+            }
+
+            if (string.IsNullOrEmpty(model.Email))
+            {
+                ModelState.AddModelError("Email", "Email cannot be empty.");
+                return View(model);
+            }
+
+            var existingAccount = await AccountDAO.Instance.GetAccountByEmailAsync(model.Email);
+            if (existingAccount != null)
+            {
+                ModelState.AddModelError("Email", "Email is already registered.");
+                return View(model);
+            }
+
+            // Step 1: Create Account
+            var account = new Account
+            {
+                Username = model.Username,
+                Email = model.Email,
+                Password = PasswordHelper.HashPassword(model.Password),
+                Role = model.Role,
+                IsActive = "A",
+                AuthProvider = "local",
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            await AccountDAO.Instance.AddAccount(account);
+
+            // Step 2: Create empty UserProfile with just AccountId
+            var profile = new UserProfile
+            {
+                AccountId = account.AccountId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            await _accountService.AddUserProfile(profile); // Make sure your service handles this call
+
+            // Step 3: Save session
+            HttpContext.Session.SetInt32("AccountId", account.AccountId);
+            HttpContext.Session.SetString("AccountName", model.Username);
+            HttpContext.Session.SetString("Email", model.Email);
+
+            TempData["SuccessMessage"] = "Tài khoản đã được tạo thành công!";
+            return RedirectToAction("Login", "Auth"); // Redirect user to fill in their profile
+        }
+
 
 
     }

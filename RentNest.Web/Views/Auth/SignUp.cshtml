@@ -1,0 +1,90 @@
+﻿@model RentNest.Core.DTO.AccountRegisterDto
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<section class="ftco-section contact-section ftco-no-pb" id="signup-section" style="padding: 10em !important">
+    <div class="container">
+        <div class="row justify-content-center mb-5 pb-3">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <span class="subheading">Đăng ký</span>
+                <h2 style="font-family: system-ui;" class="mb-4">Tạo tài khoản mới</h2>
+                <p>Vui lòng điền thông tin bên dưới để bắt đầu sử dụng dịch vụ.</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center block-9">
+            <div class="col-md-7 text-center order-md-last d-flex ftco-animate">
+                <form asp-controller="Auth" asp-action="SignUp" method="post" class="bg-light p-4 p-md-5 contact-form">
+
+                    @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
+                    {
+                        <script>
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Đăng ký thất bại!',
+                                text: '@Html.Raw(TempData["ErrorMessage"])'
+                            });
+                        </script>
+                    }
+
+                    @if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+                    {
+                        <script>
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Đăng ký thành công!',
+                                text: '@Html.Raw(TempData["SuccessMessage"])',
+                                timer: 2500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = '@Html.Raw(TempData["RedirectUrl"])';
+                            });
+                        </script>
+                    }
+
+                    <div class="form-group">
+                        <input asp-for="Username" class="form-control" placeholder="Tên người dùng" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input asp-for="Email" type="email" class="form-control" placeholder="Email của bạn" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group">
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Mật khẩu" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Nhập lại mật khẩu" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <select asp-for="Role" class="form-control">
+                            <option value="">-- Chọn vai trò --</option>
+                            <option value="U">Người thuê nhà</option>
+                            <option value="L">Chủ nhà</option>
+                        </select>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Đăng ký" class="btn btn-primary py-3 px-5 btn-block">
+                    </div>
+
+                    <div class="box p-2 px-3 bg-light d-flex justify-content-center">
+                        <span class="text-muted">Đã có tài khoản?</span>
+                        <a asp-controller="Auth" asp-action="Login" class="text-primary ml-2">Đăng nhập</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

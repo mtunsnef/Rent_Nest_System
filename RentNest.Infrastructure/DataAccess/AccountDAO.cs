@@ -24,9 +24,52 @@ namespace RentNest.Infrastructure.DataAccess
 
         public async Task AddAccount(Account account)
         {
+            if (string.IsNullOrEmpty(account.Email))
+            {
+                throw new ArgumentException("Email cannot be empty.");
+            }
+
+            _context.Accounts.Add(account);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<UserProfile?> GetProfileByAccountIdAsync(int accountId)
+        {
+           
+            return await _context.UserProfiles
+                .Include(p => p.Account)
+                .FirstOrDefaultAsync(p => p.AccountId == accountId);
+        }
+
+        public async Task UpdateProfileAsync(UserProfile updatedProfile)
+        {
+            var existingProfile = await _context.UserProfiles
+                .FirstOrDefaultAsync(p => p.ProfileId == updatedProfile.ProfileId);
+
+            if (existingProfile == null)
+            {
+                throw new Exception("Profile not found.");
+            }
+
+            // Manually update fields
+            existingProfile.FirstName = updatedProfile.FirstName;
+            existingProfile.LastName = updatedProfile.LastName;
+            existingProfile.Gender = updatedProfile.Gender;
+            existingProfile.DateOfBirth = updatedProfile.DateOfBirth;
+            existingProfile.Address = updatedProfile.Address;
+            existingProfile.Occupation = updatedProfile.Occupation;
+            existingProfile.AvatarUrl = updatedProfile.AvatarUrl;
+            existingProfile.UpdatedAt = DateTime.Now;
+
+            // Save changes
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddUserProfile(UserProfile userProfile)
+        {
             try
             {
-                _context.Accounts.Add(account);
+                _context.UserProfiles.Add(userProfile);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -34,5 +77,6 @@ namespace RentNest.Infrastructure.DataAccess
                 throw new Exception("Lỗi khi thêm: " + ex.Message);
             }
         }
+
     }
 }

@@ -7,9 +7,9 @@ public partial class Payment
 {
     public int PaymentId { get; set; }
 
-    public decimal? TotalPrice { get; set; }
+    public int PostPackageDetailsId { get; set; }
 
-    public string? Purpose { get; set; }
+    public decimal? TotalPrice { get; set; }
 
     public string? Status { get; set; }
 
@@ -27,5 +27,5 @@ public partial class Payment
 
     public virtual PaymentMethod? Method { get; set; }
 
-    public virtual ICollection<PaymentItem> PaymentItems { get; set; } = new List<PaymentItem>();
+    public virtual PostPackageDetail PostPackageDetails { get; set; } = null!;
 }

@@ -7,17 +7,25 @@ public partial class PostPackageDetail
 {
     public int Id { get; set; }
 
-    public DateOnly StartDate { get; set; }
-
-    public DateOnly EndDate { get; set; }
-
-    public decimal? ActualPrice { get; set; }
-
     public int PostId { get; set; }
 
-    public int PostPackageId { get; set; }
+    public int PricingId { get; set; }
+
+    public decimal TotalPrice { get; set; }
+
+    public DateTime StartDate { get; set; }
+
+    public DateTime EndDate { get; set; }
+
+    public string? PaymentStatus { get; set; }
+
+    public string? PaymentTransactionId { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
+
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
     public virtual Post Post { get; set; } = null!;
 
-    public virtual PostPackage PostPackage { get; set; } = null!;
+    public virtual PackagePricing Pricing { get; set; } = null!;
 }

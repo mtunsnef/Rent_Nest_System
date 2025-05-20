@@ -5,6 +5,8 @@ using RentNest.Core.Configs;
 using RentNest.Core.Consts;
 using RentNest.Core.Domains;
 using RentNest.Infrastructure.DataAccess;
+using RentNest.Infrastructure.Repositories.Implements;
+using RentNest.Infrastructure.Repositories.Interfaces;
 using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
 
@@ -26,10 +28,20 @@ namespace RentNest.Web
             //Service
             builder.Services.AddScoped<IAccountService, AccountService>();
             //DAO
-            builder.Services.AddScoped<AccountDAO>(); //????
+            builder.Services.AddScoped<AccountDAO>();
 
+            builder.Services.AddScoped<RoomDAO>();
+            builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+            builder.Services.AddScoped<IRoomService, RoomService>();
+
+            builder.Services.AddScoped<PostDAO>();
+            builder.Services.AddScoped<IPostRepository, PostRepository>();
+            builder.Services.AddScoped<IPostService, PostService>();
+
+            //Repository
+            builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             //Config
-           
+
             builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).AddEnvironmentVariables();
             builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("Authentication:Google"));
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
@@ -68,7 +80,8 @@ namespace RentNest.Web
                   options.CallbackPath = googleAuthSettings.CallbackPath;
               });
 
-            builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
+			builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
 
             var app = builder.Build();

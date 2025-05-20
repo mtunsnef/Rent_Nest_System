@@ -27,15 +27,15 @@ public partial class Account
 
     public virtual ICollection<Accommodation> Accommodations { get; set; } = new List<Accommodation>();
 
-    public virtual LandLordVerification? LandLordVerificationAccount { get; set; }
-
-    public virtual ICollection<LandLordVerification> LandLordVerificationVerifiedByNavigations { get; set; } = new List<LandLordVerification>();
+    public virtual ICollection<FavoritePost> FavoritePosts { get; set; } = new List<FavoritePost>();
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
     public virtual ICollection<PostApproval> PostApprovals { get; set; } = new List<PostApproval>();
 
     public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
+
+    public virtual ICollection<PromoUsage> PromoUsages { get; set; } = new List<PromoUsage>();
 
     public virtual UserProfile? UserProfile { get; set; }
 }

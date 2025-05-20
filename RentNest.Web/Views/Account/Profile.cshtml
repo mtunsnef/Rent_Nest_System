@@ -1,4 +1,4 @@
-﻿@model RentNest.Core.Domains.UserProfile
+﻿@model RentNest.Web.Models.ProfileViewModel
 @{
     ViewData["Title"] = "Thông tin cá nhân";
 }
@@ -11,58 +11,59 @@
                 <div class="row">
                     <div class="col-md-8">
                         <h2 class="mb-4">Thông Tin Cá Nhân</h2>
-                        @* <form asp-action="UpdateProfile" asp-controller="Account" method="post" class="contact-form">
+                        <form asp-action="UpdateProfile" asp-controller="Account" method="post" class="contact-form">
+                            <input type="hidden" asp-for="ProfileId" />
+                            <input type="hidden" asp-for="AccountId" />
+
                             <div class="form-group">
-                                <label asp-for="" class="control-label"></label>
-                                <input asp-for="Username" class="form-control" readonly id="AccountName" />
-                                <span asp-validation-for="Username" class="text-danger"></span>
+                                <label asp-for="FirstName" class="control-label"></label>
+                                <input asp-for="FirstName" class="form-control" id="FirstName" readonly />
                             </div>
                             <div class="form-group">
-                                <label asp-for="Email" class="control-label"></label>
-                                <input asp-for="Email" class="form-control" readonly />
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="" class="control-label"></label>
-                                <input asp-for="PhoneNumber" class="form-control" readonly id="PhoneNumber" />
-                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                <label asp-for="LastName" class="control-label"></label>
+                                <input asp-for="LastName" class="form-control" id="LastName" readonly />
                             </div>
                             <div class="form-group">
                                 <label asp-for="Address" class="control-label"></label>
-                                <input asp-for="Address" class="form-control" readonly id="Address" />
+                                <input asp-for="Address" class="form-control" id="Address" readonly />
                                 <span asp-validation-for="Address" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="DateOfBirth" class="control-label"></label>
-                                <input asp-for="DateOfBirth" class="form-control" type="date" readonly
-                                    id="DateOfBirth" />
+                                <input asp-for="DateOfBirth" class="form-control" type="date" id="DateOfBirth" readonly />
                                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Gender" class="control-label"></label>
-                                <select asp-for="Gender" class="form-control" disabled id="Gender">
+                                <select asp-for="Gender" class="form-control" id="Gender" disabled>
                                     <option value="Nam">Nam</option>
                                     <option value="Nữ">Nữ</option>
                                     <option value="Khác">Khác</option>
                                 </select>
                                 <span asp-validation-for="Gender" class="text-danger"></span>
                             </div>
-                            <div class="d-flex justify-content-between">
-                                <button type="button" id="editButton" class="btn btn-primary py-2 px-4"
-                                    onclick="toggleEdit()">Cập nhật</button>
-                                <button type="submit" id="saveButton" class="btn btn-success py-2 px-4 d-none">Lưu thay
-                                    đổi</button>
+
+                            <div class="form-group">
+                                <label asp-for="Occupation" class="control-label"></label>
+                                <input asp-for="Occupation" class="form-control" id="Occupation" readonly />
+                                <span asp-validation-for="Occupation" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" id="editButton" onclick="toggleEdit()" class="btn btn-primary py-2 px-4">Chỉnh sửa</button>
+                                <button type="submit" id="saveButton" class="btn btn-success py-2 px-4 d-none">Lưu thay đổi</button>
                                 <a href="#" class="btn btn-secondary py-2 px-4">Đổi mật khẩu</a>
                             </div>
-                        </form> *@
-
+                        </form>
                     </div>
 
                     <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
                         <div class="text-center">
-                            <img src="~/images/tuan3.jpg" alt="Avatar" class="border shadow" width="230" height="230">
+                            <img src="@(!string.IsNullOrEmpty(Model.AvatarUrl) ? Model.AvatarUrl : "/images/default-avatar.jpg")"
+                                 alt="Avatar" class="border shadow" width="230" height="230" />
                             <div class="mt-3">
-                                <form asp-action="UploadAvatar" asp-controller="Account" method="post"
-                                    enctype="multipart/form-data">
+                                <form asp-action="UploadAvatar" asp-controller="Account" method="post" enctype="multipart/form-data">
                                     <button type="submit" class="btn btn-outline-primary mt-2">Thay đổi ảnh</button>
                                 </form>
                             </div>
@@ -92,27 +93,26 @@
         Swal.fire({
             icon: "error",
             title: "Lỗi!",
-            text: errorMessage,
+            text: '@Html.Raw(TempData["ErrorMessage"])',
             confirmButtonColor: "#d33",
             confirmButtonText: "OK"
         });
     </script>
 }
+
 <script>
     function toggleEdit() {
-        let inputs = document.querySelectorAll("#AccountName, #PhoneNumber, #Address, #DateOfBirth");
-        let genderSelect = document.getElementById("Gender");
-        let editButton = document.getElementById("editButton");
-        let saveButton = document.getElementById("saveButton");
+        const inputs = document.querySelectorAll("#FirstName, #LastName, #Address, #DateOfBirth, #Occupation");
+        const genderSelect = document.getElementById("Gender");
+        const editButton = document.getElementById("editButton");
+        const saveButton = document.getElementById("saveButton");
 
-        let isReadOnly = inputs[0].hasAttribute("readonly");
+        // Make all fields editable
+        inputs.forEach(input => input.removeAttribute("readonly"));
+        genderSelect.removeAttribute("disabled");
 
-        if (isReadOnly) {
-            inputs.forEach(input => input.removeAttribute("readonly"));
-            genderSelect.removeAttribute("disabled");
-
-            editButton.classList.add("d-none");
-            saveButton.classList.remove("d-none");
-        }
+        // Show save button, hide edit button
+        editButton.classList.add("d-none");
+        saveButton.classList.remove("d-none");
     }
 </script>

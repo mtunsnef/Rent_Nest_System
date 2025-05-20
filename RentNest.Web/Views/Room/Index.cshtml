@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<RentNest.Web.Models.AccommodationIndexViewModel>
+@{
 	ViewData["Title"] = "Phòng";
 }
 <section class="hero-wrap hero-wrap-2" style="background-image: url('images/bg_3.jpg');"
@@ -196,244 +197,41 @@
 			        
 			<div class="col-lg-9">
 				<div class="row">
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-1.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">2.4tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-2.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
-									<span>Đã thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">3.5tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
+					@foreach (var item in Model)
+					{
+						var statusColor = item.Status == "A" ? "bg-primary" : "bg-secondary";
+						var statusText = item.Status == "A" ? "Cho thuê" : item.Status == "R" ? "Đã thuê" : "Không hoạt động";
 
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-3.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
+						<div class="col-md-6 col-lg-6">
+							<div class="properties ftco-animate">
+								<div class="img">
+									<img src="@item.ImageUrl" class="img-fluid" alt="@item.Title">
 								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
+								<div class="desc">
+									<div class="text @statusColor d-flex text-center align-items-center justify-content-center">
+										<span>@statusText</span>
 									</div>
-									<div class="pl-md-4">
-										<h4 class="price">4.5tr/tháng</h4>
+									<div class="d-flex pt-5">
+										<div>
+											<h3>
+												<a style="font-family: system-ui;"
+												   href="@Url.Action("Detail", "Room", new {id = item.Id })">
+													@item.Title
+												</a>
+											</h3>
+										</div>
+										<div class="pl-md-4">
+											<h4 class="price">@(((item.Price ?? 0) / 1_000_000M).ToString("0.#").Replace('.', ',')) tr/tháng</h4>
+										</div>
 									</div>
+									<p class="h-info"><span class="location">@item.Address</span></p>
 								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-4.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">2.5tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
 							</div>
 						</div>
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-5.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
-									<span>Đã thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">5.1tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-6.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
-									<span>Đã thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">3.2tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-7.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">2.4tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-8.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">4.5tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-9.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
-									<span>Đã thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">1.5tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
+					}
 				</div>
+			</div>
+				
 				<div class="row mt-5">
 					<div class="col text-center">
 						<div class="block-27">
