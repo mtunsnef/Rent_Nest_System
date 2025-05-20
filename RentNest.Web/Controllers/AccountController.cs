@@ -30,7 +30,7 @@ namespace RentNest.Web.Controllers
             MailContent mail = new MailContent
             {
                 To = account!.Email,
-                Subject = "Reset Password - Furniture Shop",
+                Subject = "Reset Password - BlueTeam",
                 Body = "<h3>Click the link to reset your password:</h3>\n" +
                $"<a href='{updatePassword}'>Reset Password</a>\n" +
                $"<p>If you didn't request this, please ignore this email.</p>"

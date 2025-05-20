@@ -83,6 +83,9 @@ CREATE TABLE Accommodation (
     CONSTRAINT FK_Accommodation_Type FOREIGN KEY (type_id)
         REFERENCES AccommodationType(type_id)
 );
+ALTER TABLE Accommodation
+ADD district_id INT NULL,
+    ward_id INT NULL;
 
 -- 4. T?o b?ng giá gói tin
 CREATE TABLE PackagePricing (

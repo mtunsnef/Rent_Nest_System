@@ -15,13 +15,9 @@
 				<p class="mb-4" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">
 					Tìm thuê dễ dàng, nhanh chóng, tiện lợi và phù hợp với mọi nhu cầu của bạn.
 				</p>
-				<!-- Form tìm kiếm bắt đầu -->
-
-				<!-- Form tìm kiếm kết thúc -->
-
 			</div>
 			<div class="col-md-12">
-				<form>
+				<form asp-action="Search" method="post" asp-controller="Room">
 					<div class="row g-2 align-items-end">
 						<!-- Province -->
 						<div class="col-md">
@@ -30,10 +26,10 @@
 							</label>
 							<select id="provinceDropdown" class="form-control" required
 								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
-								<option value="">Select a province...</option>
+								<option value="">Chọn tỉnh/thành phố...</option>
 							</select>
-							<input type="hidden" id="provinceName" />
-							<div class="invalid-feedback">Please select a province.</div>
+							<input name="provinceName" type="hidden" id="provinceName" />
+							<div class="invalid-feedback">Vui lòng chọn tỉnh/thành phố.</div>
 						</div>
 
 						<!-- District -->
@@ -43,10 +39,10 @@
 							</label>
 							<select id="districtDropdown" class="form-control" required
 								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
-								<option value="">Select a district...</option>
+								<option value="">Chọn quận/huyện...</option>
 							</select>
-							<input type="hidden" id="districtName" />
-							<div class="invalid-feedback">Please select a district.</div>
+							<input name="DistrictName" type="hidden" id="districtName" />
+							<div class="invalid-feedback">Vui lòng chọn quận/huyện.</div>
 						</div>
 
 						<!-- Ward -->
@@ -56,10 +52,10 @@
 							</label>
 							<select id="wardDropdown" class="form-control" required
 								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
-								<option value="">Select a ward...</option>
+								<option value="">Chọn phường/xã...</option>
 							</select>
-							<input type="hidden" id="wardName" />
-							<div class="invalid-feedback">Please select a ward.</div>
+							<input name="WardName" type="hidden" id="wardName" />
+							<div class="invalid-feedback">Vui lòng chọn phường/xã.</div>
 						</div>
 
 						<!-- Area -->
@@ -70,19 +66,18 @@
 								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
 						</div>
 
-						<!-- Price -->
+						<!-- Min Money -->
 						<div class="col-md">
-							<label for="price" style="color:black; font-weight:500;">Giá tiền (VNĐ)</label>
-							<input type="number" class="form-control" id="price" name="price" min="0" step="1000"
-								placeholder="Giá tiền (VNĐ)"
+							<label for="price" style="color:black; font-weight:500;">Giá tiền thấp nhất(VNĐ)</label>
+							<input name="minMoney" type="number" class="form-control" id="minMoney" name="minMoney"
+								min="0" step="1000" placeholder="Giá tiền (VNĐ)"
 								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
 						</div>
-
-						<!-- Quantity -->
+						<!-- Max Money -->
 						<div class="col-md">
-							<label for="quantity" style="color:black; font-weight:500;">SL</label>
-							<input type="number" class="form-control" id="quantity" name="quantity" min="1" step="1"
-								placeholder="SL"
+							<label for="price" style="color:black; font-weight:500;">Giá tiền cao nhất(VNĐ)</label>
+							<input name="maxMoney" type="number" class="form-control" id="maxMoney" name="maxMoney"
+								min="0" step="1000" placeholder="Giá tiền (VNĐ)"
 								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
 						</div>
 
@@ -743,4 +738,5 @@
 @section script {
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="~/js/address.js"></script>
+	<script src="~/js/search.js"></script>
 }
