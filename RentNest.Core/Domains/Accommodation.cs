@@ -33,6 +33,12 @@ public partial class Accommodation
 
     public int TypeId { get; set; }
 
+    public string? WardName { get; set; }
+
+    public string? DistrictName { get; set; }
+
+    public string? ProvinceName { get; set; }
+
     public virtual AccommodationDetail? AccommodationDetail { get; set; }
 
     public virtual ICollection<AccommodationImage> AccommodationImages { get; set; } = new List<AccommodationImage>();

@@ -32,9 +32,10 @@ namespace RentNest.Web
             //Service
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IAzureOpenAIService, AzureOpenAIService>();
+            builder.Services.AddScoped<IRoomService, RoomService>();
 
             //DAO
-            builder.Services.AddScoped<AccountDAO>(); //????
+            builder.Services.AddScoped<AccountDAO>();
 
             //Config
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
