@@ -1,16 +1,11 @@
-﻿using Humanizer;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using RentNest.Core.Consts;
 using RentNest.Core.DTO;
 using RentNest.Service.Interfaces;
 using System.Security.Claims;
-using System.Net.Http;
-using Microsoft.AspNetCore.Authentication.Google;
-using RentNest.Core.Consts;
-using RentNest.Infrastructure.DataAccess;
-using RentNest.Common.UtilHelper;
-using Microsoft.EntityFrameworkCore;
+using RentNest.Core.UtilHelper;
+using RentNest.Core.Domains;
 namespace RentNest.Web.Controllers
 {
     public class AuthController : Controller
@@ -83,8 +78,6 @@ namespace RentNest.Web.Controllers
                 _ => throw new ArgumentException("Provider không hợp lệ", nameof(provider))
             });
         }
-
-
 
         public async Task<IActionResult> ExternalLoginCallback(string provider)
         {
@@ -212,7 +205,6 @@ namespace RentNest.Web.Controllers
 
             await HttpContext.SignInAsync(AuthSchemes.Cookie, principal);
 
-            // Store account details in session for future use
             HttpContext.Session.SetString("AccountId", account.AccountId.ToString());
             HttpContext.Session.SetString("AccountName", $"{dto.FirstName} {dto.LastName}");
             HttpContext.Session.SetString("Email", dto.Email);
@@ -247,45 +239,21 @@ namespace RentNest.Web.Controllers
                 return View(model);
             }
 
-            var existingAccount = await AccountDAO.Instance.GetAccountByEmailAsync(model.Email);
-            if (existingAccount != null)
+            var result = await _accountService.RegisterAccountAsync(model);
+            if (!result)
             {
-                ModelState.AddModelError("Email", "Email is already registered.");
+                ModelState.AddModelError(string.Empty, "Có lỗi xảy ra khi tạo tài khoản.");
                 return View(model);
             }
 
-            // Step 1: Create Account
-            var account = new Account
-            {
-                Username = model.Username,
-                Email = model.Email,
-                Password = PasswordHelper.HashPassword(model.Password),
-                Role = model.Role,
-                IsActive = "A",
-                AuthProvider = "local",
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            };
+            var account = await _accountService.GetAccountByEmailAsync(model.Email);
 
-            await AccountDAO.Instance.AddAccount(account);
-
-            // Step 2: Create empty UserProfile with just AccountId
-            var profile = new UserProfile
-            {
-                AccountId = account.AccountId,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            };
-
-            await _accountService.AddUserProfile(profile); // Make sure your service handles this call
-
-            // Step 3: Save session
             HttpContext.Session.SetInt32("AccountId", account.AccountId);
             HttpContext.Session.SetString("AccountName", model.Username);
             HttpContext.Session.SetString("Email", model.Email);
 
             TempData["SuccessMessage"] = "Tài khoản đã được tạo thành công!";
-            return RedirectToAction("Login", "Auth"); // Redirect user to fill in their profile
+            return RedirectToAction("Login", "Auth");
         }
 
     }

@@ -40,7 +40,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<AmenitiesDAO>();
             builder.Services.AddScoped<TimeUnitPackageDAO>();
             builder.Services.AddScoped<PackagePricingDAO>();
-            builder.Services.AddScoped<RoomDAO>();
+            builder.Services.AddScoped<AccommodationDAO>();
             builder.Services.AddScoped<PostDAO>();
 
             //Repository
@@ -50,7 +50,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<ITimeUnitPackageRepository, TimeUnitPackageRepository>();
             builder.Services.AddScoped<IPackagePricingRepository, PackagePricingRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
-            builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+            builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
 
             //Service
             builder.Services.AddScoped<IMailService, MailService>();
@@ -60,8 +60,9 @@ namespace RentNest.Web
             builder.Services.AddScoped<IAmenitiesSerivce, AmenitiesService>();
             builder.Services.AddScoped<ITimeUnitPackageService, TimeUnitPackageService>();
             builder.Services.AddScoped<IPackagePricingService, PackagePricingService>();
-            builder.Services.AddScoped<IRoomService, RoomService>();
+            builder.Services.AddScoped<IAccommodationService, AccommodationService>();
             builder.Services.AddScoped<IPostService, PostService>();
+            builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
 
             //Config
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
@@ -130,7 +131,7 @@ namespace RentNest.Web
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/trang-chu/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -143,7 +144,7 @@ namespace RentNest.Web
             {
                 if (context.Request.Path == "/")
                 {
-                    context.Response.Redirect("/Home");
+                    context.Response.Redirect("/trang-chu");
                     return;
                 }
                 await next();

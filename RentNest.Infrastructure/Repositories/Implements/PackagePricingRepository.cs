@@ -1,4 +1,4 @@
-﻿using RentNest.Core.Domains;
+﻿ using RentNest.Core.Domains;
 using RentNest.Core.DTO;
 using RentNest.Infrastructure.DataAccess;
 using RentNest.Infrastructure.Repositories.Interfaces;

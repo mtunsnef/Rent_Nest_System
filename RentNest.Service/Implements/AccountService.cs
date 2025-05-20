@@ -47,11 +47,6 @@ namespace RentNest.Service.Implements
             return await _accountRepository.GetProfileByAccountIdAsync(accountId);
         }
 
-        public async Task AddUserProfile(UserProfile userProfile)
-        {
-            await _accountRepository.AddUserProfile(userProfile);
-        }
-
         public async Task UpdateProfileAsync(UserProfile profile)
         {
            
@@ -79,5 +74,10 @@ namespace RentNest.Service.Implements
 
             return (true, "Cập nhật ảnh đại diện thành công!");
         }
-	}
+
+        public async Task<bool> RegisterAccountAsync(AccountRegisterDto model)
+        {
+            return await _accountRepository.RegisterAccountAsync(model);
+        }
+    }
 }
