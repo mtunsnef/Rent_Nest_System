@@ -1,19 +1,13 @@
-﻿@{
+﻿@model List<RentNest.Web.Models.AccommodationIndexViewModel>
+@{
 	ViewData["Title"] = "Phòng";
 }
-<<<<<<< Updated upstream
-<section style="margin-top: 9rem">
-	<div class="overlay"></div>
-	<div class="container-fluid px-md-5">
-		<div class="row no-gutters align-items-end justify-content-start">
-=======
 @model List<RentNest.Core.DTO.RoomCardDto>;
 <section class="hero-wrap hero-wrap-2" style="background-image: url('images/bg_3.jpg');"
 	data-stellar-background-ratio="0.5">
 	<div class="overlay"></div>
 	<div class="container">
 		<div class="row no-gutters slider-text align-items-end justify-content-start mt-4">
->>>>>>> Stashed changes
 			<div class="col-md-9 ftco-animate pb-4">
 				<p class="breadcrumbs">
 					<span class="mr-2">
@@ -189,40 +183,41 @@
 			</div><!-- end -->
 			<div class="col-lg-9">
 				<div class="row">
-					@foreach (var room in Model)
+					@foreach (var item in Model)
 					{
-						var badgeClass = room.RoomStatus!.Contains("A") ? "bg-success"
-						: room.RoomStatus.Contains("I") ? "bg-warning"
-						: "bg-danger";
+						var statusColor = item.Status == "A" ? "bg-primary" : "bg-secondary";
+						var statusText = item.Status == "A" ? "Cho thuê" : item.Status == "R" ? "Đã thuê" : "Không hoạt động";
 
-						var statusText = room.RoomStatus.Contains("A") ? "Còn trống"
-						: room.RoomStatus.Contains("I") ? "Ẩn"
-						: "Đã thuê";
-
-						<div class="col-md-6 col-lg-4 mb-4">
-							<div class="card shadow-sm border-0 h-100">
-								<div class="position-relative">
-									<img src="@room.RoomImage" class="card-img-top img-fluid"
-										style="height: 200px; object-fit: cover;" alt="Room Image">
+						<div class="col-md-6 col-lg-6">
+							<div class="properties ftco-animate">
+								<div class="img">
+									<img src="@item.ImageUrl" class="img-fluid" alt="@item.Title">
 								</div>
-								<div class="card-body">
-									<!-- Status badge inside card-body -->
-									<div class="badge @badgeClass px-3 py-2 mb-2 d-inline-block"
-										style="font-size: 0.85rem; border-radius: 0.5rem">
-										@statusText
+								<div class="desc">
+									<div class="text @statusColor d-flex text-center align-items-center justify-content-center">
+										<span>@statusText</span>
 									</div>
-
-									<h5 class="card-title fw-bold mb-2">@room.RoomTitle</h5>
-									<p class="card-text mb-1"><strong>Diện tích:</strong> @room.RoomArea m²</p>
-									<p class="card-text mb-1"><strong>Giá:</strong> @room.RoomPrice VNĐ/tháng</p>
-									<p class="card-text mb-1"><strong>Loại phòng:</strong> @room.roomType</p>
-									<p class="card-text mb-1"><strong>Địa chỉ:</strong> @room.RoomAddress</p>
+									<div class="d-flex pt-5">
+										<div>
+											<h3>
+												<a style="font-family: system-ui;"
+												   href="@Url.Action("Detail", "Room", new {id = item.Id })">
+													@item.Title
+												</a>
+											</h3>
+										</div>
+										<div class="pl-md-4">
+											<h4 class="price">@(((item.Price ?? 0) / 1_000_000M).ToString("0.#").Replace('.', ',')) tr/tháng</h4>
+										</div>
+									</div>
+									<p class="h-info"><span class="location">@item.Address</span></p>
 								</div>
 							</div>
 						</div>
 					}
-
 				</div>
+			</div>
+				
 				<div class="row mt-5">
 					<div class="col text-center">
 						<div class="block-27">

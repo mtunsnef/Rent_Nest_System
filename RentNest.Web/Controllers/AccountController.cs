@@ -7,6 +7,7 @@ using RentNest.Core.Consts;
 using RentNest.Core.DTO;
 using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
+using RentNest.Web.Models;
 
 namespace RentNest.Web.Controllers
 {
@@ -93,47 +94,93 @@ namespace RentNest.Web.Controllers
             return View();
         }
 
-        // [HttpGet]
-        // [Route("/Profile")]
-        // public async Task<IActionResult> Profile()
-        // {
-        //     if (HttpContext.Session.GetString("AccountId") == null)
-        //     {
-        //         return RedirectToAction("Login", "Auth"); 
-        //     }
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            int? accountIdNullable = HttpContext.Session.GetInt32("AccountId");
+            if (accountIdNullable == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy thông tin người dùng.";
+                return RedirectToAction("Login", "Auth");
+            }
+            int accountId = accountIdNullable.Value;
 
-        //     string email = HttpContext.Session.GetString("Email");
-        //     var user = await _accountService.GetAccountByEmailAsync(email);
-        //     return View(user);
-        // }
+            var profile = await _accountService.GetProfileAsync(accountId);
+            var model = new ProfileViewModel
+            {
+                ProfileId = profile.ProfileId,
+                FirstName = profile.FirstName,
+                LastName = profile.LastName,
+                Gender = profile.Gender,
+                DateOfBirth = profile.DateOfBirth,
+                Address = profile.Address,
+                AvatarUrl = profile.AvatarUrl,
+                AccountId = accountId,
+                Username = profile.Account?.Username,
+                Email = profile.Account?.Email
+            };
 
-        // [HttpPost]
-        // public async Task<IActionResult> UpdateProfile(Account updatedAccount)
-        // {
-        //     if (HttpContext.Session.GetString("AccountId") == null)
-        //     {
-        //         return RedirectToAction("Login", "Auth");
-        //     }
+            return View(model);
+        }
 
-        //     string email = HttpContext.Session.GetString("Email");
-        //     var user = await _accountService.GetAccountByEmailAsync(email);
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(ProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ!";
+                return View("Profile", model);
+            }
 
-        //     if (user != null)
-        //     {
-        //         user.AccountName = updatedAccount.AccountName;
-        //         user.PhoneNumber = updatedAccount.PhoneNumber;
-        //         user.Address = updatedAccount.Address;
-        //         user.DateOfBirth = updatedAccount.DateOfBirth;
-        //         user.Gender = updatedAccount.Gender;
+            try
+            {
+                var userProfile = new UserProfile
+                {
+                    ProfileId = model.ProfileId,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Gender = model.Gender,
+                    DateOfBirth = model.DateOfBirth,
+                    Address = model.Address,
+                    AvatarUrl = model.AvatarUrl,
+                    AccountId = model.AccountId,
+                    UpdatedAt = DateTime.Now
+                };
 
-        //         TempData["SuccessMessage"] = "Cập nhật thông tin cá nhân thành công!";
-        //     }
-        //     else
-        //     {
-        //         TempData["ErrorMessage"] = "Có lỗi xảy ra, vui lòng thử lại!";
-        //     }
-        //     return RedirectToAction("Profile");
-        // }
+                await _accountService.UpdateProfileAsync(userProfile);
+                TempData["SuccessMessage"] = "Thông tin cá nhân đã được cập nhật.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Đã xảy ra lỗi khi cập nhật thông tin.";
+                // Optional: log ex.Message to understand what failed
+            }
+
+            return RedirectToAction("Profile");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UploadAvatar(IFormFile avatar)
+        {
+            var accountId = HttpContext.Session.GetInt32("AccountId");
+            if (accountId == null)
+            {
+                TempData["ErrorMessage"] = "Bạn chưa đăng nhập.";
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var (success, message) = await _accountService.UploadAvatarAsync(accountId.Value, avatar, webRootPath);
+
+            if (success)
+                TempData["SuccessMessage"] = message;
+            else
+                TempData["ErrorMessage"] = message;
+
+            return RedirectToAction("Profile", "Account");
+        }
+
 
     }
 }

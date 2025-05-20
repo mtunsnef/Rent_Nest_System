@@ -10,6 +10,10 @@ namespace RentNest.Infrastructure.Repositories.Interfaces
 {
     public interface IAccountRepository
     {
+        Task<UserProfile?> GetProfileByAccountIdAsync(int accountId);
+        Task UpdateProfileAsync(UserProfile profile);
+        Task UpdateAvatarAsync(UserProfile profile, string avatarUrl);
+        Task AddUserProfile(UserProfile userProfile);
         Task<bool> Login(AccountLoginDto accountDto);
         Task<Account?> GetAccountByEmailAsync(string email);
         Task Update(Account account);

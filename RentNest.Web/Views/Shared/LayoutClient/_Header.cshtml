@@ -26,7 +26,7 @@
 									Xin chào, @(Context.Session.GetString("UserName") ?? Context.Session.GetString("Email"))
 								</a>
 								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-									<a class="dropdown-item" href="/Profile">Thông tin cá nhân</a>
+									<a class="dropdown-item" href="/Account/Profile">Thông tin cá nhân</a>
 									<a class="dropdown-item" href="#">Lịch sử thuê</a>
 									@{
 										var email = Context.Session.GetString("Email");
@@ -46,7 +46,7 @@
 						else
 						{
 							<p class="mb-0 register-link">
-								<a href="#" class="mr-3">Đăng ký</a>
+								<a href="/Auth/SignUp" class="mr-3">Đăng ký</a>
 								<a href="/Auth/Login">Đăng nhập</a>
 							</p>
 						}

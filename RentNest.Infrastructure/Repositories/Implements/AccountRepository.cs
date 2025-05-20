@@ -1,8 +1,13 @@
 ﻿using RentNest.Core.Domains;
-using RentNest.Core.DTO;
-using RentNest.Core.UtilHelper;
 using RentNest.Infrastructure.DataAccess;
 using RentNest.Infrastructure.Repositories.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using RentNest.Core.DTO;
+using RentNest.Core.UtilHelper;
 
 namespace RentNest.Infrastructure.Repositories.Implements
 {
@@ -10,11 +15,34 @@ namespace RentNest.Infrastructure.Repositories.Implements
     {
         private readonly AccountDAO _accountDAO;
         private readonly UserProfileDAO _userProfileDAO;
+
         public AccountRepository(AccountDAO accountDAO, UserProfileDAO userProfileDAO)
         {
             _accountDAO = accountDAO;
             _userProfileDAO = userProfileDAO;
         }
+
+        public async Task<UserProfile?> GetProfileByAccountIdAsync(int accountId)
+        {
+            return await _accountDAO.GetProfileByAccountIdAsync(accountId);
+        }
+
+        public async Task UpdateProfileAsync(UserProfile profile)
+        {
+            await _accountDAO.UpdateProfileAsync(profile);
+        }
+
+        public async Task UpdateAvatarAsync(UserProfile profile, string avatarUrl)
+        {
+            profile.AvatarUrl = avatarUrl;
+            await _accountDAO.UpdateProfileAsync(profile);
+        }
+
+        public async Task AddUserProfile(UserProfile userProfile)
+        {
+            await _accountDAO.AddUserProfile(userProfile);
+        }
+        
         public async Task<bool> Login(AccountLoginDto accountDto)
         {
             try

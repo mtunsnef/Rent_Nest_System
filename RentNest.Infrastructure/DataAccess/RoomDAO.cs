@@ -8,20 +8,51 @@ using RentNest.Core.DTO;
 
 namespace RentNest.Infrastructure.DataAccess
 {
-    public class RoomDAO : SingletonBase<RoomDAO>
+    public class RoomDAO : BaseDAO<RoomDAO>
     {
-        private readonly RentNestSystemContext _context;
-        public RoomDAO()
+        public RoomDAO(RentNestSystemContext context) : base(context) { }
+
+        public List<Accommodation> GetAllRooms()
         {
-            _context = new RentNestSystemContext();
+            return _context.Accommodations
+                .Include(a => a.AccommodationImages)
+                .Include(a => a.Type) // Type = AccommodationType
+                .Where(a => a.Status != "I")
+                .ToList();
         }
+
+        public Accommodation? GetRoomById(int id)
+        {
+            return _context.Accommodations
+                .Include(a => a.AccommodationImages)
+                .Include(a => a.Type)
+                .Include(a => a.AccommodationDetail)
+                .FirstOrDefault(a => a.AccommodationId == id && a.Status != "I");
+        }
+
+		public AccommodationDetail? GetRoomDetailById(int id)
+		{
+			return _context.AccommodationDetails
+				.Include(ad => ad.Accommodation)
+				.ThenInclude(a => a.AccommodationImages)
+				.FirstOrDefault(ad => ad.DetailId == id && ad.Accommodation.Status != "I");
+		}
+
+		public int? GetDetailIdByAccommodationId(int accommodationId)
+        {
+            return _context.AccommodationDetails
+                .Where(ad => ad.AccommodationId == accommodationId && ad.Accommodation.Status != "I")
+                .Select(ad => (int?)ad.DetailId)
+                .FirstOrDefault();
+        }
+
         public async Task<List<Accommodation>> GetRoomsBySearchDto(
-    string provinceName,
-    string districtName,
-    string wardName,
-    double? area,
-    decimal? minMoney,
-    decimal? maxMoney)
+            string provinceName,
+            string districtName,
+            string wardName,
+            double? area,
+            decimal? minMoney,
+            decimal? maxMoney)
         {
             var query = _context.Accommodations.AsQueryable();
 
@@ -57,8 +88,6 @@ namespace RentNest.Infrastructure.DataAccess
 
             return await query.ToListAsync();
         }
-
-
 
         public async Task<string> GetRoomImage(int accommodationId)
         {

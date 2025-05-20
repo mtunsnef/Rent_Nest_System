@@ -1,4 +1,5 @@
-﻿@{
+﻿@model RentNest.Web.Models.AccommodationDetailViewModel
+@{
     ViewData["Title"] = "Chi tiết phòng thuê";
 }
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
@@ -101,70 +102,73 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-md-12 tour-wrap">
                 <table class="table">
                     <tbody>
                         <tr>
-                            <th scope="row">Diện tích phòng</th>
-                            <td>
-                                <p>25m² - 35m²</p>
-                            </td>
-                            <td></td>
-                        </tr><!-- END TR-->
-
-                        <tr>
                             <th scope="row">Số giường ngủ</th>
                             <td>
-                                <p>3 giường/phòng</p>
+                                <p>@Model.BedroomCount giường</p>
                             </td>
-                            <td></td>
-                        </tr><!-- END TR-->
+                        </tr>
 
                         <tr>
                             <th scope="row">Số phòng tắm</th>
                             <td>
-                                <p>2 phòng tắm riêng</p>
+                                <p>@Model.BathroomCount phòng tắm</p>
                             </td>
-                            <td></td>
-                        </tr><!-- END TR-->
+                        </tr>
 
                         <tr>
-                            <th scope="row">Nhà để xe</th>
+                            <th scope="row">Tình trạng nội thất</th>
                             <td>
-                                <p>Khu vực gửi xe rộng rãi</p>
+                                <p>@Model.FurnitureStatus</p>
                             </td>
-                            <td></td>
-                        </tr><!-- END TR-->
-                        <tr>
-                            <th scope="row">Tiện ích nổi bật</th>
-                            <td class="d-flex">
-                                <ul>
-                                    <li>Trang bị đầy đủ giường, tủ quần áo, bàn học</li>
-                                    <li>Hệ thống an ninh 24/7</li>
-                                </ul>
-                                <ul>
-                                    <li>Khu vực sinh hoạt chung rộng rãi, wifi tốc độ cao</li>
-                                    <li>Siêu thị mini, khu thể thao ngay trong khuôn viên</li>
-                                </ul>
-                            </td>
-                            <td></td>
-                        </tr><!-- END TR-->
+                        </tr>
 
                         <tr>
-                            <th scope="row">Không bao gồm</th>
+                            <th scope="row">Tiện ích</th>
                             <td class="d-flex">
                                 <ul>
-                                    <li>Phí điện, nước tính theo mức tiêu thụ</li>
-                                </ul>
-                                <ul>
-                                    <li>Phí giữ xe</li>
-                                </ul> 
-                                <ul>
-                                    <li>Dịch vụ giặt ủi</li>
+                                    @if (Model.HasKitchenCabinet == true)
+                                    {
+                                        <li>Tủ bếp</li>
+                                    }
+                                    @if (Model.HasAirConditioner == true)
+                                    {
+                                        <li>Máy lạnh</li>
+                                    }
+                                    @if (Model.HasRefrigerator == true)
+                                    {
+                                        <li>Tủ lạnh</li>
+                                    }
+                                    @if (Model.HasWashingMachine == true)
+                                    {
+                                        <li>Máy giặt</li>
+                                    }
+                                    @if (Model.HasLoft == true)
+                                    {
+                                        <li>Gác lửng</li>
+                                    }
                                 </ul>
                             </td>
-                            <td></td>
-                        </tr><!-- END TR-->
+                        </tr>
+
+                        <tr>
+                            <th scope="row">Ngày đăng</th>
+                            <td>
+                                <p>@Model.CreatedAt?.ToString("dd/MM/yyyy")</p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">Cập nhật lần cuối</th>
+                            <td>
+                                <p>@Model.UpdatedAt?.ToString("dd/MM/yyyy")</p>
+                            </td>
+                        </tr>
+
                         <tr>
                             <th scope="row">Vị trí</th>
                             <td>
@@ -180,7 +184,7 @@
                                     </div>
                                 </div>
                             </td>
-                        </tr><!-- END TR-->
+                        </tr>
                     </tbody>
                 </table>
             </div>

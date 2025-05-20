@@ -21,6 +21,10 @@ public partial class Post
 
     public int AccountId { get; set; }
 
+    public string Title { get; set; } = null!;
+
+    public string Content { get; set; } = null!;
+
     public virtual Accommodation Accommodation { get; set; } = null!;
 
     public virtual Account Account { get; set; } = null!;

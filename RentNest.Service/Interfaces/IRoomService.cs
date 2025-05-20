@@ -1,3 +1,4 @@
+using System.Text;
 using RentNest.Core.Domains;
 using RentNest.Core.DTO;
 using System;
@@ -9,13 +10,19 @@ namespace RentNest.Service.Interfaces
 {
     public interface IRoomService
     {
+        List<Accommodation> GetAllRooms();
+        Accommodation? GetRoomById(int id);
+        AccommodationDetail? GetRoomDetailById(int id);
+        int? GetDetailIdByAccommodationId(int accommodationId);
         Task<List<Accommodation>> GetRoomsBySearchDto(string provinceName,
-    string districtName,
-    string wardName,
-    double? area,
-    decimal? minMoney,
-    decimal? maxMoney);
-        Task<string> GetRoomImage(int accommodationId);
-        Task<string> GetRoomType(int accommodationId);
+            string districtName,
+            string wardName,
+            double? area,
+            decimal? minMoney,
+            decimal? maxMoney);
+                Task<string> GetRoomImage(int accommodationId);
+                Task<string> GetRoomType(int accommodationId);
+
     }
+
 }
