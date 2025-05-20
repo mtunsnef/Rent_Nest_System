@@ -6,33 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using RentNest.Core.Domains;
 namespace RentNest.Infrastructure.DataAccess
 {
-    public class AccountDAO : SingletonBase<AccountDAO>
+    public class AccountDAO : BaseDAO<Account>
     {
-        private readonly RentNestSystemContext _context;
-        public AccountDAO()
-        {
-            _context = new RentNestSystemContext();
-        }
-        public async Task<Account?> GetAccountByEmailAsync(string email) => await _context.Accounts.FirstOrDefaultAsync(account => account.Email.Equals(email));
-        public void Update(Account account)
-        {
+        public AccountDAO(RentNestSystemContext context) : base(context) { }
 
-            _context.Accounts.Attach(account);
-            _context.Entry(account).State = EntityState.Modified;
-            _context.SaveChanges();
-        }
-
-        public async Task AddAccount(Account account)
+        public async Task<Account?> GetAccountByEmailAsync(string email)
         {
-            try
-            {
-                _context.Accounts.Add(account);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Lỗi khi thêm: " + ex.Message);
-            }
+            return await _dbSet.FirstOrDefaultAsync(a => a.Email == email);
         }
     }
 }

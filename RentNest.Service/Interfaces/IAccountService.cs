@@ -5,9 +5,9 @@ namespace RentNest.Service.Interfaces
 {
     public interface IAccountService
     {
-        Task<Boolean> Login(AccountLoginDto accountDto);
+        Task<bool> Login(AccountLoginDto accountDto);
         Task<Account?> GetAccountByEmailAsync(string email);
-        void Update(Account account);
+        Task Update(Account account);
         Task<Account> CreateExternalAccountAsync(ExternalAccountRegisterDto dto);
 
     }

@@ -7,23 +7,21 @@ public partial class AccommodationDetail
 {
     public int DetailId { get; set; }
 
-    public bool? HasKitchen { get; set; }
+    public bool? HasKitchenCabinet { get; set; }
 
     public bool? HasAirConditioner { get; set; }
 
-    public bool? HasParking { get; set; }
+    public bool? HasRefrigerator { get; set; }
 
-    public bool? HasSecurity { get; set; }
+    public bool? HasWashingMachine { get; set; }
 
-    public bool? HasElevator { get; set; }
+    public bool? HasLoft { get; set; }
 
     public string? FurnitureStatus { get; set; }
 
-    public bool? IsPetsAllowed { get; set; }
+    public int? BedroomCount { get; set; }
 
-    public bool? IsSmokingAllowed { get; set; }
-
-    public bool? HasWashingMachine { get; set; }
+    public int? BathroomCount { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 

@@ -9,6 +9,7 @@ namespace RentNest.Service.Interfaces
 {
     public interface IAzureOpenAIService
     {
-        Task<string> GenerateDataPostAsync(PostDataAIDto model);
+        Task<string> GenerateDataPost(PostDataAIDto model);
+        Task<string> ChatWithAIAsync(string userMessage);
     }
 }

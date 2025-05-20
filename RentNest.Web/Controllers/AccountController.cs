@@ -2,9 +2,8 @@
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RentNest.Core.UtilHelper;
 using RentNest.Core.Consts;
-using RentNest.Common.UtilHelper;
-using RentNest.Core.Domains;
 using RentNest.Core.DTO;
 using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
@@ -14,9 +13,9 @@ namespace RentNest.Web.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountService _accountService;
-        private readonly MailService _mailService;
+        private readonly IMailService _mailService;
 
-        public AccountController(IAccountService accountService, MailService mailService)
+        public AccountController(IAccountService accountService, IMailService mailService)
         {
             _accountService = accountService;
             _mailService = mailService;
@@ -86,7 +85,7 @@ namespace RentNest.Web.Controllers
                 {
 
                     account.Password = PasswordHelper.HashPassword(model.NewPassword!);
-                    _accountService.Update(account);
+                    await _accountService.Update(account);
                     TempData["SuccessMessage"] = "Đổi mật khẩu thành công! Đang chuyển hướng đến trang chủ...";
                     TempData["RedirectUrl"] = Url.Action("Index", "Home");
                 }
