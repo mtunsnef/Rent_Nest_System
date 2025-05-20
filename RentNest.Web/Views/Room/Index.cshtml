@@ -1,10 +1,19 @@
 ﻿@{
 	ViewData["Title"] = "Phòng";
 }
+<<<<<<< Updated upstream
 <section style="margin-top: 9rem">
 	<div class="overlay"></div>
 	<div class="container-fluid px-md-5">
 		<div class="row no-gutters align-items-end justify-content-start">
+=======
+@model List<RentNest.Core.DTO.RoomCardDto>;
+<section class="hero-wrap hero-wrap-2" style="background-image: url('images/bg_3.jpg');"
+	data-stellar-background-ratio="0.5">
+	<div class="overlay"></div>
+	<div class="container">
+		<div class="row no-gutters slider-text align-items-end justify-content-start mt-4">
+>>>>>>> Stashed changes
 			<div class="col-md-9 ftco-animate pb-4">
 				<p class="breadcrumbs">
 					<span class="mr-2">
@@ -17,6 +26,77 @@
 					</span>
 				</p>
 			</div>
+			<form asp-action="Search" method="post" asp-controller="Room">
+				<div class="row g-2 align-items-end">
+					<!-- Province -->
+					<div class="col-md">
+						<label for="provinceDropdown" style="color:black; font-weight:500;">
+							Province <span style="color:red;">*</span>
+						</label>
+						<select id="provinceDropdown" class="form-control" required
+							style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+							<option value="">Chọn tỉnh/thành phố...</option>
+						</select>
+						<input name="provinceName" type="hidden" id="provinceName" />
+						<div class="invalid-feedback">Vui lòng chọn tỉnh/thành phố.</div>
+					</div>
+
+					<!-- District -->
+					<div class="col-md">
+						<label for="districtDropdown" style="color:black; font-weight:500;">
+							District <span style="color:red;">*</span>
+						</label>
+						<select id="districtDropdown" class="form-control" required
+							style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+							<option value="">Chọn quận/huyện...</option>
+						</select>
+						<input name="DistrictName" type="hidden" id="districtName" />
+						<div class="invalid-feedback">Vui lòng chọn quận/huyện.</div>
+					</div>
+
+					<!-- Ward -->
+					<div class="col-md">
+						<label for="wardDropdown" style="color:black; font-weight:500;">
+							Ward <span style="color:red;">*</span>
+						</label>
+						<select id="wardDropdown" class="form-control" required
+							style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+							<option value="">Chọn phường/xã...</option>
+						</select>
+						<input name="WardName" type="hidden" id="wardName" />
+						<div class="invalid-feedback">Vui lòng chọn phường/xã.</div>
+					</div>
+
+					<!-- Area -->
+					<div class="col-md">
+						<label for="area" style="color:black; font-weight:500;">Diện tích (m²)</label>
+						<input type="number" class="form-control" id="area" name="area" min="0" step="0.1"
+							placeholder="Diện tích (m²)"
+							style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+					</div>
+
+					<!-- Min Money -->
+					<div class="col-md">
+						<label for="price" style="color:black; font-weight:500;">Giá tiền thấp nhất(VNĐ)</label>
+						<input name="minMoney" type="number" class="form-control" id="minMoney" name="minMoney" min="0"
+							step="1000" placeholder="Giá tiền (VNĐ)"
+							style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+					</div>
+					<!-- Max Money -->
+					<div class="col-md">
+						<label for="price" style="color:black; font-weight:500;">Giá tiền cao nhất(VNĐ)</label>
+						<input name="maxMoney" type="number" class="form-control" id="maxMoney" name="maxMoney" min="0"
+							step="1000" placeholder="Giá tiền (VNĐ)"
+							style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+					</div>
+
+					<!-- Submit -->
+					<div class="col-auto d-flex align-items-end">
+						<button type="submit" class="btn btn-primary px-4 h-100">Tìm</button>
+					</div>
+				</div>
+			</form>
+			<div style="height: 40px;"></div>
 		</div>
 	</div>
 </section>
@@ -28,24 +108,7 @@
 					<h3 class="mb-5">Tìm kiếm</h3>
 					<form action="#" class="search-property">
 						<div class="row">
-							<div class="col-md-12 align-items-end ftco-animate">
-								<div class="form-group">
-									<label for="#">Từ khóa</label>
-									<div class="form-field">
-										<div class="icon"><span class="icon-pencil"></span></div>
-										<input type="text" class="form-control" placeholder="Từ khóa">
-									</div>
-								</div>
-							</div>
-							<div class="col-md-12 align-items-end ftco-animate">
-								<div class="form-group">
-									<label for="#">Địa chỉ</label>
-									<div class="form-field">
-										<div class="icon"><span class="icon-pencil"></span></div>
-										<input type="text" class="form-control" placeholder="Tên vị trí/địa chỉ">
-									</div>
-								</div>
-							</div>
+							<!-- Loại phòng -->
 							<div class="col-md-12 align-items-end ftco-animate">
 								<div class="form-group">
 									<label for="#">Loại phòng</label>
@@ -54,23 +117,22 @@
 											<div class="icon"><span class="ion-ios-arrow-down"></span></div>
 											<select name="" id="" class="form-control">
 												<option value="">Chọn loại phòng</option>
-												<option value="">Phòng trọ giá rẻ</option>
-												<option value="">Phòng trọ cao cấp</option>
+												<option value="">Phòng trọ</option>
 												<option value="">Nhà nguyên căn</option>
-												<option value="">Căn hộ mini</option>
-												<option value="">Chung cư</option>
+												<option value="">Căn hộ ,Chung cư</option>
 											</select>
 										</div>
 									</div>
 								</div>
 							</div>
+							<!-- Trạng thái phòng -->
 							<div class="col-md-12 align-items-end ftco-animate">
 								<div class="form-group">
 									<label for="#">Trạng thái phòng</label>
 									<div class="form-field">
 										<div class="select-wrap">
 											<div class="icon"><span class="ion-ios-arrow-down"></span></div>
-											<select name="" id="" class="form-control">.
+											<select name="" id="" class="form-control">
 												<option value="">Chọn trạng thái</option>
 												<option value="">Cho thuê</option>
 												<option value="">Đã thuê</option>
@@ -79,87 +141,29 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="row">
+							<!-- Giá thuê tối thiểu -->
 							<div class="col-md-12 align-items-end ftco-animate">
 								<div class="form-group">
-									<label for="#">Số giường tối thiểu</label>
+									<label for="min-price">Giá thuê tối thiểu</label>
 									<div class="form-field">
-										<div class="select-wrap">
-											<div class="icon"><span class="ion-ios-arrow-down"></span></div>
-											<select name="" id="" class="form-control">
-												<option value="">1</option>
-												<option value="">2</option>
-												<option value="">3</option>
-												<option value="">4</option>
-												<option value="">5</option>
-											</select>
-										</div>
+										<input type="number" id="min-price" name="min-price" class="form-control"
+											placeholder="Nhập giá tối thiểu (VNĐ)">
 									</div>
 								</div>
 							</div>
 
+							<!-- Giá thuê tối đa -->
 							<div class="col-md-12 align-items-end ftco-animate">
 								<div class="form-group">
-									<label for="#">Số phòng tắm tối thiểu</label>
+									<label for="max-price">Giá thuê tối đa</label>
 									<div class="form-field">
-										<div class="select-wrap">
-											<div class="icon"><span class="ion-ios-arrow-down"></span></div>
-											<select name="" id="" class="form-control">
-												<option value="">1</option>
-												<option value="">2</option>
-												<option value="">3</option>
-												<option value="">4</option>
-												<option value="">5</option>
-											</select>
-										</div>
+										<input type="number" id="max-price" name="max-price" class="form-control"
+											placeholder="Nhập giá tối đa (VNĐ)">
 									</div>
 								</div>
 							</div>
 
-							<div class="col-md-12 align-items-end ftco-animate">
-								<div class="form-group">
-									<label for="#">Giá thuê tối thiểu</label>
-									<div class="form-field">
-										<div class="select-wrap">
-											<div class="icon"><span class="ion-ios-arrow-down"></span></div>
-											<select name="" id="" class="form-control">
-												<option value="">Chọn mức giá</option>
-												<option value="">1 triệu VNĐ</option>
-												<option value="">2 triệu VNĐ</option>
-												<option value="">3 triệu VNĐ</option>
-												<option value="">5 triệu VNĐ</option>
-												<option value="">7 triệu VNĐ</option>
-												<option value="">10 triệu VNĐ</option>
-												<option value="">15 triệu VNĐ</option>
-												<option value="">20 triệu VNĐ</option>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-12 align-items-end ftco-animate">
-								<div class="form-group">
-									<label for="#">Giá thuê tối đa</label>
-									<div class="form-field">
-										<div class="select-wrap">
-											<div class="icon"><span class="ion-ios-arrow-down"></span></div>
-											<select name="" id="" class="form-control">
-												<option value="">Chọn mức giá</option>
-												<option value="">5 triệu VNĐ</option>
-												<option value="">10 triệu VNĐ</option>
-												<option value="">20 triệu VNĐ</option>
-												<option value="">30 triệu VNĐ</option>
-												<option value="">50 triệu VNĐ</option>
-												<option value="">70 triệu VNĐ</option>
-												<option value="">100 triệu VNĐ</option>
-												<option value="">200 triệu VNĐ</option>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>
+							<!-- Diện tích tối thiểu -->
 							<div class="col-md-12 align-items-end ftco-animate">
 								<div class="form-group">
 									<label for="#">Diện tích tối thiểu <span>(m²)</span></label>
@@ -169,7 +173,7 @@
 									</div>
 								</div>
 							</div>
-
+							<!-- Diện tích tối đa -->
 							<div class="col-md-12 align-items-end ftco-animate">
 								<div class="form-group">
 									<label for="#">Diện tích tối đa <span>(m²)</span></label>
@@ -179,257 +183,45 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-12 align-self-end ftco-animate">
-								<div class="form-group">
-									<div class="form-field">
-										<input type="submit" value="Tìm kiếm" class="form-control btn btn-primary">
-									</div>
-								</div>
-							</div>
 						</div>
 					</form>
 				</div>
 			</div><!-- end -->
-			        
 			<div class="col-lg-9">
 				<div class="row">
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-1.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">2.4tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-2.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
-									<span>Đã thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">3.5tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
+					@foreach (var room in Model)
+					{
+						var badgeClass = room.RoomStatus!.Contains("A") ? "bg-success"
+						: room.RoomStatus.Contains("I") ? "bg-warning"
+						: "bg-danger";
 
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-3.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">4.5tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
+						var statusText = room.RoomStatus.Contains("A") ? "Còn trống"
+						: room.RoomStatus.Contains("I") ? "Ẩn"
+						: "Đã thuê";
 
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-4.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
+						<div class="col-md-6 col-lg-4 mb-4">
+							<div class="card shadow-sm border-0 h-100">
+								<div class="position-relative">
+									<img src="@room.RoomImage" class="card-img-top img-fluid"
+										style="height: 200px; object-fit: cover;" alt="Room Image">
 								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
+								<div class="card-body">
+									<!-- Status badge inside card-body -->
+									<div class="badge @badgeClass px-3 py-2 mb-2 d-inline-block"
+										style="font-size: 0.85rem; border-radius: 0.5rem">
+										@statusText
 									</div>
-									<div class="pl-md-4">
-										<h4 class="price">2.5tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-5.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
-									<span>Đã thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">5.1tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-6.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
-									<span>Đã thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">3.2tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
 
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-7.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
+									<h5 class="card-title fw-bold mb-2">@room.RoomTitle</h5>
+									<p class="card-text mb-1"><strong>Diện tích:</strong> @room.RoomArea m²</p>
+									<p class="card-text mb-1"><strong>Giá:</strong> @room.RoomPrice VNĐ/tháng</p>
+									<p class="card-text mb-1"><strong>Loại phòng:</strong> @room.roomType</p>
+									<p class="card-text mb-1"><strong>Địa chỉ:</strong> @room.RoomAddress</p>
 								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">2.4tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
 							</div>
 						</div>
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-8.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">4.5tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 col-lg-4">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-9.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div class="text bg-secondary d-flex text-center align-items-center justify-content-center">
-									<span>Đã thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">1.5tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
+					}
+
 				</div>
 				<div class="row mt-5">
 					<div class="col text-center">
@@ -441,7 +233,6 @@
 								<li><a href="#">3</a></li>
 								<li><a href="#">4</a></li>
 								<li><a href="#">5</a></li>
-								<li><a href="#">&gt;</a></li>
 							</ul>
 						</div>
 					</div>
@@ -450,3 +241,7 @@
 		</div>
 	</div>
 </section>
+@section script {
+	<script src="~/js/address.js"></script>
+	<script src="~/js/filter.js"></script>
+}

@@ -20,6 +20,7 @@ namespace RentNest.Service.Implements
             {
                 return false;
             }
+            var pass = BCrypt.Net.BCrypt.HashPassword(accountDto.Password);
             var checkLogin = BCrypt.Net.BCrypt.Verify(accountDto.Password, account.Password);
             return checkLogin;
         }
