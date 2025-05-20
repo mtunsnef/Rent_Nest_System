@@ -1,6 +1,6 @@
 ﻿@using RentNest.Core.Consts
 
-<div class="bg-black top" style="padding-bottom: 0.15rem; padding-top: 0.15rem">
+<div class="bg-white top" style="padding-bottom: 0.15rem; padding-top: 0.15rem; color: #000 !important">
 	<div class="container">
 		<div class="row no-gutters d-flex align-items-start align-items-center px-md-0">
 			<div class="col-lg-12 d-block">
@@ -21,7 +21,7 @@
 						@if (Context.Session.GetString("AccountId") != null)
 						{
 							<div class="dropdown">
-								<a style="color: #fff" class="text dropdown-toggle" href="#" role="button" id="userDropdown"
+								<a style="color: #000 !important" class="text dropdown-toggle" href="#" role="button" id="userDropdown"
 									data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									Xin chào, @(Context.Session.GetString("UserName") ?? Context.Session.GetString("Email"))
 								</a>

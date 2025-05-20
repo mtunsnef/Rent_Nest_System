@@ -16,7 +16,7 @@ function showStep(step) {
     const progress = (step / stepLabels.length) * 100;
     document.getElementById('progress-bar').style.width = progress + '%';
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 110, behavior: 'smooth' });
 }
 
 function nextStep() {

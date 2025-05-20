@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const step3Div = document.querySelector(".step-3");
 
     nextStepBtn.addEventListener("click", function () {
+        window.scrollTo({ top: 110, behavior: 'smooth' });
         step3Div.classList.add("d-none");
         paymentSummaryDiv.classList.remove("d-none");
 

@@ -23,8 +23,9 @@ namespace RentNest.Web
             var webRoot = builder.Environment.ContentRootPath;
             var solutionRoot = Path.GetFullPath(Path.Combine(webRoot, ".."));
             var envPath = Path.Combine(solutionRoot, ".env");
-
             Env.Load(envPath);
+
+            //Add dbcontext
             builder.Services.AddDbContext<RentNestSystemContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 

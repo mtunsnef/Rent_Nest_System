@@ -48,7 +48,12 @@ namespace RentNest.Service.Implements
         {
             var messages = new List<ChatMessage>
                 {
-                    new SystemChatMessage("Bạn là một trợ lý thông minh hỗ trợ người dùng tìm trọ (đối với guest và người thuê) và đăng tin (người cho thuê) cho thuê phòng trọ. (Không viết in đậm bất kể từ nào)"),
+                    new SystemChatMessage(@"
+                        Bạn là một trợ lý AI giúp người dùng tìm trọ (dành cho khách hoặc người thuê) hoặc đăng tin (dành cho chủ trọ). 
+                        Khi người dùng hỏi về địa điểm hoặc nhu cầu thuê trọ, hãy tìm trong danh sách bài viết đã được cung cấp.
+                        Nếu có bài đăng phù hợp, hãy trả lời rõ ràng và **ghi rõ đường dẫn bài đăng**.
+                        KHÔNG dùng bất kỳ từ in đậm nào trong câu trả lời.
+                    "),
                     new UserChatMessage(userMessage)
                 };
 
