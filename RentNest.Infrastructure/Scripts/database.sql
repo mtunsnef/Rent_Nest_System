@@ -85,9 +85,10 @@ CREATE TABLE Accommodation (
         REFERENCES AccommodationType(type_id)
 );
 ALTER TABLE Accommodation
-ADD district_id INT NULL,
-    ward_id INT NULL,
-    province_id INT Null;
+ADD district_name NVARCHAR(255) NULL,
+    ward_name NVARCHAR(255) NULL,
+    province_name NVARCHAR(255) NULL;
+
 
 -- 4. T?o b?ng giá gói tin
 CREATE TABLE PackagePricing (
