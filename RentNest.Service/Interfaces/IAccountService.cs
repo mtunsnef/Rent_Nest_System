@@ -8,12 +8,12 @@ namespace RentNest.Service.Interfaces
     {
         Task<bool> Login(AccountLoginDto accountDto);
         Task<Account?> GetAccountByEmailAsync(string email);
-        void Update(Account account);
+        Task Update(Account account);
         Task<UserProfile?> GetProfileAsync(int accountId);
         Task UpdateProfileAsync(UserProfile profile);
         Task<(bool Success, string Message)> UploadAvatarAsync(int accountId, IFormFile avatar, string webRootPath);
-        Task AddUserProfile(UserProfile userProfile);
         Task<Account> CreateExternalAccountAsync(ExternalAccountRegisterDto dto);
+        Task<bool> RegisterAccountAsync(AccountRegisterDto model);
 
     }
 

@@ -24,25 +24,20 @@ namespace RentNest.Infrastructure.Repositories.Implements
 
         public async Task<UserProfile?> GetProfileByAccountIdAsync(int accountId)
         {
-            return await _accountDAO.GetProfileByAccountIdAsync(accountId);
+            return await _userProfileDAO.GetProfileByAccountIdAsync(accountId);
         }
 
         public async Task UpdateProfileAsync(UserProfile profile)
         {
-            await _accountDAO.UpdateProfileAsync(profile);
+            await _userProfileDAO.UpdateProfileAsync(profile);
         }
 
         public async Task UpdateAvatarAsync(UserProfile profile, string avatarUrl)
         {
             profile.AvatarUrl = avatarUrl;
-            await _accountDAO.UpdateProfileAsync(profile);
+            await _userProfileDAO.UpdateProfileAsync(profile);
         }
 
-        public async Task AddUserProfile(UserProfile userProfile)
-        {
-            await _accountDAO.AddUserProfile(userProfile);
-        }
-        
         public async Task<bool> Login(AccountLoginDto accountDto)
         {
             try
@@ -104,5 +99,33 @@ namespace RentNest.Infrastructure.Repositories.Implements
             }
             return account;
         }
+
+        public async Task<bool> RegisterAccountAsync(AccountRegisterDto model)
+        {
+            var account = new Account
+            {
+                Username = model.Username,
+                Email = model.Email,
+                Password = PasswordHelper.HashPassword(model.Password),
+                Role = model.Role,
+                IsActive = "A",
+                AuthProvider = "local",
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            await _accountDAO.AddAsync(account);
+
+            var profile = new UserProfile
+            {
+                AccountId = account.AccountId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            await _userProfileDAO.AddAsync(profile);
+            return true;
+        }
+
     }
 }
