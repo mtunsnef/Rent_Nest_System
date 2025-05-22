@@ -8,5 +8,10 @@
         public decimal? Price { get; set; }
         public string Status { get; set; }
         public string ImageUrl { get; set; }
+        public int? Area { get; set; }
+        public int? BedroomCount { get; set; }
+        public int? BathroomCount { get; set; }
+        public DateTime? CreatedAt { get; set; }
+
     }
 }

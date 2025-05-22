@@ -33,7 +33,7 @@ async function fetchProvinces() {
         const dropdown = document.getElementById('provinceDropdown');
         const provinceInput = document.getElementById('provinceName');
 
-        dropdown.innerHTML = '<option value="">Province...</option>';
+        dropdown.innerHTML = '<option value="">Chọn tỉnh/thành phố...</option>';
 
         data.data.forEach(item => {
             const province = new Province(item.id, item.name, item.code, item.typeText);
@@ -65,7 +65,7 @@ async function fetchDistrict(id) {
         const dropdown = document.getElementById('districtDropdown');
         const districtInput = document.getElementById('districtName'); 
 
-        dropdown.innerHTML = '<option value="">District...</option>';
+        dropdown.innerHTML = '<option value="">Chọn quận/huyện...</option>';
 
         data.data.forEach(item => {
             const district = new District(item.id, item.name, item.provinceId, item.type, item.typeText);
@@ -97,7 +97,7 @@ async function fetchWard(id) {
         const dropdown = document.getElementById('wardDropdown');
         const wardInput = document.getElementById('wardName'); 
 
-        dropdown.innerHTML = '<option value="">Ward...</option>';
+        dropdown.innerHTML = '<option value="">Chọn phường/xã...</option>';
 
         data.data.forEach(item => {
             const ward = new District(item.id, item.name, item.provinceId, item.type, item.typeText);
