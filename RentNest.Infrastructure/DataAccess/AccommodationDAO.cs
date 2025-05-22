@@ -11,38 +11,6 @@ namespace RentNest.Infrastructure.DataAccess
     public class AccommodationDAO : BaseDAO<AccommodationDAO>
     {
         public AccommodationDAO(RentNestSystemContext context) : base(context) { }
-        public List<Accommodation> GetAllAccommodation()
-        {
-            return _context.Accommodations
-                .Include(a => a.AccommodationImages)
-                .Include(a => a.Type) // Type = AccommodationType
-                .Where(a => a.Status != "I")
-                .ToList();
-        }
-        public Accommodation? GetAccommodationById(int id)
-        {
-            return _context.Accommodations
-                .Include(a => a.AccommodationImages)
-                .Include(a => a.Type)
-                .Include(a => a.AccommodationDetail)
-                .FirstOrDefault(a => a.AccommodationId == id && a.Status != "I");
-        }
-
-        public AccommodationDetail? GetAccommodationDetailById(int id)
-        {
-            return _context.AccommodationDetails
-                .Include(ad => ad.Accommodation)
-                .ThenInclude(a => a.AccommodationImages)
-                .FirstOrDefault(ad => ad.DetailId == id && ad.Accommodation.Status != "I");
-        }
-        public int? GetDetailIdByAccommodationId(int accommodationId)
-        {
-            return _context.AccommodationDetails
-                .Where(ad => ad.AccommodationId == accommodationId && ad.Accommodation.Status != "I")
-                .Select(ad => (int?)ad.DetailId)
-                .FirstOrDefault();
-        }
-
         public async Task<List<Accommodation>> GetRoomsBySearchDto(
             string provinceName,
             string districtName,

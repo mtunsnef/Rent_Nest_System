@@ -24,5 +24,18 @@ namespace RentNest.Infrastructure.DataAccess
                 .ToListAsync();
         }
 
+        public async Task<Post?> GetPostDetailWithAccommodationDetailAsync(int postId)
+        {
+            return await _context.Posts
+                .Include(p => p.Accommodation)
+                    .ThenInclude(a => a.AccommodationDetail)
+                .Include(p => p.Accommodation.AccommodationImages)
+                .Include(a => a.Account)
+                    .ThenInclude(u => u.UserProfile)
+                .Include(a => a.Accommodation.AccommodationAmenities)
+                    .ThenInclude(aa => aa.Amenity)
+                .FirstOrDefaultAsync(p => p.PostId == postId);
+        }
+
     }
 }

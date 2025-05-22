@@ -21,5 +21,10 @@ namespace RentNest.Infrastructure.Repositories.Implements
         {
             return await _postDAO.GetAllPostsWithAccommodation();
         }
+
+        public async Task<Post?> GetPostDetailWithAccommodationDetailAsync(int postId)
+        {
+            return await _postDAO.GetPostDetailWithAccommodationDetailAsync(postId);
+        }
     }
 }

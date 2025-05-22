@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace RentNest.Infrastructure.Repositories.Interfaces
 {
-    public interface IPostRepository
+    public interface IPostSearchService
     {
-        Task<List<Post>> GetAllPostsWithAccommodation();
-        Task<Post?> GetPostDetailWithAccommodationDetailAsync(int postId);
+        Task<List<Post>> GetTopMatchingPostsAsync(string query, int topK = 5);
     }
+
 }

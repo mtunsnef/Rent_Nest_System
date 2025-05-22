@@ -17,14 +17,14 @@ namespace RentNest.Web.Controllers
 {
     public class AccommodationsController : Controller
     {
-        private readonly IConfiguration _configuration;
         private readonly IAccommodationService _accommodationService;
         private readonly IPostService _postService;
-        public AccommodationsController(IConfiguration configuration, IAccommodationService accommodationService, IPostService postService)
+        private readonly IAmenitiesSerivce _amenitiesSerivce;
+        public AccommodationsController(IAccommodationService accommodationService, IPostService postService, IAmenitiesSerivce amenitiesSerivce)
         {
-            _configuration = configuration;
             _accommodationService = accommodationService;
             _postService = postService;
+            _amenitiesSerivce = amenitiesSerivce;
         }
 
         [HttpGet]
@@ -50,50 +50,55 @@ namespace RentNest.Web.Controllers
         }
 
 
-        [HttpGet("chi-tiet/{id:int}")]
-        public IActionResult Detail(int id)
+        [HttpGet("chi-tiet/{postId:int}")]
+        public async Task<IActionResult> Detail(int postId)
         {
+            var post = await _postService.GetPostDetailWithAccommodationDetailAsync(postId);
 
-            var detailId = _accommodationService.GetDetailIdByAccommodationId(id);
-            Console.WriteLine($"AccommodationId = {id}, DetailId = {detailId}");
-
-            if (detailId == null)
+            if (post == null || post.Accommodation == null || post.Accommodation.AccommodationDetail == null)
             {
-                return Content("No detailId found");
+                return Content("Không tìm thấy dữ liệu chi tiết");
             }
 
-            var room = _accommodationService.GetAccommodationDetailById(detailId.Value);
-
-            if (room == null)
-            {
-                return Content("Room detail not found for given detailId");
-            }
-
-            ViewData["Address"] = room.Accommodation?.Address ?? "Đ. Nam Kỳ Khởi Nghĩa, Khu đô thị FPT City, Ngũ Hành Sơn, Đà Nẵng 550000";
+            var imageUrls = post.Accommodation.AccommodationImages?
+                .Select(img => img.ImageUrl)
+                .ToList() ?? new List<string>();
 
             var viewModel = new AccommodationDetailViewModel
             {
-                DetailId = room.DetailId,
-                HasKitchenCabinet = room.HasKitchenCabinet,
-                HasAirConditioner = room.HasAirConditioner,
-                HasRefrigerator = room.HasRefrigerator,
-                HasWashingMachine = room.HasWashingMachine,
-                HasLoft = room.HasLoft,
-                FurnitureStatus = room.FurnitureStatus,
-                BedroomCount = room.BedroomCount,
-                BathroomCount = room.BathroomCount,
-                CreatedAt = room.CreatedAt,
-                UpdatedAt = room.UpdatedAt,
-                AccommodationId = room.AccommodationId,
-                Title = room.Accommodation?.Title,
-                Price = room.Accommodation?.Price,
-                Description = room.Accommodation?.Description,
-                ImageUrl = room.Accommodation?.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "default-image.jpg"
-            };
+                PostTitle = post.Title,
+                PostContent = post.Content,
+                DetailId = post.Accommodation.AccommodationDetail.DetailId,
+                AccommodationId = post.Accommodation.AccommodationId,
+                ImageUrls = imageUrls,
+                Price = post.Accommodation.Price,
+                Description = post.Accommodation.Description,
+                BathroomCount = post.Accommodation.AccommodationDetail.BathroomCount,
+                BedroomCount = post.Accommodation.AccommodationDetail.BedroomCount,
+                HasKitchenCabinet = post.Accommodation.AccommodationDetail.HasKitchenCabinet,
+                HasAirConditioner = post.Accommodation.AccommodationDetail.HasAirConditioner,
+                HasRefrigerator = post.Accommodation.AccommodationDetail.HasRefrigerator,
+                HasWashingMachine = post.Accommodation.AccommodationDetail.HasWashingMachine,
+                HasLoft = post.Accommodation.AccommodationDetail.HasLoft,
+                FurnitureStatus = post.Accommodation.AccommodationDetail.FurnitureStatus,
+                CreatedAt = post.Accommodation.AccommodationDetail.CreatedAt,
+                UpdatedAt = post.Accommodation.AccommodationDetail.UpdatedAt,
+                Address = post.Accommodation.Address ?? "",
+                AccountImg = post.Account.UserProfile.AvatarUrl,
+                AccountName = post.Account.UserProfile.FirstName + " " + post.Account.UserProfile.LastName,
+                AccountPhone = post.Account.UserProfile.PhoneNumber,
+                Amenities = post.Accommodation.AccommodationAmenities?
+                    .Where(a => a.Amenity != null)
+                    .Select(a => a.Amenity.AmenityName)
+                    .ToList() ?? new List<string>()
+                    };
+
+            ViewData["Address"] = viewModel.Address;
 
             return View(viewModel);
-
         }
+
+
 
         [HttpPost]
         public async Task<IActionResult> Search([FromForm] string provinceName, string districtName, string wardName, double area, decimal minMoney, decimal maxMoney)

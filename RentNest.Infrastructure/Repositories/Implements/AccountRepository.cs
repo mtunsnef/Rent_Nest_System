@@ -87,6 +87,7 @@ namespace RentNest.Infrastructure.Repositories.Implements
                     FirstName = dto.FirstName,
                     LastName = dto.LastName,
                     Address = dto.Address,
+                    PhoneNumber = dto.PhoneNumber,
                     CreatedAt = DateTime.UtcNow,
                     AccountId = account.AccountId
                 };

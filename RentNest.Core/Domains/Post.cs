@@ -9,7 +9,7 @@ public partial class Post
 
     public string Title { get; set; } = null!;
 
-    public string Content { get; set; } = null!;
+    public string? Content { get; set; }
 
     public string CurrentStatus { get; set; } = null!;
 

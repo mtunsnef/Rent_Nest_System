@@ -1,5 +1,4 @@
-﻿
-USE RentNestSystem;
+﻿USE RentNestSystem;
 
 CREATE TABLE Account (
     account_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -395,3 +394,10 @@ VALUES
 (3, 4, 2, 196560.00, 393120.00),
 (3, 4, 3, 184275.00, 552825.00),
 (3, 4, 4, 171990.00, 687960.00);
+
+CREATE TABLE PostEmbeddings (
+    id INT PRIMARY KEY,
+	post_id int, 
+    embedding_vector NVARCHAR(MAX),
+	constraint Post_PostEmbeddings foreign key (post_id) references Post(post_id)
+)

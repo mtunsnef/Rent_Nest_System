@@ -56,8 +56,14 @@
 
                 const data = await res.json();
                 removeTypingIndicator();
-                appendMessage(data.reply || 'Không có phản hồi.', 'bot');
-            } catch (err) {
+                    if (Array.isArray(data.reply)) {
+                        data.reply.forEach(msg => {
+                            appendMessage(msg, 'bot');
+                        });
+                    } else {
+                        appendMessage(data.reply || 'Không có phản hồi.', 'bot');
+                    }
+                } catch (err) {
                 removeTypingIndicator();
                 appendMessage('Có lỗi xảy ra.', 'bot');
             }

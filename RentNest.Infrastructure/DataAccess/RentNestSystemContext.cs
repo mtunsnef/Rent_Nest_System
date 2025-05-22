@@ -65,12 +65,11 @@ public partial class RentNestSystemContext : DbContext
                 .AddJsonFile("appsettings.json", true, true).Build();
         return configuration["ConnectionStrings:DefaultConnectionString"];
     }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Accommodation>(entity =>
         {
-            entity.HasKey(e => e.AccommodationId).HasName("PK__Accommod__004EC325FE1EAFAE");
+            entity.HasKey(e => e.AccommodationId).HasName("PK__Accommod__004EC3254C948AC2");
 
             entity.ToTable("Accommodation");
 
@@ -132,7 +131,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<AccommodationAmenity>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Accommod__3213E83F9A5D5C76");
+            entity.HasKey(e => e.Id).HasName("PK__Accommod__3213E83FF857D561");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.AccommodationId).HasColumnName("accommodation_id");
@@ -149,9 +148,9 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<AccommodationDetail>(entity =>
         {
-            entity.HasKey(e => e.DetailId).HasName("PK__Accommod__38E9A224F4753BCB");
+            entity.HasKey(e => e.DetailId).HasName("PK__Accommod__38E9A2245F2E285A");
 
-            entity.HasIndex(e => e.AccommodationId, "UQ__Accommod__004EC3246A506103").IsUnique();
+            entity.HasIndex(e => e.AccommodationId, "UQ__Accommod__004EC3242BE484D5").IsUnique();
 
             entity.Property(e => e.DetailId).HasColumnName("detail_id");
             entity.Property(e => e.AccommodationId).HasColumnName("accommodation_id");
@@ -195,7 +194,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<AccommodationImage>(entity =>
         {
-            entity.HasKey(e => e.ImageId).HasName("PK__Accommod__DC9AC955B12EE526");
+            entity.HasKey(e => e.ImageId).HasName("PK__Accommod__DC9AC9553BE36311");
 
             entity.ToTable("AccommodationImage");
 
@@ -221,11 +220,11 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<AccommodationType>(entity =>
         {
-            entity.HasKey(e => e.TypeId).HasName("PK__Accommod__2C00059854D0A5FE");
+            entity.HasKey(e => e.TypeId).HasName("PK__Accommod__2C000598736C3E5E");
 
             entity.ToTable("AccommodationType");
 
-            entity.HasIndex(e => e.TypeName, "UQ__Accommod__543C4FD9EC58B94B").IsUnique();
+            entity.HasIndex(e => e.TypeName, "UQ__Accommod__543C4FD98F98B9AF").IsUnique();
 
             entity.Property(e => e.TypeId).HasColumnName("type_id");
             entity.Property(e => e.Description)
@@ -238,13 +237,15 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.AccountId).HasName("PK__Account__46A222CD432556E7");
+            entity.HasKey(e => e.AccountId).HasName("PK__Account__46A222CDAF0EE0E1");
 
             entity.ToTable("Account");
 
-            entity.HasIndex(e => e.Email, "UQ__Account__AB6E6164418EA81D").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Account__AB6E61645CC41F39").IsUnique();
 
-            entity.HasIndex(e => e.AuthProviderId, "UQ__Account__C82CBBE9479C7D29").IsUnique();
+            entity.HasIndex(e => e.AuthProviderId, "UX_Account_AuthProviderId")
+                .IsUnique()
+                .HasFilter("([auth_provider_id] IS NOT NULL)");
 
             entity.HasIndex(e => e.Username, "UX_Account_Username")
                 .IsUnique()
@@ -291,7 +292,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<Amenity>(entity =>
         {
-            entity.HasKey(e => e.AmenityId).HasName("PK__Amenitie__E908452D1C4CB6EC");
+            entity.HasKey(e => e.AmenityId).HasName("PK__Amenitie__E908452DFE13361B");
 
             entity.Property(e => e.AmenityId).HasColumnName("amenity_id");
             entity.Property(e => e.AmenityName)
@@ -304,7 +305,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<FavoritePost>(entity =>
         {
-            entity.HasKey(e => e.FavoriteId).HasName("PK__Favorite__46ACF4CB1B4C305C");
+            entity.HasKey(e => e.FavoriteId).HasName("PK__Favorite__46ACF4CBA73791EC");
 
             entity.ToTable("FavoritePost");
 
@@ -330,7 +331,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PackagePricing>(entity =>
         {
-            entity.HasKey(e => e.PricingId).HasName("PK__PackageP__A25A9FB7DE268811");
+            entity.HasKey(e => e.PricingId).HasName("PK__PackageP__A25A9FB72E1E5FB7");
 
             entity.ToTable("PackagePricing");
 
@@ -371,7 +372,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => e.PaymentId).HasName("PK__Payment__ED1FC9EAF9B3132A");
+            entity.HasKey(e => e.PaymentId).HasName("PK__Payment__ED1FC9EAB15FF072");
 
             entity.ToTable("Payment");
 
@@ -417,7 +418,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PaymentMethod>(entity =>
         {
-            entity.HasKey(e => e.MethodId).HasName("PK__PaymentM__747727B64E765867");
+            entity.HasKey(e => e.MethodId).HasName("PK__PaymentM__747727B674E4505D");
 
             entity.ToTable("PaymentMethod");
 
@@ -437,7 +438,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<Post>(entity =>
         {
-            entity.HasKey(e => e.PostId).HasName("PK__Post__3ED787668A7E6665");
+            entity.HasKey(e => e.PostId).HasName("PK__Post__3ED78766FFC98D4B");
 
             entity.ToTable("Post");
 
@@ -459,7 +460,7 @@ public partial class RentNestSystemContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("published_at");
             entity.Property(e => e.Title)
-                .HasMaxLength(100)
+                .HasMaxLength(150)
                 .HasColumnName("title");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -481,7 +482,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PostApproval>(entity =>
         {
-            entity.HasKey(e => e.ApprovalId).HasName("PK__PostAppr__C94AE61A231D0D0D");
+            entity.HasKey(e => e.ApprovalId).HasName("PK__PostAppr__C94AE61AAE7A2C64");
 
             entity.Property(e => e.ApprovalId).HasColumnName("approval_id");
             entity.Property(e => e.ApprovedByAccountId).HasColumnName("approved_by_account_id");
@@ -514,7 +515,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PostPackageDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PostPack__3213E83F1CC27DAC");
+            entity.HasKey(e => e.Id).HasName("PK__PostPack__3213E83FA345CC54");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedAt)
@@ -554,7 +555,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PostPackageType>(entity =>
         {
-            entity.HasKey(e => e.PackageTypeId).HasName("PK__PostPack__DFBEE40A1206CF4F");
+            entity.HasKey(e => e.PackageTypeId).HasName("PK__PostPack__DFBEE40AD718A7E0");
 
             entity.ToTable("PostPackageType");
 
@@ -570,11 +571,11 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PromoCode>(entity =>
         {
-            entity.HasKey(e => e.PromoId).HasName("PK__PromoCod__84EB4CA5537ED593");
+            entity.HasKey(e => e.PromoId).HasName("PK__PromoCod__84EB4CA53BB72346");
 
             entity.ToTable("PromoCode");
 
-            entity.HasIndex(e => e.Code, "UQ__PromoCod__357D4CF9839B7ABF").IsUnique();
+            entity.HasIndex(e => e.Code, "UQ__PromoCod__357D4CF9AAE1C1F0").IsUnique();
 
             entity.Property(e => e.PromoId).HasColumnName("promo_id");
             entity.Property(e => e.Code)
@@ -611,7 +612,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PromoUsage>(entity =>
         {
-            entity.HasKey(e => e.PromoUsageId).HasName("PK__PromoUsa__60E8C63805CC53F4");
+            entity.HasKey(e => e.PromoUsageId).HasName("PK__PromoUsa__60E8C6384EA6E4DA");
 
             entity.ToTable("PromoUsage");
 
@@ -640,7 +641,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<TimeUnitPackage>(entity =>
         {
-            entity.HasKey(e => e.TimeUnitId).HasName("PK__TimeUnit__8304AF475E6614A6");
+            entity.HasKey(e => e.TimeUnitId).HasName("PK__TimeUnit__8304AF475C5F36A7");
 
             entity.ToTable("TimeUnitPackage");
 
@@ -655,11 +656,11 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<UserProfile>(entity =>
         {
-            entity.HasKey(e => e.ProfileId).HasName("PK__UserProf__AEBB701F28C6FB27");
+            entity.HasKey(e => e.ProfileId).HasName("PK__UserProf__AEBB701F88E07967");
 
             entity.ToTable("UserProfile");
 
-            entity.HasIndex(e => e.AccountId, "UQ__UserProf__46A222CC8C64923A").IsUnique();
+            entity.HasIndex(e => e.AccountId, "UQ__UserProf__46A222CCBA12D4FA").IsUnique();
 
             entity.Property(e => e.ProfileId).HasColumnName("profile_id");
             entity.Property(e => e.AccountId).HasColumnName("account_id");
@@ -687,6 +688,9 @@ public partial class RentNestSystemContext : DbContext
             entity.Property(e => e.Occupation)
                 .HasMaxLength(100)
                 .HasColumnName("occupation");
+            entity.Property(e => e.PhoneNumber)
+                .HasMaxLength(20)
+                .HasColumnName("phone_number");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")

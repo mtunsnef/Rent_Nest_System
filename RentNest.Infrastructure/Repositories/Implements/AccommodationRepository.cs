@@ -17,15 +17,6 @@ namespace RentNest.Infrastructure.Repositories.Implements
         {
             _accommodationDAO = accommodationDAO;
         }
-        public Accommodation? GetAccommodationById(int id)
-        {
-            return _accommodationDAO.GetAccommodationById(id);
-        }
-
-        public AccommodationDetail? GetAccommodationDetailById(int id)
-        {
-            return _accommodationDAO.GetAccommodationDetailById(id);
-        }
 
         public Task<string> GetAccommodationImage(int accommodationId)
         {
@@ -36,17 +27,6 @@ namespace RentNest.Infrastructure.Repositories.Implements
         {
             return _accommodationDAO.GetAccommodationType((int)accommodationId);
         }
-
-        public List<Accommodation> GetAllAccommodation()
-        {
-            return _accommodationDAO.GetAllAccommodation();
-        }
-
-        public int? GetDetailIdByAccommodationId(int accommodationId)
-        {
-            return _accommodationDAO.GetDetailIdByAccommodationId((int)accommodationId);
-        }
-
         public Task<List<Accommodation>> GetAccommodationsBySearchDto(string provinceName, string districtName, string wardName, double? area, decimal? minMoney, decimal? maxMoney)
         {
             return _accommodationDAO.GetRoomsBySearchDto(provinceName, districtName, wardName, area, minMoney, maxMoney);
