@@ -12,14 +12,17 @@ namespace RentNest.Infrastructure.DataAccess
     {
         public PostDAO(RentNestSystemContext context) : base(context) { }
 
-		public List<Post> GetAllPostsWithAccommodation()
+        public async Task<List<Post>> GetAllPostsWithAccommodation()
         {
-            return _context.Posts
-        .Include(p => p.Accommodation)
-            .ThenInclude(a => a.AccommodationImages)
-        .Where(p => p.CurrentStatus == "A" && p.Accommodation.Status != "I")
-        .OrderByDescending(p => p.PublishedAt) 
-        .ToList();
+            return await _context.Posts
+                .Include(p => p.Accommodation)
+                    .ThenInclude(a => a.AccommodationImages)
+                .Include(p => p.Accommodation)
+                    .ThenInclude(a => a.AccommodationDetail) 
+                .Where(p => p.CurrentStatus == "A" && p.Accommodation.Status != "I")
+                .OrderByDescending(p => p.PublishedAt)
+                .ToListAsync();
         }
+
     }
 }

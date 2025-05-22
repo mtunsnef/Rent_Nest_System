@@ -9,6 +9,6 @@ namespace RentNest.Infrastructure.Repositories.Interfaces
 {
     public interface IPostRepository
     {
-        List<Post> GetAllPostsWithAccommodation();
+        Task<List<Post>> GetAllPostsWithAccommodation();
     }
 }

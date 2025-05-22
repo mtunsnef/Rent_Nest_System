@@ -29,19 +29,21 @@ namespace RentNest.Web.Controllers
 
         [HttpGet]
         [Route("danh-sach-phong-tro")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var posts = _postService.GetAllPostsWithAccommodation();
-
-
+            var posts = await _postService.GetAllPostsWithAccommodation();
             var model = posts.Select(p => new AccommodationIndexViewModel
             {
-                Id = p.Accommodation.AccommodationId,
+                Id = p.PostId,
                 Status = p.CurrentStatus,
                 Title = p.Title,
                 Price = p.Accommodation.Price,
                 Address = p.Accommodation.Address,
-                ImageUrl = p.Accommodation.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "default-image.jpg"
+                Area = p.Accommodation.Area,
+                BathroomCount = p.Accommodation?.AccommodationDetail?.BathroomCount,
+                BedroomCount = p.Accommodation?.AccommodationDetail?.BedroomCount,
+                ImageUrl = p.Accommodation?.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "default-image.jpg",
+                CreatedAt = p.CreatedAt
             }).ToList();
 
             return View(model);
@@ -67,8 +69,6 @@ namespace RentNest.Web.Controllers
                 return Content("Room detail not found for given detailId");
             }
 
-
-            ViewData["GoogleMapsAPIKey"] = _configuration["GoogleMapsAPIKey"];
             ViewData["Address"] = room.Accommodation?.Address ?? "Đ. Nam Kỳ Khởi Nghĩa, Khu đô thị FPT City, Ngũ Hành Sơn, Đà Nẵng 550000";
 
             var viewModel = new AccommodationDetailViewModel
