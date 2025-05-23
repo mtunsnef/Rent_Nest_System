@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RentNest.Infrastructure.DataAccess
 {
-    public class AccommodationDAO : BaseDAO<AccommodationDAO>
+    public class AccommodationDAO : BaseDAO<Accommodation>
     {
         public AccommodationDAO(RentNestSystemContext context) : base(context) { }
         public async Task<List<Accommodation>> GetRoomsBySearchDto(

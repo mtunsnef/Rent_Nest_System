@@ -27,7 +27,13 @@ public partial class Account
 
     public virtual ICollection<Accommodation> Accommodations { get; set; } = new List<Accommodation>();
 
+    public virtual ICollection<Conversation> ConversationReceivers { get; set; } = new List<Conversation>();
+
+    public virtual ICollection<Conversation> ConversationSenders { get; set; } = new List<Conversation>();
+
     public virtual ICollection<FavoritePost> FavoritePosts { get; set; } = new List<FavoritePost>();
+
+    public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 

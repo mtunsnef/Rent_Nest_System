@@ -1,4 +1,4 @@
-﻿USE RentNestSystem;
+﻿use RentNestSystem;
 
 CREATE TABLE Account (
     account_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -7,7 +7,7 @@ CREATE TABLE Account (
     password NVARCHAR(255) NULL,
     is_active CHAR(1) NOT NULL DEFAULT 'A' CHECK (is_active IN ('A', 'D')),  --A is active, D is disabled
     auth_provider VARCHAR(20) NOT NULL CHECK (auth_provider IN ('local', 'google', 'facebook')),
-    auth_provider_id VARCHAR(255) UNIQUE, -- nullable only for 'local'
+    auth_provider_id VARCHAR(255), -- nullable only for 'local'
     created_at DATETIME NOT NULL DEFAULT GETDATE(),
     updated_at DATETIME NOT NULL DEFAULT GETDATE(),
     role CHAR(1) NOT NULL CHECK (role IN ('U', 'A', 'S', 'L')) -- U=User, S = Staff, A=Admin, L=Landlord
@@ -16,6 +16,12 @@ CREATE TABLE Account (
 CREATE UNIQUE INDEX UX_Account_Username
 ON Account (Username)
 WHERE Username IS NOT NULL;
+
+-- Chỉ đánh UNIQUE khi auth_provider_id không phải NULL
+CREATE UNIQUE INDEX UX_Account_AuthProviderId
+ON Account (auth_provider_id)
+WHERE auth_provider_id IS NOT NULL;
+
 
 CREATE TABLE AccommodationType (
     type_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -48,6 +54,7 @@ CREATE TABLE UserProfile (
     profile_id INT IDENTITY(1,1) PRIMARY KEY,
     first_name NVARCHAR(100),
     last_name NVARCHAR(100),
+	phone_number nvarchar(20),
     gender CHAR(1) CHECK (gender IN ('M', 'F', 'O')), -- M=Male, F=Female, O=Other
     date_of_birth DATE,
     avatar_url VARCHAR(255),
@@ -395,9 +402,63 @@ VALUES
 (3, 4, 3, 184275.00, 552825.00),
 (3, 4, 4, 171990.00, 687960.00);
 
-CREATE TABLE PostEmbeddings (
-    id INT PRIMARY KEY,
-	post_id int, 
-    embedding_vector NVARCHAR(MAX),
-	constraint Post_PostEmbeddings foreign key (post_id) references Post(post_id)
+INSERT INTO Account (username, email, password, is_active, auth_provider, auth_provider_id, role)  --123123qwe
+VALUES 
+('tuan123', 'tuan@gmail.com', '$2a$12$Z4AJnkoMRcybTNPk8HROWuq7l3q7e21AZ/nTabx0XcbTtj9AVrgHO', 'A', 'local', NULL, 'L'),
+('minhtuns231', 'tuanvip231@gmail.com', '$2a$12$Z4AJnkoMRcybTNPk8HROWuq7l3q7e21AZ/nTabx0XcbTtj9AVrgHO', 'A', 'local', NULL, 'U'),
+('staff01', 'staff01@fpt.edu.vn', '$2a$12$Z4AJnkoMRcybTNPk8HROWuq7l3q7e21AZ/nTabx0XcbTtj9AVrgHO', 'A', 'local', NULL, 'S'),
+('admin01', 'admin@system.com', '$2a$12$Z4AJnkoMRcybTNPk8HROWuq7l3q7e21AZ/nTabx0XcbTtj9AVrgHO', 'A', 'local', NULL, 'A');
+
+INSERT INTO UserProfile (first_name, last_name, phone_number, gender, date_of_birth, avatar_url, occupation, address, account_id)
+VALUES 
+('Minh', 'Tuan', '0941673660', 'M', '2003-11-23', '/images/tuan3.jpg', 'Sinh viên', 'KTX FPT, Quảng Bình', 1),
+('My', 'Hanh', '0987654321', 'F', '1998-11-15', '/images/avatars/hanh.jpg', 'Chủ trọ', 'Dương Nội, Hà Đông, Hà Nội', 2),
+('Nguyen', 'Lam', '0909090909', 'M', '1995-08-12', '/images/avatars/staff01.jpg', 'Nhân viên quản lý', 'FPT Complex, Đà Nẵng', 3),
+('Admin', 'System', '0868686868', 'O', '1990-01-01', '/images/avatars/admin.jpg', 'Quản trị viên', 'Hòa Lạc, Hà Nội', 4);
+
+INSERT INTO Accommodation (
+    title, description, ward_name, district_name, province_name, address,
+    price, deposit_amount, area, max_occupancy, video_url, status,
+    owner_id, type_id
 )
+VALUES 
+(N'Phòng trọ cao cấp gần đại học FPT', N'Phòng trọ rộng rãi, thoáng mát, gần trường và đầy đủ tiện nghi.', 
+N'Phường Hòa Hải', N'Quận Ngũ Hành Sơn', N'Đà Nẵng', 
+N'12 Nguyễn Văn Thoại', 
+3500000, 1000000, 30, 2, null, 'A', 1, 1);
+
+INSERT INTO AccommodationDetails (
+    has_kitchen_cabinet, has_air_conditioner, has_refrigerator, has_washing_machine, has_loft,
+    furniture_status, bedroom_count, bathroom_count, accommodation_id
+)
+VALUES 
+(1, 1, 1, 0, 1, N'Đầy đủ nội thất', 1, 1, 1);
+
+INSERT INTO AccommodationAmenities (accommodation_id, amenity_id)
+VALUES 
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(1, 5);
+
+INSERT INTO Post (
+    title, content, current_status, view_count, published_at, accommodation_id, account_id
+)
+VALUES 
+(N'Cho thuê phòng trọ gần FPT Đà Nẵng', 
+N'Phòng sạch sẽ, an ninh, có gác lửng, đầy đủ tiện nghi như máy lạnh, tủ lạnh, bếp.', 
+'A', 10, GETDATE(), 1, 1);
+
+INSERT INTO AccommodationImage (image_url, caption, accommodation_id)
+VALUES
+('/images/work-1.jpg', N'Phòng trọ nhìn từ cửa ra vào', 1),
+('/images/work-2.jpg', N'Góc nhìn phòng khách', 1),
+('/images/work-3.jpg', N'Góc nhìn phòng khách', 1),
+('/images/work-4.jpg', N'Góc nhìn phòng khách', 1),
+('/images/work-5.jpg', N'Góc nhìn phòng khách', 1),
+('/images/work-6.jpg', N'Góc nhìn phòng khách', 1),
+('/images/work-7.jpg', N'Góc nhìn phòng khách', 1),
+('/images/work-8.jpg', N'Góc nhìn phòng khách', 1)
+
+

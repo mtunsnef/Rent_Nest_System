@@ -29,6 +29,8 @@ public partial class Post
 
     public virtual Account Account { get; set; } = null!;
 
+    public virtual ICollection<Conversation> Conversations { get; set; } = new List<Conversation>();
+
     public virtual ICollection<FavoritePost> FavoritePosts { get; set; } = new List<FavoritePost>();
 
     public virtual ICollection<PostApproval> PostApprovals { get; set; } = new List<PostApproval>();

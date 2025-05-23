@@ -30,7 +30,11 @@ public partial class RentNestSystemContext : DbContext
 
     public virtual DbSet<Amenity> Amenities { get; set; }
 
+    public virtual DbSet<Conversation> Conversations { get; set; }
+
     public virtual DbSet<FavoritePost> FavoritePosts { get; set; }
+
+    public virtual DbSet<Message> Messages { get; set; }
 
     public virtual DbSet<PackagePricing> PackagePricings { get; set; }
 
@@ -303,6 +307,42 @@ public partial class RentNestSystemContext : DbContext
                 .HasColumnName("iconSvg");
         });
 
+        modelBuilder.Entity<Conversation>(entity =>
+        {
+            entity.HasKey(e => e.ConversationId).HasName("PK__Conversa__311E7E9A3280FB4F");
+
+            entity.ToTable("Conversation");
+
+            entity.HasIndex(e => new { e.SenderId, e.ReceiverId }, "IX_Conversation_Users");
+
+            entity.Property(e => e.ConversationId).HasColumnName("conversation_id");
+            entity.Property(e => e.PostId).HasColumnName("post_id");
+            entity.Property(e => e.ReceiverId).HasColumnName("receiver_id");
+            entity.Property(e => e.SenderId).HasColumnName("sender_id");
+            entity.Property(e => e.StartedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("started_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.Post).WithMany(p => p.Conversations)
+                .HasForeignKey(d => d.PostId)
+                .HasConstraintName("FK_Conversation_Post");
+
+            entity.HasOne(d => d.Receiver).WithMany(p => p.ConversationReceivers)
+                .HasForeignKey(d => d.ReceiverId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Conversation_Receiver");
+
+            entity.HasOne(d => d.Sender).WithMany(p => p.ConversationSenders)
+                .HasForeignKey(d => d.SenderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Conversation_Sender");
+        });
+
         modelBuilder.Entity<FavoritePost>(entity =>
         {
             entity.HasKey(e => e.FavoriteId).HasName("PK__Favorite__46ACF4CBA73791EC");
@@ -327,6 +367,41 @@ public partial class RentNestSystemContext : DbContext
                 .HasForeignKey(d => d.PostId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FavoritePost_Post");
+        });
+
+        modelBuilder.Entity<Message>(entity =>
+        {
+            entity.HasKey(e => e.MessageId).HasName("PK__Message__0BBF6EE6353FE115");
+
+            entity.ToTable("Message");
+
+            entity.HasIndex(e => e.ConversationId, "IX_Message_ConversationId");
+
+            entity.Property(e => e.MessageId).HasColumnName("message_id");
+            entity.Property(e => e.Content).HasColumnName("content");
+            entity.Property(e => e.ConversationId).HasColumnName("conversation_id");
+            entity.Property(e => e.ImageUrl)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("image_url");
+            entity.Property(e => e.IsRead)
+                .HasDefaultValue(false)
+                .HasColumnName("is_read");
+            entity.Property(e => e.SenderId).HasColumnName("sender_id");
+            entity.Property(e => e.SentAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("sent_at");
+
+            entity.HasOne(d => d.Conversation).WithMany(p => p.Messages)
+                .HasForeignKey(d => d.ConversationId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Message_Conversation");
+
+            entity.HasOne(d => d.Sender).WithMany(p => p.Messages)
+                .HasForeignKey(d => d.SenderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Message_Sender");
         });
 
         modelBuilder.Entity<PackagePricing>(entity =>
