@@ -461,4 +461,36 @@ VALUES
 ('/images/work-7.jpg', N'Góc nhìn phòng khách', 1),
 ('/images/work-8.jpg', N'Góc nhìn phòng khách', 1)
 
+CREATE TABLE Conversation (
+    conversation_id INT IDENTITY(1,1) PRIMARY KEY,
+    sender_id INT NOT NULL,     
+    receiver_id INT NOT NULL,    
+    post_id INT NULL,          
+    started_at DATETIME DEFAULT GETDATE(),
+    updated_at DATETIME DEFAULT GETDATE(),
 
+    CONSTRAINT FK_Conversation_Sender FOREIGN KEY (sender_id) REFERENCES Account(account_id),
+    CONSTRAINT FK_Conversation_Receiver FOREIGN KEY (receiver_id) REFERENCES Account(account_id),
+    CONSTRAINT FK_Conversation_Post FOREIGN KEY (post_id) REFERENCES Post(post_id)
+);
+
+CREATE TABLE Message (
+    message_id INT IDENTITY(1,1) PRIMARY KEY,
+    conversation_id INT NOT NULL,
+    sender_id INT NOT NULL,
+    content NVARCHAR(MAX),
+    image_url VARCHAR(255),     
+    is_read BIT DEFAULT 0,       
+    sent_at DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Message_Conversation FOREIGN KEY (conversation_id) REFERENCES Conversation(conversation_id),
+    CONSTRAINT FK_Message_Sender FOREIGN KEY (sender_id) REFERENCES Account(account_id)
+);
+
+
+CREATE INDEX IX_Message_ConversationId ON Message(conversation_id);
+
+CREATE INDEX IX_Conversation_Users ON Conversation(sender_id, receiver_id);
+
+CREATE UNIQUE INDEX UX_Conversation_Uniqueness
+ON Conversation (sender_id, receiver_id, post_id);

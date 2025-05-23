@@ -1,4 +1,7 @@
-﻿using System;
+﻿using RentNest.Core.Domains;
+using RentNest.Infrastructure.DataAccess;
+using RentNest.Infrastructure.Repositories.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +9,42 @@ using System.Threading.Tasks;
 
 namespace RentNest.Infrastructure.Repositories.Implements
 {
-    internal class ConversationRepository
+    public class ConversationRepository : IConversationRepository
     {
+        private readonly ConversationDAO _conversationDAO;
+        public ConversationRepository(ConversationDAO conversationDAO)
+        {
+            _conversationDAO = conversationDAO;
+        }
+        public async Task<IEnumerable<Conversation>> GetAll()
+        {
+            return await _conversationDAO.GetAllAsync();
+        }
+
+        public async Task<List<Conversation>> GetBySenderIdAsync(int senderId)
+        {
+            return await _conversationDAO.GetBySenderIdAsync(senderId);
+        }
+        public async Task<IEnumerable<object>> GetConversationMessagesAsync(int conversationId, int currentUserId)
+        {
+            var conversation = await _conversationDAO.GetConversationWithMessagesAsync(conversationId);
+            if (conversation == null) return Enumerable.Empty<object>();
+
+            return conversation.Messages
+                .OrderBy(m => m.SentAt)
+                .Select(m => new
+                {
+                    SenderName = m.Sender.UserProfile.FirstName + " " + m.Sender.UserProfile.LastName,
+                    SenderAvatar = m.Sender.UserProfile.AvatarUrl ?? "/images/person_1.jpg",
+                    Content = m.Content,
+                    Timestamp = m.SentAt?.ToString("HH:mm dd/MM/yyyy"),
+                    IsMe = m.SenderId == currentUserId
+                });
+        }
+
+        public async Task<Conversation?> GetConversationWithMessagesAsync(int conversationId)
+        {
+            return await _conversationDAO.GetConversationWithMessagesAsync(conversationId);
+        }
     }
 }

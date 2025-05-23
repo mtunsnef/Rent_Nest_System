@@ -42,6 +42,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<PackagePricingDAO>();
             builder.Services.AddScoped<AccommodationDAO>();
             builder.Services.AddScoped<PostDAO>();
+            builder.Services.AddScoped<ConversationDAO>();
 
             //Repository
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -51,6 +52,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<IPackagePricingRepository, PackagePricingRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
+            builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 
             //Service
             builder.Services.AddScoped<IMailService, MailService>();
@@ -63,6 +65,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<IAccommodationService, AccommodationService>();
             builder.Services.AddScoped<IPostService, PostService>();
             builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
+            builder.Services.AddScoped<IConversationService, ConversationService>();
 
             //Config
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
