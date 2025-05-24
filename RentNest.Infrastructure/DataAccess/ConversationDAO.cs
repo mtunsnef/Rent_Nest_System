@@ -22,10 +22,10 @@ namespace RentNest.Infrastructure.DataAccess
                         .ThenInclude(a => a.UserProfile)
                     .ToListAsync();
 
-        public async Task<List<Conversation>> GetBySenderIdAsync(int senderId)
+        public async Task<List<Conversation>> GetByUserIdAsync(int userId)
         {
             return await _dbSet
-                .Where(c => c.SenderId == senderId)
+                .Where(c => c.SenderId == userId || c.ReceiverId == userId)
                 .Include(c => c.Messages)
                 .Include(c => c.Post)
                 .Include(c => c.Receiver)
@@ -34,6 +34,7 @@ namespace RentNest.Infrastructure.DataAccess
                     .ThenInclude(u => u.UserProfile)
                 .ToListAsync();
         }
+
         public async Task<Conversation?> GetConversationWithMessagesAsync(int conversationId)
         {
             return await _context.Conversations

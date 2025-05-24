@@ -21,9 +21,9 @@ namespace RentNest.Infrastructure.Repositories.Implements
             return await _conversationDAO.GetAllAsync();
         }
 
-        public async Task<List<Conversation>> GetBySenderIdAsync(int senderId)
+        public async Task<List<Conversation>> GetByUserIdAsync(int userId)
         {
-            return await _conversationDAO.GetBySenderIdAsync(senderId);
+            return await _conversationDAO.GetByUserIdAsync(userId);
         }
         public async Task<IEnumerable<object>> GetConversationMessagesAsync(int conversationId, int currentUserId)
         {

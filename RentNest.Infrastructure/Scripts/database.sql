@@ -5,6 +5,8 @@ CREATE TABLE Account (
     username NVARCHAR(100) NULL,
     email NVARCHAR(255) NOT NULL UNIQUE,
     password NVARCHAR(255) NULL,
+	is_online bit default 0,
+	last_active_at datetime null,
     is_active CHAR(1) NOT NULL DEFAULT 'A' CHECK (is_active IN ('A', 'D')),  --A is active, D is disabled
     auth_provider VARCHAR(20) NOT NULL CHECK (auth_provider IN ('local', 'google', 'facebook')),
     auth_provider_id VARCHAR(255), -- nullable only for 'local'
@@ -12,6 +14,7 @@ CREATE TABLE Account (
     updated_at DATETIME NOT NULL DEFAULT GETDATE(),
     role CHAR(1) NOT NULL CHECK (role IN ('U', 'A', 'S', 'L')) -- U=User, S = Staff, A=Admin, L=Landlord
 );
+
 
 CREATE UNIQUE INDEX UX_Account_Username
 ON Account (Username)

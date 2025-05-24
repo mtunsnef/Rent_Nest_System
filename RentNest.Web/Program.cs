@@ -1,5 +1,6 @@
 ﻿using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using RentNest.Core.Configs;
@@ -10,6 +11,7 @@ using RentNest.Infrastructure.Repositories.Implements;
 using RentNest.Infrastructure.Repositories.Interfaces;
 using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
+using RentNest.Web.Hubs;
 
 namespace RentNest.Web
 {
@@ -43,6 +45,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<AccommodationDAO>();
             builder.Services.AddScoped<PostDAO>();
             builder.Services.AddScoped<ConversationDAO>();
+            builder.Services.AddScoped<MessageDAO>();
 
             //Repository
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -53,6 +56,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
             builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
             //Service
             builder.Services.AddScoped<IMailService, MailService>();
@@ -66,6 +70,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<IPostService, PostService>();
             builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
             builder.Services.AddScoped<IConversationService, ConversationService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
 
             //Config
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
@@ -83,6 +88,13 @@ namespace RentNest.Web
                 options.Facebook.AppSecret = Environment.GetEnvironmentVariable("AUTHENTICATION_FACEBOOK_APPSECRET")!;
             });
             builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+            builder.Services.AddSignalR()
+                .AddHubOptions<ChatHub>(options =>
+                {
+                    options.EnableDetailedErrors = true;
+                });
+
+            builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
             //su dung cache de luu session
             builder.Services.AddDistributedMemoryCache();
@@ -155,6 +167,7 @@ namespace RentNest.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.MapHub<ChatHub>("/chathub");
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

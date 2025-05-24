@@ -14,7 +14,8 @@ namespace RentNest.Service.Interfaces
         Task<(bool Success, string Message)> UploadAvatarAsync(int accountId, IFormFile avatar, string webRootPath);
         Task<Account> CreateExternalAccountAsync(ExternalAccountRegisterDto dto);
         Task<bool> RegisterAccountAsync(AccountRegisterDto model);
-
+        Task SetUserOnlineAsync(int userId, bool isOnline);
+        Task UpdateLastActiveAsync(int userId);
     }
 
 }

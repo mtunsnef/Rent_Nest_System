@@ -3,9 +3,10 @@
     public class ChatConversationViewModel
     {
         public int ConversationId { get; set; }
+        public int ReceiverId { get; set; }
         public string ReceiverFullName { get; set; }
         public string? ReceiverAvatarUrl { get; set; }
-        public string? LastSeenText { get; set; }
+        public DateTime? LastActiveAt { get; set; }
 
         public int? PostId { get; set; }
         public string? PostTitle { get; set; }

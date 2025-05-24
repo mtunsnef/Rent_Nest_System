@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RentNest.Core.DTO;
 using RentNest.Core.UtilHelper;
+using Microsoft.EntityFrameworkCore;
 
 namespace RentNest.Infrastructure.Repositories.Implements
 {
@@ -128,5 +129,24 @@ namespace RentNest.Infrastructure.Repositories.Implements
             return true;
         }
 
+        public async Task SetUserOnlineAsync(int userId, bool isOnline)
+        {
+            var user = await _accountDAO.GetByIdAsync(userId);
+            if (user != null)
+            {
+                user.IsOnline = isOnline;
+                await _accountDAO.UpdateAsync(user);
+            }
+        }
+
+        public async Task UpdateLastActiveAsync(int userId)
+        {
+            var user = await _accountDAO.GetByIdAsync(userId);
+            if (user != null)
+            {
+                user.LastActiveAt = DateTime.UtcNow.AddHours(7);
+                await _accountDAO.UpdateAsync(user);
+            }
+        }
     }
 }

@@ -42,10 +42,11 @@ namespace RentNest.Web.Controllers
             HttpContext.Session.SetString("Email", account.Email);
 
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, account.Email),
-        new Claim(ClaimTypes.Role, account.Role)
-    };
+            {
+                new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
+                new Claim(ClaimTypes.Name, account.Email),
+                new Claim(ClaimTypes.Role, account.Role)
+            };
             var identity = new ClaimsIdentity(claims, AuthSchemes.Cookie);
             var principal = new ClaimsPrincipal(identity);
 
@@ -126,6 +127,7 @@ namespace RentNest.Web.Controllers
 
             var claims = new List<Claim>
             {
+                new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
                 new Claim(ClaimTypes.Name, name ?? ""),
                 new Claim(ClaimTypes.Email, email ?? ""),
                 new Claim(ClaimTypes.Role, account.Role)
@@ -192,7 +194,7 @@ namespace RentNest.Web.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, dto.AuthProviderId),
+                new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
                 new Claim(ClaimTypes.Name, $"{dto.FirstName} {dto.LastName}"),
                 new Claim(ClaimTypes.GivenName, dto.FirstName ?? ""),
                 new Claim(ClaimTypes.Surname, dto.LastName ?? ""),
@@ -205,7 +207,7 @@ namespace RentNest.Web.Controllers
 
             await HttpContext.SignInAsync(AuthSchemes.Cookie, principal);
 
-            HttpContext.Session.SetString("AccountId", account.AccountId.ToString());
+            HttpContext.Session.SetInt32("AccountId", account.AccountId);
             HttpContext.Session.SetString("AccountName", $"{dto.FirstName} {dto.LastName}");
             HttpContext.Session.SetString("Email", dto.Email);
 

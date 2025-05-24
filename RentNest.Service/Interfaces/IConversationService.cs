@@ -10,7 +10,7 @@ namespace RentNest.Service.Interfaces
     public interface IConversationService
     {
         Task<IEnumerable<Conversation>> GetAll();
-        Task<List<Conversation>> GetBySenderIdAsync(int senderId);
+        Task<List<Conversation>> GetByUserIdAsync(int userId);
         Task<IEnumerable<object>> GetConversationMessagesAsync(int conversationId, int currentUserId);
         Task<Conversation?> GetConversationWithMessagesAsync(int conversationId);
 
