@@ -14033,3 +14033,19 @@ textarea.form-control {
         box-shadow: 0 0 0 0 rgba(75, 105, 189, 0), 0 0 0 20px rgba(75, 105, 189, 0);
     }
 }
+
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-online {
+    background-color: #28a745;
+}
+
+.status-offline {
+    background-color: #ccc;
+}

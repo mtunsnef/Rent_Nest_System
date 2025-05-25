@@ -51,6 +51,7 @@ namespace RentNest.Web.Controllers
                 ReceiverFullName = otherUser?.UserProfile?.FirstName + " " + otherUser?.UserProfile?.LastName ?? "Không xác định",
                 ReceiverAvatarUrl = otherUser?.UserProfile?.AvatarUrl ?? "/images/person_1.jpg",
                 LastActiveAt = otherUser.LastActiveAt,
+                IsOnline = otherUser.IsOnline,
 
                 PostId = conversation.PostId,
                 PostTitle = conversation.Post?.Title,
@@ -60,6 +61,7 @@ namespace RentNest.Web.Controllers
                 Messages = conversation.Messages.Select(m => new MessageViewModel
                 {
                     SenderId = m.SenderId,
+                    ImageUrl = m.ImageUrl,
                     Content = m.Content,
                     SentAt = m.SentAt
                 }).ToList()

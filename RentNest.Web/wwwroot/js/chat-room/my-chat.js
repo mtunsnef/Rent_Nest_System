@@ -24,12 +24,17 @@ $(document).ready(function () {
                 chatState.currentReceiverId = data.receiverId;
                 bindSendButton(currentUserId);
 
+                const activityStatus = getActivityStatus(data.isOnline, data.lastActiveAt);
+                const statusDotClass = data.isOnline ? "status-online" : "status-offline";
                 $("#receiverInfo").html(`
                     <div class="d-flex align-items-center">
                         <img src="${data.receiverAvatarUrl}" class="rounded-circle mr-3" width="40" height="40" />
                         <div>
                             <div class="font-weight-bold">${data.receiverFullName}</div>
-                            <small>${data.lastActiveAt}</small>
+                            <div class="d-flex align-items-center my-2">
+                                <span class="status-dot ${statusDotClass}"></span>
+                                <small class="ml-2" style="line-height: 0 !important;">${activityStatus}</small>
+                            </div>
                         </div>
                     </div>
                 `);
@@ -62,12 +67,31 @@ $(document).ready(function () {
 
     $('.conversation-item').first().trigger('click');
 });
+function getActivityStatus(isOnline, lastActiveAt) {
+    if (isOnline) return "Đang hoạt động";
+
+    const lastActive = new Date(lastActiveAt);
+    const now = new Date();
+    const diffMs = now - lastActive;
+
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (seconds < 60) return `Hoạt động vài giây trước`;
+    if (minutes < 60) return `Hoạt động ${minutes} phút trước`;
+    if (hours < 24) return `Hoạt động ${hours} giờ trước`;
+    if (days < 7) return `Hoạt động ${days} ngày trước`;
+
+    return `Hoạt động vào ${lastActive.toLocaleDateString("vi-VN")}`;
+}
 
 function renderDateLabelIfNeeded(msgDate) {
     const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // 0h hôm nay
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1); // 0h hôm qua
+    yesterday.setDate(today.getDate() - 1);
 
     const messageDate = new Date(msgDate.getFullYear(), msgDate.getMonth(), msgDate.getDate());
 
@@ -111,9 +135,12 @@ function renderMessages(messages, currentUserId) {
         const timeOnly = msgDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
         const isMine = msg.senderId === currentUserId;
 
-        const messageContent = msg.content.startsWith("[image]")
-            ? `<img src="${msg.content.replace("[image]", "")}" class="img-fluid rounded" style="max-width: 250px;" />`
-            : msg.content;
+        let messageContent = "";
+        if (msg.imageUrl) {
+            messageContent = `<img src="${msg.imageUrl}" class="img-fluid rounded" style="max-width: 250px;" />`;
+        } else {
+            messageContent = msg.content;
+        }
 
         messagesHtml += renderDateLabelIfNeeded(msgDate);
         messagesHtml += renderMessageBubble(isMine, messageContent, timeOnly);
