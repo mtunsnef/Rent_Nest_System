@@ -482,7 +482,7 @@ CREATE TABLE Message (
     conversation_id INT NOT NULL,
     sender_id INT NOT NULL,
     content NVARCHAR(MAX),
-    image_url VARCHAR(255),     
+    image_url VARCHAR(MAX),     
     is_read BIT DEFAULT 0,       
     sent_at DATETIME DEFAULT GETDATE(),
 

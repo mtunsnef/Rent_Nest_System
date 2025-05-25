@@ -92,6 +92,7 @@ namespace RentNest.Web
                 .AddHubOptions<ChatHub>(options =>
                 {
                     options.EnableDetailedErrors = true;
+                    options.MaximumReceiveMessageSize = 10 * 1024 * 1024;
                 });
 
             builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();

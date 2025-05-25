@@ -15,7 +15,7 @@ namespace RentNest.Web.Hubs
             _chatService = chatService;
             _accountService = accountService;
         }
-        public async Task SendMessage(int conversationId, int receiverId, string message)
+        public async Task SendMessage(int conversationId, int receiverId, string message, string imageUrl)
         {
             var senderId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -24,17 +24,20 @@ namespace RentNest.Web.Hubs
 
             await _accountService.UpdateLastActiveAsync(parsedSenderId);
 
-
             var mess = new Message
             {
                 ConversationId = conversationId,
                 SenderId = parsedSenderId,
-                Content = message
+                Content = message,
+                ImageUrl = imageUrl
             };
+
             await _chatService.AddMessage(mess);
 
-            await Clients.User(receiverId.ToString()).SendAsync("ReceiveMessage", parsedSenderId, message);
+            await Clients.User(receiverId.ToString())
+                .SendAsync("ReceiveMessage", parsedSenderId, message, imageUrl);
         }
+
 
         public override async Task OnConnectedAsync()
         {
