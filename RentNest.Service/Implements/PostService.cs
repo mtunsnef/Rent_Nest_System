@@ -11,9 +11,14 @@ namespace RentNest.Service.Implements
         {
             _postRepository = postRepository;
         }
-        public List<Post> GetAllPostsWithAccommodation()
+        public async Task<List<Post>> GetAllPostsWithAccommodation()
         {
-            return _postRepository.GetAllPostsWithAccommodation();
+            return await _postRepository.GetAllPostsWithAccommodation();
         }
-    }
+		public async Task<int?> GetAccommodationIdByPostId(int postId)
+        {
+            return await _postRepository.GetAccommodationIdByPostId(postId);
+        }
+
+	}
 }

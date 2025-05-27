@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,40 +22,75 @@ namespace RentNest.Web.Controllers
         private readonly IConfiguration _configuration;
         private readonly IAccommodationService _accommodationService;
         private readonly IPostService _postService;
-        public AccommodationsController(IConfiguration configuration, IAccommodationService accommodationService, IPostService postService)
+		private readonly IFavoriteService _favoriteService;
+		private readonly IHttpContextAccessor _httpContextAccessor;
+		public AccommodationsController(IConfiguration configuration, IAccommodationService accommodationService, IPostService postService, IFavoriteService favoriteService, 
+                                        IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
             _accommodationService = accommodationService;
             _postService = postService;
-        }
+			_favoriteService = favoriteService;
+			_httpContextAccessor = httpContextAccessor;
+		}
 
         [HttpGet]
         [Route("danh-sach-phong-tro")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var posts = _postService.GetAllPostsWithAccommodation();
-
-
+            var posts = await _postService.GetAllPostsWithAccommodation();
             var model = posts.Select(p => new AccommodationIndexViewModel
             {
-                Id = p.Accommodation.AccommodationId,
+                Id = p.PostId,
                 Status = p.CurrentStatus,
                 Title = p.Title,
                 Price = p.Accommodation.Price,
                 Address = p.Accommodation.Address,
-                ImageUrl = p.Accommodation.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "default-image.jpg"
+                Area = p.Accommodation.Area,
+                BathroomCount = p.Accommodation?.AccommodationDetail?.BathroomCount,
+                BedroomCount = p.Accommodation?.AccommodationDetail?.BedroomCount,
+                ImageUrl = p.Accommodation?.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "default-image.jpg",
+                CreatedAt = p.CreatedAt
             }).ToList();
 
             return View(model);
         }
 
+		public IActionResult FavoritePosts()
+		{
+			var accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
-        [HttpGet("chi-tiet/{id:int}")]
-        public IActionResult Detail(int id)
-        {
+			var favoritePosts = _favoriteService.GetFavoriteByUser(accountId);
 
-            var detailId = _accommodationService.GetDetailIdByAccommodationId(id);
-            Console.WriteLine($"AccommodationId = {id}, DetailId = {detailId}");
+			var viewModelList = favoritePosts.Select(f => new AccommodationIndexViewModel
+			{
+				Id = f.Post.PostId,
+				Title = f.Post.Accommodation.Title,
+				Address = f.Post.Accommodation.Address,
+				Price = f.Post.Accommodation.Price,
+				Status = f.Post.Accommodation.Status,
+				ImageUrl = f.Post.Accommodation?.AccommodationImages?.FirstOrDefault()?.ImageUrl?? "default-image.jpg",
+				Area = f.Post.Accommodation.Area,
+				BedroomCount = f.Post.Accommodation.AccommodationDetail?.BedroomCount,
+				BathroomCount = f.Post.Accommodation.AccommodationDetail?.BathroomCount,
+				CreatedAt = f.Post.CreatedAt
+			}).ToList();
+
+			return View("FavoritePosts", viewModelList);
+		}
+
+
+
+		[HttpGet("chi-tiet/{id:int}")]
+		public async Task<IActionResult> Detail(int id)
+		{
+			var accommodationId = await _postService.GetAccommodationIdByPostId(id);
+			if (accommodationId == null)
+			{
+				return Content("AccommodationId not found for given PostId");
+			}
+			var detailId = _accommodationService.GetDetailIdByAccommodationId(accommodationId.Value);
+			Console.WriteLine($"This is AccommodationId = {id}, DetailId = {detailId}");
 
             if (detailId == null)
             {
@@ -67,8 +104,6 @@ namespace RentNest.Web.Controllers
                 return Content("Room detail not found for given detailId");
             }
 
-
-            ViewData["GoogleMapsAPIKey"] = _configuration["GoogleMapsAPIKey"];
             ViewData["Address"] = room.Accommodation?.Address ?? "Đ. Nam Kỳ Khởi Nghĩa, Khu đô thị FPT City, Ngũ Hành Sơn, Đà Nẵng 550000";
 
             var viewModel = new AccommodationDetailViewModel
@@ -85,6 +120,7 @@ namespace RentNest.Web.Controllers
                 CreatedAt = room.CreatedAt,
                 UpdatedAt = room.UpdatedAt,
                 AccommodationId = room.AccommodationId,
+                PostId = id,
                 Title = room.Accommodation?.Title,
                 Price = room.Accommodation?.Price,
                 Description = room.Accommodation?.Description,
@@ -137,5 +173,43 @@ namespace RentNest.Web.Controllers
 
             return View();
         }
+
+        [HttpGet]
+        public IActionResult IsFavorite(int postId)
+        {
+            var accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var isFavorite = _favoriteService.IsFavorite(postId, accountId);
+            return Json(isFavorite);
+        }
+
+        [HttpPost]
+        public IActionResult AddToFavorite(int postId)
+        {
+            var accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            Console.WriteLine($"Adding favorite - Account: {accountId}, Post: {postId}");
+
+            if (accountId == 0)
+            {
+                return Unauthorized();
+            }
+
+            _favoriteService.AddToFavorite(postId, accountId);
+            return Ok();
+        }
+
+        [HttpPost]
+        public IActionResult RemoveFromFavorite(int postId)
+        {
+            var accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+            if (accountId == 0)
+            {
+                return Unauthorized();
+            }
+
+            _favoriteService.RemoveFromFavorite(postId, accountId);
+            return Ok();
+        }
+
     }
 }

@@ -1,98 +1,67 @@
 ﻿@{
 	ViewData["Title"] = "Trang chủ";
 }
-<section class="hero-wrap js-fullheight" style="background-image: url('images/bg_2.jpg');" data-section="home"
-	data-stellar-background-ratio="0.5">
-	<div class="overlay"></div>
-	<div class="container">
-		<div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start"
-			data-scrollax-parent="true">
-			<div class="col-md-5 ftco-animate" data-scrollax=" properties: { translateY: '70%' }">
-				<h1 style="font-family: system-ui; font-weight: 700;" class="mb-4"
-					data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">
-					Nền tảng thuê nhà, phòng trọ, căn hộ số 1 tại ĐÀ NẴNG
-				</h1>
-				<p class="mb-4" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">
-					Tìm thuê dễ dàng, nhanh chóng, tiện lợi và phù hợp với mọi nhu cầu của bạn.
-				</p>
-			</div>
-			<div class="col-md-12">
-				<form asp-action="Search" method="post" asp-controller="Room">
-					<div class="row g-2 align-items-end">
-						<!-- Province -->
-						<div class="col-md">
-							<label for="provinceDropdown" style="color:black; font-weight:500;">
-								Province <span style="color:red;">*</span>
-							</label>
-							<select id="provinceDropdown" class="form-control" required
-								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
-								<option value="">Chọn tỉnh/thành phố...</option>
-							</select>
-							<input name="provinceName" type="hidden" id="provinceName" />
-							<div class="invalid-feedback">Vui lòng chọn tỉnh/thành phố.</div>
-						</div>
-
-						<!-- District -->
-						<div class="col-md">
-							<label for="districtDropdown" style="color:black; font-weight:500;">
-								District <span style="color:red;">*</span>
-							</label>
-							<select id="districtDropdown" class="form-control" required
-								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
-								<option value="">Chọn quận/huyện...</option>
-							</select>
-							<input name="DistrictName" type="hidden" id="districtName" />
-							<div class="invalid-feedback">Vui lòng chọn quận/huyện.</div>
-						</div>
-
-						<!-- Ward -->
-						<div class="col-md">
-							<label for="wardDropdown" style="color:black; font-weight:500;">
-								Ward <span style="color:red;">*</span>
-							</label>
-							<select id="wardDropdown" class="form-control" required
-								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
-								<option value="">Chọn phường/xã...</option>
-							</select>
-							<input name="WardName" type="hidden" id="wardName" />
-							<div class="invalid-feedback">Vui lòng chọn phường/xã.</div>
-						</div>
-
-						<!-- Area -->
-						<div class="col-md">
-							<label for="area" style="color:black; font-weight:500;">Diện tích (m²)</label>
-							<input type="number" class="form-control" id="area" name="area" min="0" step="0.1"
-								placeholder="Diện tích (m²)"
-								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
-						</div>
-
-						<!-- Min Money -->
-						<div class="col-md">
-							<label for="price" style="color:black; font-weight:500;">Giá tiền thấp nhất(VNĐ)</label>
-							<input name="minMoney" type="number" class="form-control" id="minMoney" name="minMoney"
-								min="0" step="1000" placeholder="Giá tiền (VNĐ)"
-								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
-						</div>
-						<!-- Max Money -->
-						<div class="col-md">
-							<label for="price" style="color:black; font-weight:500;">Giá tiền cao nhất(VNĐ)</label>
-							<input name="maxMoney" type="number" class="form-control" id="maxMoney" name="maxMoney"
-								min="0" step="1000" placeholder="Giá tiền (VNĐ)"
-								style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
-						</div>
-
-						<!-- Submit -->
-						<div class="col-auto d-flex align-items-end">
-							<button type="submit" class="btn btn-primary px-4 h-100">Tìm</button>
-						</div>
+<section class="hero-wrapper ftco-animate">
+	<div class="hero-banner">
+		<div class="hero-overlay"></div>
+		<div class="hero-content">
+			<h1 class="hero-title">Tìm phòng trọ, căn hộ phù hợp nơi bạn sống</h1>
+			<form asp-action="Search" method="post" asp-controller="Accommodations" style="margin: 7.5rem 1rem">
+				<div class="row g-2 align-items-end">
+					<div class="col-md">
+						<label for="provinceDropdown" class="form-label text-white fw-semibold">
+							Tỉnh/Thành phố <span class="text-danger">*</span>
+						</label>
+						<select id="provinceDropdown" class="form-control text-white bg-transparent border-light" required>
+							<option value="">Chọn tỉnh/thành phố...</option>
+						</select>
+						<input name="provinceName" type="hidden" id="provinceName" />
+						<div class="invalid-feedback">Vui lòng chọn tỉnh/thành phố.</div>
 					</div>
-				</form>
+					<div class="col-md">
+						<label for="districtDropdown" class="form-label text-white fw-semibold">
+							Quận/Huyện <span class="text-danger">*</span>
+						</label>
+						<select id="districtDropdown" class="form-control text-white bg-transparent border-light" required>
+							<option value="">Chọn quận/huyện...</option>
+						</select>
+						<input name="DistrictName" type="hidden" id="districtName" />
+						<div class="invalid-feedback">Vui lòng chọn quận/huyện.</div>
+					</div>
 
-			</div>
+					<div class="col-md">
+						<label for="wardDropdown" class="form-label text-white fw-semibold">
+							Phường/Xã <span class="text-danger">*</span>
+						</label>
+						<select id="wardDropdown" class="form-control text-white bg-transparent border-light" required>
+							<option value="">Chọn phường/xã...</option>
+						</select>
+						<input name="WardName" type="hidden" id="wardName" />
+						<div class="invalid-feedback">Vui lòng chọn phường/xã.</div>
+					</div>
 
+					<div class="col-md">
+						<label for="area" class="form-label text-white">Diện tích (m²)</label>
+						<input type="number" id="area" name="area" min="0" step="0.5" class="form-control text-white bg-transparent border-light" placeholder="Diện tích (m²)">
+					</div>
+
+					<div class="col-md">
+						<label for="minMoney" class="form-label text-white">Giá thấp nhất</label>
+						<input type="number" id="minMoney" name="minMoney" min="0" step="10000" class="form-control text-white bg-transparent border-light" placeholder="Tối thiểu (VNĐ)">
+					</div>
+
+					<div class="col-md">
+						<label for="maxMoney" class="form-label text-white">Giá cao nhất</label>
+						<input type="number" id="maxMoney" name="maxMoney" min="0" step="10000" class="form-control text-white bg-transparent border-light" placeholder="Tối đa (VNĐ)">
+					</div>
+
+					<div class="col-auto d-flex align-items-end">
+						<button type="submit" class="btn btn-primary px-4 h-100 mb-2">Tìm</button>
+					</div>
+				</div>
+			</form>
 		</div>
 	</div>
-
 </section>
 
 @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
@@ -116,88 +85,7 @@
 		});
 	</script>
 }
-
-<section class="ftco-section ftco-services-2 bg-light" id="services-section">
-	<div class="container">
-		<div class="row justify-content-center pb-5">
-			<div class="col-md-12 heading-section text-center ftco-animate">
-				<h2 class="mb-4">Dịch vụ chúng tôi</h2>
-				<p>
-					Tận hưởng dịch vụ cho thuê nhà trọ nhanh chóng, tiện lợi với hệ thống hỗ trợ toàn diện.
-				</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md d-flex align-self-stretch ftco-animate">
-				<div class="media block-6 services text-center d-block">
-					<div class="icon justify-content-center align-items-center d-flex">
-						<span class="flaticon-pin"></span>
-					</div>
-					<div class="media-body">
-						<h3 style="font-family: system-ui;" class="heading mb-3">
-							Tìm trọ dễ dàng, mọi nơi ở Đà Nẵng
-						</h3>
-						<p>
-							Dù bạn đang tìm phòng trọ ở trung tâm thành phố hay khu vực yên tĩnh, hệ thống của chúng
-							tôi giúp bạn tìm kiếm nhanh chóng với đầy đủ thông tin chi tiết.
-						</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-md d-flex align-self-stretch ftco-animate">
-				<div class="media block-6 services text-center d-block mt-lg-5 pt-lg-4">
-					<div class="icon justify-content-center align-items-center d-flex">
-						<span class="flaticon-detective"></span>
-					</div>
-					<div class="media-body">
-						<h3 style="font-family: system-ui;" class="heading mb-3">
-							Hỗ trợ bởi đội ngũ chuyên nghiệp
-						</h3>
-						<p>
-							Chúng tôi có đội ngũ hỗ trợ tận tâm, sẵn sàng giúp bạn tìm kiếm, đặt thuê, và giải đáp
-							mọi thắc mắc về nhà trọ.
-						</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-md d-flex align-self-stretch ftco-animate">
-				<div class="media block-6 services text-center d-block">
-					<div class="icon justify-content-center align-items-center d-flex">
-						<span class="flaticon-house"></span>
-					</div>
-					<div class="media-body">
-						<h3 style="font-family: system-ui;" class="heading mb-3">
-							Thuê hoặc cho thuê trọ nhanh chóng
-						</h3>
-						<p>
-							Dễ dàng đăng tin cho thuê hoặc tìm phòng trọ phù hợp với nhu cầu của bạn, chỉ với vài
-							thao tác đơn giản.
-						</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-md d-flex align-self-stretch ftco-animate">
-				<div class="media block-6 services text-center d-block mt-lg-5 pt-lg-4">
-					<div class="icon justify-content-center align-items-center d-flex">
-						<span class="flaticon-purse"></span>
-					</div>
-					<div class="media-body">
-						<h3 style="font-family: system-ui;" class="heading mb-3">
-							Kiếm thêm thu nhập từ phòng trọ của
-							bạn
-						</h3>
-						<p>
-							Nếu bạn có phòng trọ cho thuê, hãy đăng tin ngay để tiếp cận hàng ngàn người thuê tiềm
-							năng và tối ưu hóa lợi nhuận.
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
-
-<section class="ftco-section ftco-properties" id="properties-section">
+<section class="ftco-section ftco-properties" id="properties-section" style="padding: 2rem 0 !important;">
 	<div class="container">
 		<div class="row justify-content-center pb-5">
 			<div class="col-md-12 heading-section text-center ftco-animate">
@@ -739,4 +627,5 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="~/js/address.js"></script>
 	<script src="~/js/search.js"></script>
+	<script src="~/js/home/home-index.js"></script>
 }

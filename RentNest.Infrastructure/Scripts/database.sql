@@ -1,4 +1,5 @@
-﻿USE RentNestSystem;
+﻿
+USE RentNestSystem;
 
 CREATE TABLE Account (
     account_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -7,7 +8,7 @@ CREATE TABLE Account (
     password NVARCHAR(255) NULL,
     is_active CHAR(1) NOT NULL DEFAULT 'A' CHECK (is_active IN ('A', 'D')),  --A is active, D is disabled
     auth_provider VARCHAR(20) NOT NULL CHECK (auth_provider IN ('local', 'google', 'facebook')),
-    auth_provider_id VARCHAR(255) UNIQUE, -- nullable only for 'local'
+    auth_provider_id VARCHAR(255), -- nullable only for 'local'
     created_at DATETIME NOT NULL DEFAULT GETDATE(),
     updated_at DATETIME NOT NULL DEFAULT GETDATE(),
     role CHAR(1) NOT NULL CHECK (role IN ('U', 'A', 'S', 'L')) -- U=User, S = Staff, A=Admin, L=Landlord
@@ -83,9 +84,12 @@ CREATE TABLE Accommodation (
     CONSTRAINT FK_Accommodation_Type FOREIGN KEY (type_id)
         REFERENCES AccommodationType(type_id)
 );
+
 ALTER TABLE Accommodation
-ADD district_id INT NULL,
-    ward_id INT NULL;
+ADD district_name NVARCHAR(255) NULL,
+    ward_name NVARCHAR(255) NULL,
+    province_name NVARCHAR(255) NULL;
+
 
 -- 4. T?o b?ng giá gói tin
 CREATE TABLE PackagePricing (
@@ -158,6 +162,8 @@ CREATE TABLE AccommodationImage (
 
 CREATE TABLE Post (
     post_id INT IDENTITY(1,1) PRIMARY KEY,
+    title NVARCHAR(150) NOT NULL,
+    content NVARCHAR(MAX) NULL,
     current_status CHAR(1) NOT NULL DEFAULT 'P' CHECK (current_status IN ('P', 'A', 'R')),
     view_count INT DEFAULT 0 CHECK (view_count >= 0),
     published_at DATETIME,

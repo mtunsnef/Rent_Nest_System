@@ -26,6 +26,8 @@
 
 		public int AccommodationId { get; set; }	
 
+		public int PostId {  get; set; }
+
 		public string? Title { get; set; } // Optional for display use
 		public decimal? Price { get; set; }
 		public string? Description { get; set; }

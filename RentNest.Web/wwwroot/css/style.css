@@ -11034,6 +11034,10 @@ button.bg-dark:focus {
     font-weight: 400 !important;
 }
 
+.font-weight-semibold {
+    font-weight: 600 !important;
+}
+
 .font-weight-bold {
     font-weight: 700 !important;
 }
@@ -11662,12 +11666,58 @@ h1, h2, h3, h4, h5,
 
 .hero-wrap {
     width: 100%;
-    height: 700px;
+    height: 400px;
     position: inherit;
-    background-size: cover;
+    background-size: inherit;
     background-repeat: no-repeat;
     background-position: center center;
 }
+
+.hero-wrapper {
+    width: 100%;
+    padding-top: 8rem;
+    padding-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-banner {
+    width: 80%;
+    height: 450px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    background-image: url('/images/img_background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 16px;
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+    padding: 8rem 0;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #fff;
+}
+
 
 @media (max-width: 991.98px) {
     .hero-wrap {

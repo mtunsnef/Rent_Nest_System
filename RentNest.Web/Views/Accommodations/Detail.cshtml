@@ -39,30 +39,30 @@
                         <!-- Ảnh chính -->
                         <div class="swiper mySwiper2 mb-2">
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide"><img src="images/work-1.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-2.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-3.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-4.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-5.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-6.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-7.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-8.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-9.jpg" class="img-fluid rounded main-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-1.jpg" class="img-fluid rounded main-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-2.jpg" class="img-fluid rounded main-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-3.jpg" class="img-fluid rounded main-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-4.jpg" class="img-fluid rounded main-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-5.jpg" class="img-fluid rounded main-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-6.jpg" class="img-fluid rounded main-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-7.jpg" class="img-fluid rounded main-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-8.jpg" class="img-fluid rounded main-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-9.jpg" class="img-fluid rounded main-img" /></div>
                             </div>
                         </div>
 
                         <!-- Ảnh nhỏ thumbnail -->
                         <div class="swiper mySwiperThumbs">
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide"><img src="images/work-1.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-2.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-3.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-4.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-5.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-6.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-7.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-8.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="images/work-9.jpg" class="img-fluid thumb-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-1.jpg" class="img-fluid thumb-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-2.jpg" class="img-fluid thumb-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-3.jpg" class="img-fluid thumb-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-4.jpg" class="img-fluid thumb-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-5.jpg" class="img-fluid thumb-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-6.jpg" class="img-fluid thumb-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-7.jpg" class="img-fluid thumb-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-8.jpg" class="img-fluid thumb-img" /></div>
+                                <div class="swiper-slide"><img src="/images/work-9.jpg" class="img-fluid thumb-img" /></div>
                             </div>
                             <!-- Nút điều hướng -->
                             <div class="swiper-button-next"></div>
@@ -76,7 +76,12 @@
                             <h3 class="mb-0"><a href="properties-single.html">Phòng trọ gần FPT</a></h3>
                             <div class="d-flex align-items-center">
                                 <span class="text-warning mr-2">★★★★☆ 4.5</span>
-                                <button class="btn btn-light border"><i class="fas fa-heart"></i></button>
+
+                                <button class="btn btn-light border favorite-btn" data-post-id="@Model.PostId">
+                                    <i class="fas fa-heart" id="heart-@Model.PostId"></i>
+                                </button>
+
+
                             </div>
                         </div>
                         <span style="font-size: 110% !important" class="badge badge-danger mb-2 p-2">3.5 triệu / tháng</span>
@@ -309,7 +314,55 @@
             mainSwiper.slideToLoop(index);
         });
     });
+
 </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@Html.AntiForgeryToken()
+
+<script>
+    $(document).ready(function () {
+        $(".favorite-btn").each(function () {
+            var postId = $(this).data("post-id");
+            var heartIcon = $("#heart-" + postId);
+
+            // Check if this post is already in favorites
+            $.get("/Accommodations/IsFavorite", { postId: postId }, function (isFavorite) {
+                if (isFavorite) {
+                    heartIcon.addClass("favorite-red");
+                }
+            });
+        });
+
+        $(document).on("click", ".favorite-btn", function () {
+            var postId = $(this).data("post-id");
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            var heartIcon = $("#heart-" + postId);
+            var isAdding = !heartIcon.hasClass("favorite-red"); // determine action
+
+            $.ajax({
+                url: isAdding ? '/Accommodations/AddToFavorite' : '/Accommodations/RemoveFromFavorite',
+                type: 'POST',
+                data: { postId: postId },
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                success: function () {
+                    heartIcon.toggleClass("favorite-red");
+                    alert(isAdding ? "Added to favorites!" : "Removed from favorites.");
+                },
+                error: function (xhr, status, error) {
+                    console.log("XHR:", xhr);
+                    console.log("Status:", status);
+                    console.log("Error:", error);
+                    alert("Operation failed.");
+                }
+            });
+        });
+    });
+</script>
+
+
 
 <style>
     .thumb-img {
@@ -330,5 +383,9 @@
     .swiper-button-next,
     .swiper-button-prev {
         color: #333;
+    }
+
+    .favorite-red {
+        color: red;
     }
 </style>
