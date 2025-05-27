@@ -57,12 +57,11 @@ public partial class RentNestSystemContext : DbContext
     public virtual DbSet<TimeUnitPackage> TimeUnitPackages { get; set; }
 
     public virtual DbSet<UserProfile> UserProfiles { get; set; }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(GetConnectionString());
     }
-    private string GetConnectionString()
+    private string GetConnectionString()x
     {
         IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -277,6 +276,8 @@ public partial class RentNestSystemContext : DbContext
                 .HasDefaultValue("A")
                 .IsFixedLength()
                 .HasColumnName("is_active");
+            entity.Property(e => e.IsOnline).HasDefaultValue(false);
+            entity.Property(e => e.LastActiveAt).HasColumnType("datetime");
             entity.Property(e => e.Password)
                 .HasMaxLength(255)
                 .HasColumnName("password");
@@ -314,6 +315,8 @@ public partial class RentNestSystemContext : DbContext
             entity.ToTable("Conversation");
 
             entity.HasIndex(e => new { e.SenderId, e.ReceiverId }, "IX_Conversation_Users");
+
+            entity.HasIndex(e => new { e.SenderId, e.ReceiverId, e.PostId }, "UX_Conversation_Uniqueness").IsUnique();
 
             entity.Property(e => e.ConversationId).HasColumnName("conversation_id");
             entity.Property(e => e.PostId).HasColumnName("post_id");

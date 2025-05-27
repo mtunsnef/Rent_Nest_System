@@ -11303,7 +11303,7 @@ h1, h2, h3, h4, h5,
     top: 0;
     left: 0;
     right: 0;
-    z-index: 3;
+    z-index: 4;
     background: rgba(0, 0, 0, 0.3) !important;
     color: #fff;
     font-size: 14px;
@@ -11346,6 +11346,7 @@ h1, h2, h3, h4, h5,
         padding-bottom: 0;
         padding-left: 15px;
         padding-right: 15px;
+        z-index: 4;
     }
 }
 
