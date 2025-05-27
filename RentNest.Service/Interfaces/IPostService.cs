@@ -10,5 +10,7 @@ namespace RentNest.Service.Interfaces
      public interface IPostService
     {
         Task<List<Post>> GetAllPostsWithAccommodation();
-    }
+        Task<int?> GetAccommodationIdByPostId(int postId);
+
+	}
 }

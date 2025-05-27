@@ -1,0 +1,192 @@
+﻿@model List<AccommodationIndexViewModel>
+
+<h2>Bài viết yêu thích</h2>
+
+@if (Model.Any())
+{
+	<section class="ftco-properties" id="properties-section" style="margin-top: 4rem">
+		<div class="container-fluid px-md-5">
+			<div class="row">
+				<!-- Search Sidebar -->
+				<div class="col-lg-3 pr-lg-4">
+					<div class="search-wrap">
+						<h3 class="mb-5">Tìm kiếm</h3>
+						<form action="#" class="search-property">
+							<div class="row">
+								<!-- Loại phòng -->
+								<div class="col-md-12 align-items-end ftco-animate">
+									<div class="form-group">
+										<label>Loại phòng</label>
+										<div class="form-field">
+											<div class="select-wrap">
+												<div class="icon"><span class="ion-ios-arrow-down"></span></div>
+												<select name="roomType" class="form-control">
+													<option value="">Chọn loại phòng</option>
+													<option value="phongtro">Phòng trọ</option>
+													<option value="nhanguyencan">Nhà nguyên căn</option>
+													<option value="chungcu">Căn hộ ,Chung cư</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Trạng thái phòng -->
+								<div class="col-md-12 align-items-end ftco-animate">
+									<div class="form-group">
+										<label>Trạng thái phòng</label>
+										<div class="form-field">
+											<div class="select-wrap">
+												<div class="icon"><span class="ion-ios-arrow-down"></span></div>
+												<select name="roomStatus" class="form-control">
+													<option value="">Chọn trạng thái</option>
+													<option value="A">Cho thuê</option>
+													<option value="R">Đã thuê</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Giá thuê tối thiểu -->
+								<div class="col-md-12 align-items-end ftco-animate">
+									<div class="form-group">
+										<label for="min-price">Giá thuê tối thiểu</label>
+										<div class="form-field">
+											<input type="number" id="min-price" name="min-price" class="form-control" placeholder="Nhập giá tối thiểu (VNĐ)">
+										</div>
+									</div>
+								</div>
+
+								<!-- Giá thuê tối đa -->
+								<div class="col-md-12 align-items-end ftco-animate">
+									<div class="form-group">
+										<label for="max-price">Giá thuê tối đa</label>
+										<div class="form-field">
+											<input type="number" id="max-price" name="max-price" class="form-control" placeholder="Nhập giá tối đa (VNĐ)">
+										</div>
+									</div>
+								</div>
+
+								<!-- Diện tích tối thiểu -->
+								<div class="col-md-12 align-items-end ftco-animate">
+									<div class="form-group">
+										<label>Diện tích tối thiểu <span>(m²)</span></label>
+										<div class="form-field">
+											<div class="icon"><span class="icon-pencil"></span></div>
+											<input type="text" name="min-area" class="form-control" placeholder="Nhập diện tích tối thiểu">
+										</div>
+									</div>
+								</div>
+
+								<!-- Diện tích tối đa -->
+								<div class="col-md-12 align-items-end ftco-animate">
+									<div class="form-group">
+										<label>Diện tích tối đa <span>(m²)</span></label>
+										<div class="form-field">
+											<div class="icon"><span class="icon-pencil"></span></div>
+											<input type="text" name="max-area" class="form-control" placeholder="Nhập diện tích tối đa">
+										</div>
+									</div>
+								</div>
+
+								<!-- My Favorite Checkbox -->
+								<div class="col-md-12 align-items-end ftco-animate">
+									<div class="form-group">
+										<label>
+											<input type="checkbox" id="chkFavorite" name="favoriteOnly" />
+											Bài viết yêu thích của tôi
+										</label>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<!-- Properties List -->
+				<div class="col-lg-9">
+					<div class="row">
+						@foreach (var item in Model)
+						{
+							var statusColor = item.Status == "A" ? "bg-primary" : "bg-secondary";
+							var statusText = item.Status == "A" ? "Cho thuê" : item.Status == "R" ? "Đã thuê" : "Không hoạt động";
+							var postedAgo = item.CreatedAt.HasValue
+							? (DateTime.Now - item.CreatedAt.Value) switch
+							{
+								var d when d.TotalHours < 1 => "Vừa đăng",
+								var d when d.TotalHours < 24 => $"{(int)d.TotalHours} giờ trước",
+								var d => $"{(int)d.TotalDays} ngày trước"
+							} : "";
+
+							<div class="col-md-12 mb-4">
+								<div class="ftco-animate properties d-flex border rounded overflow-hidden shadow-sm bg-white" style="min-height: 200px;">
+									<div class="flex-shrink-0" style="width: 250px; height: 180px; overflow: hidden;">
+										<img src="@item.ImageUrl" alt="@item.Title" class="img-fluid h-100 w-100" style="object-fit: cover;">
+									</div>
+
+									<div class="flex-grow-1 p-3 d-flex flex-column justify-content-between">
+										<div>
+											<h5 class="mb-1">
+												<a href="@Url.Action("Detail", "Accommodations", new { id = item.Id })" class="text-dark font-weight-bold text-decoration-none">
+													@item.Title
+												</a>
+											</h5>
+											<div class="my-2 text-danger font-weight-semibold">
+												@(((item.Price ?? 0) / 1_000_000M).ToString("0.#").Replace('.', ',')) triệu/tháng
+												<span class="mx-2 text-muted">•</span>
+												<span class="text-muted ms-2">@item.Area m²</span>
+												<span class="mx-2 text-muted">•</span>
+												<span class="text-muted ms-2">
+													@item.BedroomCount
+													<svg fill="#000000" width="24px" height="24px" viewBox="0 0 28 28" id="bedroom-8" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" class="icon flat-line" stroke="#000000" transform="matrix(1, 0, 0, 1, 0, 0)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.144"></g><g id="SVGRepo_iconCarrier"><path id="secondary" d="M10,5h4a1,1,0,0,1,1,1V22a1,1,0,0,1-1,1H9a0,0,0,0,1,0,0V6a1,1,0,0,1,1-1Z" transform="translate(26 2) rotate(90)" style="fill: #ffffff; stroke-width:1.248;"></path><path id="primary" d="M7,11H3V7A2,2,0,0,1,5,5H5A2,2,0,0,1,7,7ZM5,17v2m14-2v2m2-3V12a1,1,0,0,0-1-1H3v5a1,1,0,0,0,1,1H20A1,1,0,0,0,21,16Z" style="fill: none; stroke: #000000; stroke-linecap: round; stroke-linejoin: round; stroke-width:1.248;"></path></g></svg>
+												</span>
+												<span class="mx-2 text-muted">•</span>
+												<span class="text-muted ms-2">
+													@item.BathroomCount
+													<svg height="24px" width="24px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 650 650" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path style="fill:#ffffff;" d="M484.615,197.061v24.064c0,0.61,0,1.208-0.012,1.817c-0.966,92.403-76.184,167.011-168.806,167.011 h-205.42c-45.839,0-82.994-37.155-82.994-82.994V197.061L484.615,197.061L484.615,197.061z"></path> <path style="fill:#000000;" d="M358.928,370.978H153.514c-45.839,0-83-37.16-83-83v-90.919H27.38v109.898c0,45.839,37.16,83,83,83 h205.414c32.59,0,63.018-9.244,88.821-25.24C390.082,368.793,374.761,370.978,358.928,370.978z"></path> <path style="fill:#ffffff;" d="M484.394,157.766H27.606c-10.481,0-18.979,8.497-18.979,18.979v1.337 c0,10.481,8.497,18.979,18.979,18.979h456.788c10.482,0,18.979-8.497,18.979-18.979v-1.337 C503.373,166.263,494.876,157.766,484.394,157.766z"></path> <path style="fill:#000000;" d="M78.285,177.413L78.285,177.413c0-10.851,8.796-19.647,19.647-19.647H28.274 c-10.851,0-19.647,8.796-19.647,19.647l0,0c0,10.851,8.796,19.647,19.647,19.647h69.657 C87.081,197.06,78.285,188.264,78.285,177.413z"></path> <polyline style="fill:#ffffff;" points="62.646,373.436 35.865,443.54 66.228,443.54 139.458,389.958 "></polyline> <path style="fill:#000000;" d="M484.615,197.061v24.064c0,0.61,0,1.208-0.012,1.817H27.384v-25.882H484.615z"></path> <polyline style="fill:#ffffff;" points="351.467,384.972 431.5,443.535 461.866,443.535 424.903,346.749 424.796,346.487 "></polyline> <path d="M512,177.413c0-15.59-12.683-28.274-28.274-28.274h-83.5c-4.765,0-8.627,3.863-8.627,8.627c0,4.765,3.863,8.627,8.627,8.627 h83.5c6.076,0,11.02,4.943,11.02,11.02c0,6.077-4.943,11.02-11.02,11.02H28.274c-6.076,0-11.02-4.943-11.02-11.02 c0-6.076,4.943-11.02,11.02-11.02h335.041c4.765,0,8.627-3.863,8.627-8.627c0-4.765-3.863-8.627-8.627-8.627H51.637V97.04 c0-11,8.949-19.951,19.951-19.951c11,0,19.95,8.949,19.95,19.951v1.786c0,4.765,3.863,8.627,8.627,8.627 c4.765,0,8.627-3.863,8.627-8.627V97.04c0-20.514-16.69-37.205-37.205-37.205c-20.514,0-37.204,16.69-37.204,37.205v52.099h-6.108 C12.684,149.139,0,161.822,0,177.413c0,12.251,7.834,22.703,18.753,26.621v43.037c0,4.765,3.863,8.627,8.627,8.627 s8.627-3.863,8.627-8.627v-41.383h439.985v9.503c0,18.385-2.98,36.444-8.858,53.675c-1.538,4.509,0.87,9.412,5.38,10.951 c0.923,0.315,1.862,0.465,2.786,0.465c3.589,0,6.941-2.257,8.165-5.845c6.492-19.028,9.783-38.961,9.783-59.245v-11.156 C504.167,200.116,512,189.664,512,177.413z"></path> <path d="M435.064,349.171c13.018-12.172,24.271-26.213,33.296-41.681c2.401-4.116,1.011-9.398-3.103-11.8 c-4.117-2.4-9.398-1.011-11.8,3.104c-14.389,24.66-35.01,45.334-59.635,59.788c-25.357,14.883-54.393,22.749-83.97,22.749h-196.55 c-42.62,0-77.293-34.673-77.293-77.293v-23.031c0-4.765-3.863-8.627-8.627-8.627s-8.627,3.863-8.627,8.627v23.03 c0,28.921,13.066,54.836,33.59,72.193L27.806,440.46c-1.012,2.651-0.657,5.632,0.954,7.97c1.61,2.339,4.268,3.735,7.107,3.735 h30.363c1.831,0,3.617-0.583,5.095-1.664l70.954-51.917h167.575c13.402,0,26.698-1.487,39.662-4.352l76.893,56.264 c1.478,1.081,3.262,1.664,5.095,1.664h30.364c2.839,0,5.496-1.396,7.105-3.735s1.966-5.319,0.954-7.97L435.064,349.171z M63.41,434.912H48.395l18.538-48.526c13.647,7.714,29.379,12.151,46.131,12.192L63.41,434.912z M434.319,434.908l-63.755-46.651 c11.087-3.882,21.808-8.819,31.991-14.795c6.444-3.782,12.629-7.962,18.543-12.483l28.236,73.93H434.319z"></path> </g></svg>
+												</span>
+											</div>
+											<p class="text-muted mt-1 mb-2">
+												<svg height="24px" width="24px" viewBox="0 0 225 225" xmlns="http://www.w3.org/2000/svg" fill="none" transform="matrix(-1, 0, 0, 1, 0, 0)" style="margin-left: -8px;"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path stroke="#000000" stroke-width="12" d="M96 22a51.88 51.88 0 0 0-36.77 15.303A52.368 52.368 0 0 0 44 74.246c0 16.596 4.296 28.669 20.811 48.898a163.733 163.733 0 0 1 20.053 28.38C90.852 163.721 90.146 172 96 172c5.854 0 5.148-8.279 11.136-20.476a163.723 163.723 0 0 1 20.053-28.38C143.704 102.915 148 90.841 148 74.246a52.37 52.37 0 0 0-15.23-36.943A51.88 51.88 0 0 0 96 22Z"></path><circle cx="96" cy="74" r="20" stroke="#000000" stroke-width="12"></circle></g></svg>
+												@item.Address
+											</p>
+										</div>
+
+										<div class="d-flex justify-content-between align-items-center small">
+											<span class="text-secondary">@postedAgo</span>
+											<div class="text-white px-2 py-1 rounded small @statusColor">@statusText</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						}
+					</div>
+
+					<!-- Pagination -->
+					<div class="row mt-5">
+						<div class="col text-center">
+							<div class="block-27">
+								<ul>
+									<li><a href="#">&lt;</a></li>
+									<li class="active"><span>1</span></li>
+									<li><a href="#">2</a></li>
+									<li><a href="#">3</a></li>
+									<li><a href="#">4</a></li>
+									<li><a href="#">5</a></li>
+									<li><a href="#">&gt;</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div> <!-- End col-lg-9 -->
+			</div> <!-- End row -->
+		</div> <!-- End container -->
+	</section>
+
+}
+else
+{
+	<p>Bạn chưa có bài viết yêu thích nào.</p>
+}

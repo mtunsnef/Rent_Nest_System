@@ -7,10 +7,6 @@ public partial class Post
 {
     public int PostId { get; set; }
 
-    public string Title { get; set; } = null!;
-
-    public string Content { get; set; } = null!;
-
     public string CurrentStatus { get; set; } = null!;
 
     public int? ViewCount { get; set; }
@@ -24,6 +20,10 @@ public partial class Post
     public int AccommodationId { get; set; }
 
     public int AccountId { get; set; }
+
+    public string Title { get; set; } = null!;
+
+    public string Content { get; set; } = null!;
 
     public virtual Accommodation Accommodation { get; set; } = null!;
 

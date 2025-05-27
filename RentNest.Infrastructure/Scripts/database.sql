@@ -8,7 +8,7 @@ CREATE TABLE Account (
     password NVARCHAR(255) NULL,
     is_active CHAR(1) NOT NULL DEFAULT 'A' CHECK (is_active IN ('A', 'D')),  --A is active, D is disabled
     auth_provider VARCHAR(20) NOT NULL CHECK (auth_provider IN ('local', 'google', 'facebook')),
-    auth_provider_id VARCHAR(255) UNIQUE, -- nullable only for 'local'
+    auth_provider_id VARCHAR(255), -- nullable only for 'local'
     created_at DATETIME NOT NULL DEFAULT GETDATE(),
     updated_at DATETIME NOT NULL DEFAULT GETDATE(),
     role CHAR(1) NOT NULL CHECK (role IN ('U', 'A', 'S', 'L')) -- U=User, S = Staff, A=Admin, L=Landlord
@@ -84,6 +84,7 @@ CREATE TABLE Accommodation (
     CONSTRAINT FK_Accommodation_Type FOREIGN KEY (type_id)
         REFERENCES AccommodationType(type_id)
 );
+
 ALTER TABLE Accommodation
 ADD district_name NVARCHAR(255) NULL,
     ward_name NVARCHAR(255) NULL,
