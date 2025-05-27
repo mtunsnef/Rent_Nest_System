@@ -28,6 +28,8 @@
 								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
 									<a class="dropdown-item" href="/Account/Profile">Thông tin cá nhân</a>
 									<a class="dropdown-item" href="#">Lịch sử thuê</a>
+									<a class="dropdown-item" href="/Accommodations/FavoritePosts">Bài viết yêu thích</a>
+
 									@{
 										var email = Context.Session.GetString("Email");
 										if (email != null)

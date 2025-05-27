@@ -44,7 +44,8 @@ namespace RentNest.Web.Controllers
             var claims = new List<Claim>
     {
         new Claim(ClaimTypes.Name, account.Email),
-        new Claim(ClaimTypes.Role, account.Role)
+        new Claim(ClaimTypes.Role, account.Role),
+        new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString())
     };
             var identity = new ClaimsIdentity(claims, AuthSchemes.Cookie);
             var principal = new ClaimsPrincipal(identity);

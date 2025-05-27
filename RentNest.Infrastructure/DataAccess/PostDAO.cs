@@ -24,5 +24,16 @@ namespace RentNest.Infrastructure.DataAccess
                 .ToListAsync();
         }
 
-    }
+		public async Task<int?> GetAccommodationIdByPostId(int postId)
+		{
+			var post = await _context.Posts
+				.Where(p => p.PostId == postId)
+				.Select(p => p.AccommodationId)
+				.FirstOrDefaultAsync();
+
+			return post == 0 ? null : post; // Assuming 0 means not found
+		}
+
+
+	}
 }

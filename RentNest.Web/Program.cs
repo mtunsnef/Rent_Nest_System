@@ -32,6 +32,8 @@ namespace RentNest.Web
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddHttpContextAccessor();
+
             //DAO
             builder.Services.AddScoped<AccountDAO>();
             builder.Services.AddScoped<UserProfileDAO>();
@@ -42,6 +44,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<PackagePricingDAO>();
             builder.Services.AddScoped<AccommodationDAO>();
             builder.Services.AddScoped<PostDAO>();
+            builder.Services.AddScoped<FavoriteDAO>();
 
             //Repository
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -51,6 +54,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<IPackagePricingRepository, PackagePricingRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
+            builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 
             //Service
             builder.Services.AddScoped<IMailService, MailService>();
@@ -62,7 +66,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<IPackagePricingService, PackagePricingService>();
             builder.Services.AddScoped<IAccommodationService, AccommodationService>();
             builder.Services.AddScoped<IPostService, PostService>();
-            builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
+            builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 
             //Config
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));

@@ -15,5 +15,10 @@ namespace RentNest.Service.Implements
         {
             return await _postRepository.GetAllPostsWithAccommodation();
         }
-    }
+		public async Task<int?> GetAccommodationIdByPostId(int postId)
+        {
+            return await _postRepository.GetAccommodationIdByPostId(postId);
+        }
+
+	}
 }
