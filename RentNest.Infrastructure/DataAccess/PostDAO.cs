@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RentNest.Infrastructure.DataAccess
 {
-    public class PostDAO: BaseDAO<PostDAO>
+    public class PostDAO : BaseDAO<PostDAO>
     {
         public PostDAO(RentNestSystemContext context) : base(context) { }
 
@@ -18,7 +18,7 @@ namespace RentNest.Infrastructure.DataAccess
                 .Include(p => p.Accommodation)
                     .ThenInclude(a => a.AccommodationImages)
                 .Include(p => p.Accommodation)
-                    .ThenInclude(a => a.AccommodationDetail) 
+                    .ThenInclude(a => a.AccommodationDetail)
                 .Where(p => p.CurrentStatus == "A" && p.Accommodation.Status != "I")
                 .OrderByDescending(p => p.PublishedAt)
                 .ToListAsync();

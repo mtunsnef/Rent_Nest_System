@@ -155,7 +155,7 @@ namespace RentNest.Web.Controllers
             var dto = new ExternalAccountRegisterDto
             {
                 Email = TempData["Email"]?.ToString() ?? "",
-                AuthProvider = TempData["AuthProvider"]?.ToString() ?? "", 
+                AuthProvider = TempData["AuthProvider"]?.ToString() ?? "",
                 AuthProviderId = TempData["AuthProviderId"]?.ToString() ?? "",
                 FirstName = TempData["FirstName"]?.ToString(),
                 LastName = TempData["LastName"]?.ToString()

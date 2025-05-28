@@ -93,6 +93,7 @@ CREATE TABLE Accommodation (
     CONSTRAINT FK_Accommodation_Type FOREIGN KEY (type_id)
         REFERENCES AccommodationType(type_id)
 );
+
 ALTER TABLE Accommodation
 ADD district_name NVARCHAR(255) NULL,
     ward_name NVARCHAR(255) NULL,

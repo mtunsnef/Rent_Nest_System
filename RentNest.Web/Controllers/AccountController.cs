@@ -98,7 +98,7 @@ namespace RentNest.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Profile()
         {
-            int? accountIdNullable = HttpContext.Session.GetInt32("AccountId");
+            int? accountIdNullable = User.GetUserId();
             if (accountIdNullable == null)
             {
                 TempData["ErrorMessage"] = "Không tìm thấy thông tin người dùng.";
@@ -162,24 +162,19 @@ namespace RentNest.Web.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UploadAvatar(IFormFile avatar)
         {
-            var accountId = HttpContext.Session.GetInt32("AccountId");
+            var accountId = User.GetUserId();
             if (accountId == null)
             {
-                TempData["ErrorMessage"] = "Bạn chưa đăng nhập.";
-                return RedirectToAction("Login", "Auth");
+                return Unauthorized(new { success = false, message = "Bạn chưa đăng nhập." });
             }
 
             var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
             var (success, message) = await _accountService.UploadAvatarAsync(accountId.Value, avatar, webRootPath);
 
-            if (success)
-                TempData["SuccessMessage"] = message;
-            else
-                TempData["ErrorMessage"] = message;
-
-            return RedirectToAction("Profile", "Account");
+            return Json(new { success, message });
         }
 
 

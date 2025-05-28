@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RentNest.Infrastructure.Repositories.Implements
 {
-    public class PostRepository:IPostRepository
+    public class PostRepository : IPostRepository
     {
         private readonly PostDAO _postDAO;
 

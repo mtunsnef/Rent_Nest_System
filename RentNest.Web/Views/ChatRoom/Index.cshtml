@@ -1,6 +1,9 @@
 ﻿@model List<RentNest.Core.Domains.Conversation>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @{
+    ViewData["Title"] = "Trò chuyện";
+}
+@{
     var currentUserId = (int)ViewData["CurrentUserId"];
 }
 <section class="ftco-section" id="chatroom-section" style="padding-bottom: 1.5em;">

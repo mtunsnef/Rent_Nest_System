@@ -3,12 +3,13 @@
 	public class AccommodationDetailViewModel
 	{
         //Post
+        public int PostId { get; set; }
         public string PostTitle { get; set; }
 
-        public string PostContent { get; set; }
+		public string PostContent { get; set; }
 
 		//Accommodation
-        public int DetailId { get; set; }
+		public int DetailId { get; set; }
 
 		public bool? HasKitchenCabinet { get; set; }
 
@@ -30,17 +31,17 @@
 
 		public DateTime? UpdatedAt { get; set; }
 
-		public int AccommodationId { get; set; }	
+		public int AccommodationId { get; set; }
 
-		public string? Title { get; set; } 
+		public string? Title { get; set; }
 
 		public decimal? Price { get; set; }
 
 		public string? Description { get; set; }
 
-        public List<string> ImageUrls { get; set; } = new List<string>();
+		public List<string> ImageUrls { get; set; } = new List<string>();
 
-        public string Address { get; set; }
+		public string Address { get; set; }
 
 		//Owner
 		public string? AccountName { get; set; }
@@ -53,6 +54,6 @@
 
 		public List<string> Amenities { get; set; } = new List<string>();
 
-    }
+	}
 
 }

@@ -1,181 +1,27 @@
-﻿@model List<RentNest.Web.Models.AccommodationIndexViewModel>
+﻿@model List<AccommodationIndexViewModel>
 @{
-	ViewData["Title"] = "Phòng";
+	ViewData["Title"] = "Bài viết yêu thích";
 }
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
-<section class="hero-wrap-boxed">
-	<div class="hero-bg" style="background-image: url('images/bg_3.jpg');">
-		<div class="overlay"></div>
-		<div class="container">
-			<div class="row no-gutters align-items-center justify-content-start" style="min-height: 160px;">
-				<div class="col-md-12 mb-5 mb-lg-5">
-					<p class="breadcrumbs mb-1">
-						<span class="mr-2">
-							<a href="/trang-chu">Trang chủ <i class="ion-ios-arrow-forward"></i></a>
-						</span>
-						<span>Danh sách các phòng <i class="ion-ios-arrow-forward"></i></span>
-					</p>
-				</div>
-			</div>
-			<form asp-action="Search" method="post" asp-controller="Accommodations">
-				<div class="row g-2 align-items-end">
-					<div class="col-md">
-						<label for="provinceDropdown" class="form-label text-white fw-semibold">
-							Tỉnh/Thành phố <span class="text-danger">*</span>
-						</label>
-						<select id="provinceDropdown" class="form-control text-white bg-transparent border-light" required>
-							<option value="">Chọn tỉnh/thành phố...</option>
-						</select>
-						<input name="provinceName" type="hidden" id="provinceName" />
-						<div class="invalid-feedback">Vui lòng chọn tỉnh/thành phố.</div>
-					</div>
-					<div class="col-md">
-						<label for="districtDropdown" class="form-label text-white fw-semibold">
-							Quận/Huyện <span class="text-danger">*</span>
-						</label>
-						<select id="districtDropdown" class="form-control text-white bg-transparent border-light" required>
-							<option value="">Chọn quận/huyện...</option>
-						</select>
-						<input name="DistrictName" type="hidden" id="districtName" />
-						<div class="invalid-feedback">Vui lòng chọn quận/huyện.</div>
-					</div>
 
-					<div class="col-md">
-						<label for="wardDropdown" class="form-label text-white fw-semibold">
-							Phường/Xã <span class="text-danger">*</span>
-						</label>
-						<select id="wardDropdown" class="form-control text-white bg-transparent border-light" required>
-							<option value="">Chọn phường/xã...</option>
-						</select>
-						<input name="WardName" type="hidden" id="wardName" />
-						<div class="invalid-feedback">Vui lòng chọn phường/xã.</div>
-					</div>
-
-					<div class="col-md">
-						<label for="area" class="form-label text-white">Diện tích (m²)</label>
-						<input type="number" id="area" name="area" min="0" step="0.5" class="form-control text-white bg-transparent border-light" placeholder="Diện tích (m²)">
-					</div>
-
-					<div class="col-md">
-						<label for="minMoney" class="form-label text-white">Giá thấp nhất</label>
-						<input type="number" id="minMoney" name="minMoney" min="0" step="10000" class="form-control text-white bg-transparent border-light" placeholder="Tối thiểu (VNĐ)">
-					</div>
-
-					<div class="col-md">
-						<label for="maxMoney" class="form-label text-white">Giá cao nhất</label>
-						<input type="number" id="maxMoney" name="maxMoney" min="0" step="10000" class="form-control text-white bg-transparent border-light" placeholder="Tối đa (VNĐ)">
-					</div>
-
-					<div class="col-auto d-flex align-items-end">
-						<button type="submit" class="btn btn-primary px-4 h-100 mb-2">Tìm</button>
-					</div>
-				</div>
-			</form>
-			<div style="height: 40px;"></div>
-		</div>
-	</div>
-</section>
-<section class="ftco-properties" id="properties-section" style="margin-top: 4rem">
-	<div class="container-fluid px-md-5">
+<section class="ftco-properties" id="properties-section" style="margin-top: 10rem">
+	<div class="container px-md-5">
+		<h5>Tin đăng đã lưu</h5>
 		<div class="row">
-			<div class="col-lg-3 pr-lg-4">
-				<div class="search-wrap">
-					<h3 class="mb-5">Tìm kiếm</h3>
-					<form action="#" class="search-property">
-						<div class="row">
-							<!-- Loại phòng -->
-							<div class="col-md-12 align-items-end ftco-animate">
-								<div class="form-group">
-									<label for="#">Loại phòng</label>
-									<div class="form-field">
-										<div class="select-wrap">
-											<div class="icon"><span class="ion-ios-arrow-down"></span></div>
-											<select name="" id="" class="form-control">
-												<option value="">Chọn loại phòng</option>
-												<option value="">Phòng trọ</option>
-												<option value="">Nhà nguyên căn</option>
-												<option value="">Căn hộ ,Chung cư</option>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Trạng thái phòng -->
-							<div class="col-md-12 align-items-end ftco-animate">
-								<div class="form-group">
-									<label for="#">Trạng thái phòng</label>
-									<div class="form-field">
-										<div class="select-wrap">
-											<div class="icon"><span class="ion-ios-arrow-down"></span></div>
-											<select name="" id="" class="form-control">
-												<option value="">Chọn trạng thái</option>
-												<option value="">Cho thuê</option>
-												<option value="">Đã thuê</option>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Giá thuê tối thiểu -->
-							<div class="col-md-12 align-items-end ftco-animate">
-								<div class="form-group">
-									<label for="min-price">Giá thuê tối thiểu</label>
-									<div class="form-field">
-										<input type="number" id="min-price" name="min-price" class="form-control"
-										placeholder="Nhập giá tối thiểu (VNĐ)">
-									</div>
-								</div>
-							</div>
-
-							<!-- Giá thuê tối đa -->
-							<div class="col-md-12 align-items-end ftco-animate">
-								<div class="form-group">
-									<label for="max-price">Giá thuê tối đa</label>
-									<div class="form-field">
-										<input type="number" id="max-price" name="max-price" class="form-control"
-										placeholder="Nhập giá tối đa (VNĐ)">
-									</div>
-								</div>
-							</div>
-
-							<!-- Diện tích tối thiểu -->
-							<div class="col-md-12 align-items-end ftco-animate">
-								<div class="form-group">
-									<label for="#">Diện tích tối thiểu <span>(m²)</span></label>
-									<div class="form-field">
-										<div class="icon"><span class="icon-pencil"></span></div>
-										<input type="text" class="form-control" placeholder="Nhập diện tích tối thiểu">
-									</div>
-								</div>
-							</div>
-							<!-- Diện tích tối đa -->
-							<div class="col-md-12 align-items-end ftco-animate">
-								<div class="form-group">
-									<label for="#">Diện tích tối đa <span>(m²)</span></label>
-									<div class="form-field">
-										<div class="icon"><span class="icon-pencil"></span></div>
-										<input type="text" class="form-control" placeholder="Nhập diện tích tối đa">
-									</div>
-								</div>
-							</div>
-							<!-- My Favorite Checkbox -->
-							<div class="col-md-12 align-items-end ftco-animate">
-								<div class="form-group">
-									<label>
-										<input type="checkbox" id="chkFavorite" />
-										Bài viết yêu thích của tôi
-									</label>
-								</div>
-							</div>
-
-
-						</div>
-					</form>
+			@if (Model == null || !Model.Any())
+			{
+				<div class="col-md-12 text-center my-5">
+					<h5 class="text-muted">Bạn chưa lưu tin đăng nào!</h5>
+					<p class="text-secondary">Hãy bấm nút <i class="fas fa-heart text-danger"></i> ở tin đăng để lưu và xem lại sau.</p>
+					<a href="@Url.Action("Index", "Accommodations")" class="btn btn-primary my-3">
+						<i class="fas fa-search me-2"></i> Bắt đầu tìm kiếm
+					</a>
 				</div>
-			</div><!-- end -->
-			<div class="col-lg-9">
+			} 
+			else
+			{
+				<div class="col-lg-12">
 				<div class="row">
 					@foreach (var item in Model)
 					{
@@ -188,6 +34,7 @@
 							var d when d.TotalHours < 24 => $"{(int)d.TotalHours} giờ trước",
 							var d => $"{(int)d.TotalDays} ngày trước"
 						} : "";
+
 						<div class="col-md-12 mb-4">
 							<div class="ftco-animate properties d-flex border rounded overflow-hidden shadow-sm bg-white" style="min-height: 200px;">
 								<div class="flex-shrink-0" style="width: 250px; height: 180px; overflow: hidden;">
@@ -197,7 +44,7 @@
 								<div class="flex-grow-1 p-3 d-flex flex-column justify-content-between">
 									<div>
 										<h5 class="mb-1">
-											<a href="@Url.Action("Detail", "Accommodations", new { postId = item.Id })" class="text-dark font-weight-bold text-decoration-none">
+											<a href="@Url.Action("Detail", "Accommodations", new { id = item.Id })" class="text-dark font-weight-bold text-decoration-none">
 												@item.Title
 											</a>
 										</h5>
@@ -224,26 +71,45 @@
 
 									<div class="d-flex justify-content-between align-items-center small">
 										<span class="text-secondary">@postedAgo</span>
-										<button class="btn btn-light border favorite-btn" data-post-id="@item.Id">
-											<i class="fas fa-heart" id="heart-@item.Id"></i>
-										</button>
+										<div>
+											<a href="#" class="btn btn-outline-primary">
+												<i class="fa fa-comment"></i> Chat
+											</a>
+											<button class="btn btn-light border favorite-btn" data-post-id="@item.Id">
+												<i class="fas fa-heart" id="heart-@item.Id"></i>
+											</button>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					}
 				</div>
+
+				<!-- Pagination -->
+				<div class="row mt-5">
+					<div class="col text-center">
+						<div class="block-27">
+							<ul>
+								<li><a href="#">&lt;</a></li>
+								<li class="active"><span>1</span></li>
+								<li><a href="#">2</a></li>
+								<li><a href="#">3</a></li>
+								<li><a href="#">4</a></li>
+								<li><a href="#">5</a></li>
+								<li><a href="#">&gt;</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
 			</div>
+			}
 		</div>
 	</div>
 </section>
-@Html.AntiForgeryToken()
 <div id="custom-toast" class="custom-toast"></div>
-@section script {
-	<script src="~/js/address.js"></script>
-	<script src="~/js/filter.js"></script>
-}
+@Html.AntiForgeryToken()
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="~/js/common/show-toast.js"></script>
 <script src="~/js/favorite-post/add-favorite.js"></script>
-
-

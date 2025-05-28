@@ -22,12 +22,12 @@
             <div class="col-md-9 ftco-animate pb-4">
                 <p class="breadcrumbs">
                     <span class="mr-2">
-                        <a href="/Home">
+                        <a href="/trang-chu">
                             Trang chủ <i class="ion-ios-arrow-forward"></i>
                         </a>
                     </span>
                     <span class="mr-2">
-                        <a href="/Room">
+                        <a href="/danh-sach-phong-tro">
                             Danh sách các phòng <i class="ion-ios-arrow-forward"></i>
                         </a>
                     </span>
@@ -78,10 +78,13 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h3 class="mb-0" style="word-break: break-word;"><a href="#">@Model.PostTitle</a></h3>
                             <div class="d-flex align-items-center">
-                                <button class="btn btn-light border"><i class="fas fa-heart"></i></button>
+                                <button class="btn btn-light border favorite-btn" data-post-id="@Model.PostId">
+                                    <i class="fas fa-heart" id="heart-@Model.PostId"></i>
+                                </button>
                             </div>
                         </div>
-                        <span style="font-size: 110% !important" class="badge badge-danger mb-2 p-2">@(((@Model.Price ?? 0) / 1_000_000M).ToString("0.#").Replace('.', ',')) triệu / tháng</span>
+                        <span style="font-size: 110% !important" class="badge badge-danger mb-2 p-2">@(((@Model.Price ??
+                                                        0) / 1_000_000M).ToString("0.#").Replace('.', ',')) triệu / tháng</span>
                         <span style="float: right" class="text-warning mr-2"> 4.5 ★★★★☆</span>
 
                         <p>@Model.Description</p>
@@ -94,7 +97,7 @@
                             </div>
                         </div>
                         @{
-                            var phone = Model.AccountPhone; 
+                            var phone = Model.AccountPhone;
                             var maskedPhone = phone.Substring(0, phone.Length - 3) + "xxx";
                         }
 
@@ -102,7 +105,8 @@
                             <button class="btn btn-success mr-3" onclick="showFullPhone('@phone')" id="phoneBtn">
                                 <i class="fa fa-phone"></i> @maskedPhone
                             </button>
-                            <button class="btn btn-outline-secondary d-none mr-3" id="copyBtn" onclick="copyPhone('@phone')">
+                            <button class="btn btn-outline-secondary d-none mr-3" id="copyBtn"
+                                onclick="copyPhone('@phone')">
                                 <i class="fa fa-copy"></i> Sao chép
                             </button>
                             <a href="#" class="btn btn-outline-primary">
@@ -199,8 +203,8 @@
                     <h5 class="font-weight-bold mb-3">Vị trí</h5>
                     <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
                         <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;"
-                                loading="lazy" allowfullscreen
-                                src="https://maps.google.com/maps?q=@encodedAddress&z=14&output=embed">
+                            loading="lazy" allowfullscreen
+                            src="https://maps.google.com/maps?q=@encodedAddress&z=14&output=embed">
                         </iframe>
                     </div>
                 </div>
@@ -217,7 +221,8 @@
                             <div class="comment-body">
                                 <h3>Nguyễn Văn A</h3>
                                 <div class="meta">Ngày 05/03/2025 lúc 10:15 AM</div>
-                                <p>Phòng sạch sẽ, thoáng mát, đầy đủ tiện nghi. Mình ở đây hơn 1 năm rồi và cảm thấy rất thoải mái. Khu vực an ninh, không gian yên tĩnh, phù hợp để học tập.</p>
+                                <p>Phòng sạch sẽ, thoáng mát, đầy đủ tiện nghi. Mình ở đây hơn 1 năm rồi và cảm thấy rất
+                                    thoải mái. Khu vực an ninh, không gian yên tĩnh, phù hợp để học tập.</p>
                                 <p><a href="#" class="reply">Trả lời</a></p>
                             </div>
                         </li>
@@ -229,7 +234,8 @@
                             <div class="comment-body">
                                 <h3>Trần Thị B</h3>
                                 <div class="meta">Ngày 05/03/2025 lúc 11:30 AM</div>
-                                <p>Giá thuê hợp lý, phòng rộng rãi, có bàn học và wifi rất ổn. Tuy nhiên, giờ giấc hơi nghiêm ngặt nên ai hay đi về khuya thì nên cân nhắc nhé.</p>
+                                <p>Giá thuê hợp lý, phòng rộng rãi, có bàn học và wifi rất ổn. Tuy nhiên, giờ giấc hơi
+                                    nghiêm ngặt nên ai hay đi về khuya thì nên cân nhắc nhé.</p>
                                 <p><a href="#" class="reply">Trả lời</a></p>
                             </div>
 
@@ -241,7 +247,8 @@
                                     <div class="comment-body">
                                         <h3>Phạm Văn C</h3>
                                         <div class="meta">Ngày 05/03/2025 lúc 12:00 PM</div>
-                                        <p>Trần Thị B: Mình thấy quy định giờ giấc cũng hợp lý thôi, vì giúp đảm bảo an ninh cho mọi người. Nhưng nếu cần đi khuya thì có thể xin phép quản lý.</p>
+                                        <p>Trần Thị B: Mình thấy quy định giờ giấc cũng hợp lý thôi, vì giúp đảm bảo an
+                                            ninh cho mọi người. Nhưng nếu cần đi khuya thì có thể xin phép quản lý.</p>
                                         <p><a href="#" class="reply">Trả lời</a></p>
                                     </div>
                                 </li>
@@ -255,7 +262,8 @@
                             <div class="comment-body">
                                 <h3>Lê Minh D</h3>
                                 <div class="meta">Ngày 05/03/2025 lúc 01:45 PM</div>
-                                <p>Phòng rất mới và sạch, có máy giặt chung, nước nóng lạnh đầy đủ. Ở đây rất thích vì gần trường, đi học chỉ mất 5 phút.</p>
+                                <p>Phòng rất mới và sạch, có máy giặt chung, nước nóng lạnh đầy đủ. Ở đây rất thích vì
+                                    gần trường, đi học chỉ mất 5 phút.</p>
                                 <p><a href="#" class="reply">Trả lời</a></p>
                             </div>
                         </li>
@@ -276,11 +284,13 @@
                             </div>
                             <div class="form-group mb-3">
                                 <label for="website" class="fw-bold">Website (nếu có)</label>
-                                <input type="url" class="form-control" id="website" placeholder="Nhập URL trang web của bạn">
+                                <input type="url" class="form-control" id="website"
+                                    placeholder="Nhập URL trang web của bạn">
                             </div>
                             <div class="form-group mb-3">
                                 <label for="message" class="fw-bold">Nội dung bình luận *</label>
-                                <textarea id="message" cols="30" rows="5" class="form-control" placeholder="Nhập nội dung bình luận..."></textarea>
+                                <textarea id="message" cols="30" rows="5" class="form-control"
+                                    placeholder="Nhập nội dung bình luận..."></textarea>
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary py-2 px-4">Gửi bình luận</button>
@@ -292,6 +302,8 @@
         </div>
     </div>
 </section> <!-- .section -->
+<div id="custom-toast" class="custom-toast"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 <script>
     var thumbSwiper = new Swiper(".mySwiperThumbs", {
@@ -340,25 +352,7 @@
     }
 
 </script>
-
-<style>
-    .thumb-img {
-        border: 2px solid #ddd;
-        border-radius: 5px;
-        cursor: pointer;
-        height: 60px;
-        object-fit: cover;
-    }
-
-
-    .main-img {
-        height: 350px;
-        object-fit: cover;
-        width: 100%;
-    }
-
-    .swiper-button-next,
-    .swiper-button-prev {
-        color: #333;
-    }
-</style>
+@Html.AntiForgeryToken()
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/common/show-toast.js"></script>
+<script src="~/js/favorite-post/add-favorite.js"></script>

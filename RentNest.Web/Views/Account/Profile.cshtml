@@ -61,10 +61,12 @@
                     <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
                         <div class="text-center">
                             <img src="@(!string.IsNullOrEmpty(Model.AvatarUrl) ? Model.AvatarUrl : "/images/default-avatar.jpg")"
-                                 alt="Avatar" class="border shadow" width="230" height="230" />
+                                 alt="Avatar" class="border shadow" width="230" height="230" style="object-fit: cover"/>
                             <div class="mt-3">
-                                <form asp-action="UploadAvatar" asp-controller="Account" method="post" enctype="multipart/form-data">
-                                    <button type="submit" class="btn btn-outline-primary mt-2">Thay đổi ảnh</button>
+                                <form id="avatarForm" enctype="multipart/form-data">
+                                    @Html.AntiForgeryToken()
+                                    <input type="file" id="avatarInput" name="avatar" accept="image/*" hidden />
+                                    <label for="avatarInput" class="btn btn-primary mt-2">Thay đổi ảnh</label>
                                 </form>
                             </div>
                         </div>
@@ -115,4 +117,30 @@
         editButton.classList.add("d-none");
         saveButton.classList.remove("d-none");
     }
+
+    document.getElementById("avatarInput").addEventListener("change", function () {
+        var formData = new FormData();
+        formData.append("avatar", this.files[0]);
+        formData.append("__RequestVerificationToken", $('input[name="__RequestVerificationToken"]').val());
+
+        fetch("/Account/UploadAvatar", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            Swal.fire({
+                icon: data.success ? "success" : "error",
+                title: data.success ? "Thành công!" : "Thất bại!",
+                text: data.message
+            }).then(() => {
+                if (data.success) location.reload();
+            });
+        })
+        .catch(error => {
+            console.error("Upload error:", error);
+            Swal.fire("Lỗi!", "Không thể upload ảnh.", "error");
+        });
+    });
+
 </script>

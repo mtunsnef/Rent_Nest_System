@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace RentNest.Service.Interfaces
 {
-     public interface IPostService
-    {
-        Task<List<Post>> GetAllPostsWithAccommodation();
-        Task<Post?> GetPostDetailWithAccommodationDetailAsync(int postId);
-    }
+        public interface IPostService
+        {
+                Task<List<Post>> GetAllPostsWithAccommodation();
+                Task<Post?> GetPostDetailWithAccommodationDetailAsync(int postId);
+        }
 }
