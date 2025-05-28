@@ -19,15 +19,15 @@ public partial class Account
 
     public string? AuthProviderId { get; set; }
 
+    public bool? IsOnline { get; set; }
+
+    public DateTime? LastActiveAt { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
 
     public string Role { get; set; } = null!;
-
-    public bool? IsOnline { get; set; }
-
-    public DateTime? LastActiveAt { get; set; }
 
     public virtual ICollection<Accommodation> Accommodations { get; set; } = new List<Accommodation>();
 
@@ -46,6 +46,8 @@ public partial class Account
     public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
 
     public virtual ICollection<PromoUsage> PromoUsages { get; set; } = new List<PromoUsage>();
+
+    public virtual ICollection<QuickReplyTemplate> QuickReplyTemplates { get; set; } = new List<QuickReplyTemplate>();
 
     public virtual UserProfile? UserProfile { get; set; }
 }
