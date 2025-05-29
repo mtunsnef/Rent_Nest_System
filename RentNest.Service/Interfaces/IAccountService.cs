@@ -16,6 +16,7 @@ namespace RentNest.Service.Interfaces
         Task<bool> RegisterAccountAsync(AccountRegisterDto model);
         Task SetUserOnlineAsync(int userId, bool isOnline);
         Task UpdateLastActiveAsync(int userId);
+        Task<Account> GetAccountById(int accountId);
     }
 
 }

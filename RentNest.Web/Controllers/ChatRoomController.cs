@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Identity.Client;
 using RentNest.Core.Consts;
 using RentNest.Core.Domains;
+using RentNest.Core.DTO;
 using RentNest.Core.UtilHelper;
 using RentNest.Service.Interfaces;
 using RentNest.Web.Hubs;
@@ -16,10 +18,13 @@ namespace RentNest.Web.Controllers
     public class ChatRoomController : Controller
     {
         private readonly IConversationService _conversationService;
-
-        public ChatRoomController(IConversationService conversationService)
+        private readonly IQuicklyReplyTemplateService _quicklyReplyTemplateService;
+        private readonly IAccountService _accountService;
+        public ChatRoomController(IConversationService conversationService, IQuicklyReplyTemplateService quicklyReplyTemplateService, IAccountService accountService)
         {
             _conversationService = conversationService;
+            _quicklyReplyTemplateService = quicklyReplyTemplateService;
+            _accountService = accountService;
         }
 
         [Route("tro-chuyen")]
@@ -38,6 +43,8 @@ namespace RentNest.Web.Controllers
         public async Task<IActionResult> DetailMessage(int id)
         {
             var currentUserId = User.GetUserId();
+            var user = await _accountService.GetAccountById(currentUserId ?? 0);
+
             var conversation = await _conversationService.GetConversationWithMessagesAsync(id);
 
             if (conversation == null) return NotFound();
@@ -64,10 +71,22 @@ namespace RentNest.Web.Controllers
                     ImageUrl = m.ImageUrl,
                     Content = m.Content,
                     SentAt = m.SentAt
-                }).ToList()
+                }).ToList(),
+                QuickReplies = await _quicklyReplyTemplateService.GetQuickRepliesByRoleAsync(user.Role)
             };
 
             return Json(vm);
+        }
+
+        [HttpPost]
+        [Route("/api/v1/quick-messages")]
+        public async Task<IActionResult> AddQuickMessage([FromBody] QuickMessDto dto)
+        {
+            var currentUserId = User.GetUserId();
+            var user = await _accountService.GetAccountById(currentUserId ?? 0);
+
+            await _quicklyReplyTemplateService.AddQuickReplyAsync(dto.Content, user.Role, currentUserId ?? 0);
+            return Ok(new {message = "Đã thêm tin nhắn nhanh"});
         }
     }
 }

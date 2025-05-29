@@ -89,5 +89,10 @@ namespace RentNest.Service.Implements
         {
             await _accountRepository.UpdateLastActiveAsync(userId);
         }
+
+        public async Task<Account> GetAccountById(int accountId)
+        {
+            return await _accountRepository.GetAccountById(accountId);
+        }
     }
 }

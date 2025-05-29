@@ -148,5 +148,10 @@ namespace RentNest.Infrastructure.Repositories.Implements
                 await _accountDAO.UpdateAsync(user);
             }
         }
+
+        public async Task<Account> GetAccountById(int accountId)
+        {
+            return await _accountDAO.GetByIdAsync(accountId);
+        }
     }
 }

@@ -58,6 +58,8 @@ $(document).ready(function () {
                 $('#chatBox').html(messagesHtml);
                 $('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
 
+                renderQuickReplies(data.quickReplies);
+
             },
             error: function () {
                 alert("Không thể tải nội dung cuộc trò chuyện.");
@@ -114,7 +116,6 @@ function renderDateLabelIfNeeded(msgDate) {
 
     return '';
 }
-
 
 function renderMessageBubble(isMine, messageContent, timeOnly) {
     return `
@@ -173,6 +174,15 @@ async function initChatHub(userId) {
         console.error("SignalR connection error:", err);
     }
 }
+function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
 function bindSendButton(userId) {
     const fileInput = document.getElementById("imageInput");
     const previewImageInside = document.getElementById("previewImageInside");
@@ -202,53 +212,53 @@ function bindSendButton(userId) {
         messageInput.style.paddingBottom = "0";
     });
 
-    async function sendMessageHandler() {
-        const message = $("#messageInput").val().trim();
-        const file = fileInput.files[0];
+    $("#sendBtn").off("click").on("click", function () {
+        sendMessageHandler(userId);
+    });
 
-        if (!message && !file) return;
-        if (!chatState.currentConversationId || !chatState.currentReceiverId) return;
-
-        let imageUrl = null;
-
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = async function (e) {
-                imageUrl = e.target.result;
-
-                try {
-                    await connection.invoke("SendMessage", chatState.currentConversationId, chatState.currentReceiverId, message, imageUrl);
-                    appendMessageToChat(userId, message, imageUrl);
-
-                    $("#messageInput").val("");
-                    fileInput.value = null;
-                    previewImageInside.style.display = "none";
-                    removeImageBtn.style.display = "none";
-                    messageInput.style.paddingTop = "12px";
-                } catch (err) {
-                    console.error("SendMessage error:", err);
-                }
-            };
-            reader.readAsDataURL(file);
-        } else {
-            try {
-                await connection.invoke("SendMessage", chatState.currentConversationId, chatState.currentReceiverId, message, null);
-                appendMessageToChat(userId, message, null);
-                $("#messageInput").val("");
-            } catch (err) {
-                console.error("SendMessage error:", err);
-            }
-        }
-    }
-
-    $("#sendBtn").off("click").on("click", sendMessageHandler);
     $("#messageInput").off("keypress").on("keypress", function (e) {
         if (e.which === 13 && !e.shiftKey) {
             e.preventDefault();
-            sendMessageHandler();
+            sendMessageHandler(userId);
         }
     });
 }
+
+async function sendMessageHandler(userId) {
+    const fileInput = document.getElementById("imageInput");
+    const previewImageInside = document.getElementById("previewImageInside");
+    const removeImageBtn = document.getElementById("removeImageBtn");
+    const messageInput = document.getElementById("messageInput");
+
+    const message = messageInput.value.trim();
+    const file = fileInput.files[0];
+
+    if (!message && !file) return;
+    if (!chatState.currentConversationId || !chatState.currentReceiverId) return;
+
+    let imageUrl = null;
+
+    try {
+        if (file) {
+            imageUrl = await readFileAsDataURL(file);
+        }
+
+        await connection.invoke("SendMessage", chatState.currentConversationId, chatState.currentReceiverId, message, imageUrl);
+
+        appendMessageToChat(userId, message, imageUrl);
+
+        messageInput.value = "";
+        fileInput.value = null;
+        previewImageInside.style.display = "none";
+        removeImageBtn.style.display = "none";
+        messageInput.style.paddingTop = "12px";
+
+    } catch (err) {
+        console.error("SendMessage error:", err);
+    }
+}
+
+
 function appendMessageToChat(senderId, message, imageUrl) {
     const isMine = senderId === currentUserId;
     const now = new Date();
@@ -267,4 +277,16 @@ function appendMessageToChat(senderId, message, imageUrl) {
 
     $('#chatBox').append(html);
     $('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
+}
+function renderQuickReplies(quickReplies) {
+    const quickRepliesHtml = quickReplies.map(q => {
+        return `<button class="btn btn-outline-secondary btn-sm mr-2 mb-2 quick-reply-btn">${q.message}</button>`;
+    }).join('');
+    $('#quickReplyContainer').html(quickRepliesHtml);
+
+    $('.quick-reply-btn').off('click').on('click', async function () {
+        const message = $(this).text();
+        $('#messageInput').val(message);
+        sendMessageHandler(currentUserId);
+    });
 }

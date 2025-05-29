@@ -54,14 +54,17 @@ public partial class RentNestSystemContext : DbContext
 
     public virtual DbSet<PromoUsage> PromoUsages { get; set; }
 
+    public virtual DbSet<QuickReplyTemplate> QuickReplyTemplates { get; set; }
+
     public virtual DbSet<TimeUnitPackage> TimeUnitPackages { get; set; }
 
     public virtual DbSet<UserProfile> UserProfiles { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(GetConnectionString());
     }
-    private string GetConnectionString()x
+    private string GetConnectionString()
     {
         IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -72,7 +75,7 @@ public partial class RentNestSystemContext : DbContext
     {
         modelBuilder.Entity<Accommodation>(entity =>
         {
-            entity.HasKey(e => e.AccommodationId).HasName("PK__Accommod__004EC3254C948AC2");
+            entity.HasKey(e => e.AccommodationId).HasName("PK__Accommod__004EC325DAC979CC");
 
             entity.ToTable("Accommodation");
 
@@ -134,7 +137,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<AccommodationAmenity>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Accommod__3213E83FF857D561");
+            entity.HasKey(e => e.Id).HasName("PK__Accommod__3213E83FDCD5FB04");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.AccommodationId).HasColumnName("accommodation_id");
@@ -151,9 +154,9 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<AccommodationDetail>(entity =>
         {
-            entity.HasKey(e => e.DetailId).HasName("PK__Accommod__38E9A2245F2E285A");
+            entity.HasKey(e => e.DetailId).HasName("PK__Accommod__38E9A2245B47EFF4");
 
-            entity.HasIndex(e => e.AccommodationId, "UQ__Accommod__004EC3242BE484D5").IsUnique();
+            entity.HasIndex(e => e.AccommodationId, "UQ__Accommod__004EC324165F0C7E").IsUnique();
 
             entity.Property(e => e.DetailId).HasColumnName("detail_id");
             entity.Property(e => e.AccommodationId).HasColumnName("accommodation_id");
@@ -197,7 +200,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<AccommodationImage>(entity =>
         {
-            entity.HasKey(e => e.ImageId).HasName("PK__Accommod__DC9AC9553BE36311");
+            entity.HasKey(e => e.ImageId).HasName("PK__Accommod__DC9AC955EBD8B280");
 
             entity.ToTable("AccommodationImage");
 
@@ -223,11 +226,11 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<AccommodationType>(entity =>
         {
-            entity.HasKey(e => e.TypeId).HasName("PK__Accommod__2C000598736C3E5E");
+            entity.HasKey(e => e.TypeId).HasName("PK__Accommod__2C0005981105EEC3");
 
             entity.ToTable("AccommodationType");
 
-            entity.HasIndex(e => e.TypeName, "UQ__Accommod__543C4FD98F98B9AF").IsUnique();
+            entity.HasIndex(e => e.TypeName, "UQ__Accommod__543C4FD904FFCE1A").IsUnique();
 
             entity.Property(e => e.TypeId).HasColumnName("type_id");
             entity.Property(e => e.Description)
@@ -240,11 +243,11 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.AccountId).HasName("PK__Account__46A222CDAF0EE0E1");
+            entity.HasKey(e => e.AccountId).HasName("PK__Account__46A222CDAFF0AFBE");
 
             entity.ToTable("Account");
 
-            entity.HasIndex(e => e.Email, "UQ__Account__AB6E61645CC41F39").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Account__AB6E61646147AFFC").IsUnique();
 
             entity.HasIndex(e => e.AuthProviderId, "UX_Account_AuthProviderId")
                 .IsUnique()
@@ -276,8 +279,12 @@ public partial class RentNestSystemContext : DbContext
                 .HasDefaultValue("A")
                 .IsFixedLength()
                 .HasColumnName("is_active");
-            entity.Property(e => e.IsOnline).HasDefaultValue(false);
-            entity.Property(e => e.LastActiveAt).HasColumnType("datetime");
+            entity.Property(e => e.IsOnline)
+                .HasDefaultValue(false)
+                .HasColumnName("is_online");
+            entity.Property(e => e.LastActiveAt)
+                .HasColumnType("datetime")
+                .HasColumnName("last_active_at");
             entity.Property(e => e.Password)
                 .HasMaxLength(255)
                 .HasColumnName("password");
@@ -297,7 +304,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<Amenity>(entity =>
         {
-            entity.HasKey(e => e.AmenityId).HasName("PK__Amenitie__E908452DFE13361B");
+            entity.HasKey(e => e.AmenityId).HasName("PK__Amenitie__E908452D2A76473D");
 
             entity.Property(e => e.AmenityId).HasColumnName("amenity_id");
             entity.Property(e => e.AmenityName)
@@ -310,7 +317,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<Conversation>(entity =>
         {
-            entity.HasKey(e => e.ConversationId).HasName("PK__Conversa__311E7E9A3280FB4F");
+            entity.HasKey(e => e.ConversationId).HasName("PK__Conversa__311E7E9A260B5565");
 
             entity.ToTable("Conversation");
 
@@ -348,7 +355,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<FavoritePost>(entity =>
         {
-            entity.HasKey(e => e.FavoriteId).HasName("PK__Favorite__46ACF4CBA73791EC");
+            entity.HasKey(e => e.FavoriteId).HasName("PK__Favorite__46ACF4CB87AA561D");
 
             entity.ToTable("FavoritePost");
 
@@ -374,7 +381,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<Message>(entity =>
         {
-            entity.HasKey(e => e.MessageId).HasName("PK__Message__0BBF6EE6353FE115");
+            entity.HasKey(e => e.MessageId).HasName("PK__Message__0BBF6EE6A3FA112F");
 
             entity.ToTable("Message");
 
@@ -409,7 +416,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PackagePricing>(entity =>
         {
-            entity.HasKey(e => e.PricingId).HasName("PK__PackageP__A25A9FB72E1E5FB7");
+            entity.HasKey(e => e.PricingId).HasName("PK__PackageP__A25A9FB719D8C6E2");
 
             entity.ToTable("PackagePricing");
 
@@ -450,7 +457,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => e.PaymentId).HasName("PK__Payment__ED1FC9EAB15FF072");
+            entity.HasKey(e => e.PaymentId).HasName("PK__Payment__ED1FC9EA4EFB87CA");
 
             entity.ToTable("Payment");
 
@@ -496,7 +503,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PaymentMethod>(entity =>
         {
-            entity.HasKey(e => e.MethodId).HasName("PK__PaymentM__747727B674E4505D");
+            entity.HasKey(e => e.MethodId).HasName("PK__PaymentM__747727B602789EB3");
 
             entity.ToTable("PaymentMethod");
 
@@ -516,7 +523,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<Post>(entity =>
         {
-            entity.HasKey(e => e.PostId).HasName("PK__Post__3ED78766FFC98D4B");
+            entity.HasKey(e => e.PostId).HasName("PK__Post__3ED78766B7EA3E7E");
 
             entity.ToTable("Post");
 
@@ -560,7 +567,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PostApproval>(entity =>
         {
-            entity.HasKey(e => e.ApprovalId).HasName("PK__PostAppr__C94AE61AAE7A2C64");
+            entity.HasKey(e => e.ApprovalId).HasName("PK__PostAppr__C94AE61A99A75877");
 
             entity.Property(e => e.ApprovalId).HasColumnName("approval_id");
             entity.Property(e => e.ApprovedByAccountId).HasColumnName("approved_by_account_id");
@@ -593,7 +600,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PostPackageDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PostPack__3213E83FA345CC54");
+            entity.HasKey(e => e.Id).HasName("PK__PostPack__3213E83F263E7122");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedAt)
@@ -633,7 +640,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PostPackageType>(entity =>
         {
-            entity.HasKey(e => e.PackageTypeId).HasName("PK__PostPack__DFBEE40AD718A7E0");
+            entity.HasKey(e => e.PackageTypeId).HasName("PK__PostPack__DFBEE40ACA33B287");
 
             entity.ToTable("PostPackageType");
 
@@ -649,11 +656,11 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PromoCode>(entity =>
         {
-            entity.HasKey(e => e.PromoId).HasName("PK__PromoCod__84EB4CA53BB72346");
+            entity.HasKey(e => e.PromoId).HasName("PK__PromoCod__84EB4CA5DD9A9F1A");
 
             entity.ToTable("PromoCode");
 
-            entity.HasIndex(e => e.Code, "UQ__PromoCod__357D4CF9AAE1C1F0").IsUnique();
+            entity.HasIndex(e => e.Code, "UQ__PromoCod__357D4CF9648E7A74").IsUnique();
 
             entity.Property(e => e.PromoId).HasColumnName("promo_id");
             entity.Property(e => e.Code)
@@ -690,7 +697,7 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<PromoUsage>(entity =>
         {
-            entity.HasKey(e => e.PromoUsageId).HasName("PK__PromoUsa__60E8C6384EA6E4DA");
+            entity.HasKey(e => e.PromoUsageId).HasName("PK__PromoUsa__60E8C638975EA707");
 
             entity.ToTable("PromoUsage");
 
@@ -717,13 +724,49 @@ public partial class RentNestSystemContext : DbContext
                 .HasConstraintName("FK_PromoUsage_Promo");
         });
 
+        modelBuilder.Entity<QuickReplyTemplate>(entity =>
+        {
+            entity.HasKey(e => e.TemplateId).HasName("PK__QuickRep__BE44E079ADEEE3C9");
+
+            entity.ToTable("QuickReplyTemplate");
+
+            entity.Property(e => e.TemplateId).HasColumnName("template_id");
+            entity.Property(e => e.AccountId).HasColumnName("account_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .HasColumnName("is_active");
+            entity.Property(e => e.IsDefault)
+                .HasDefaultValue(true)
+                .HasColumnName("is_default");
+            entity.Property(e => e.Message)
+                .HasMaxLength(255)
+                .HasColumnName("message");
+            entity.Property(e => e.TargetRole)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength()
+                .HasColumnName("target_role");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.QuickReplyTemplates)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_QuickReplyTemplate_Account");
+        });
+
         modelBuilder.Entity<TimeUnitPackage>(entity =>
         {
-            entity.HasKey(e => e.TimeUnitId).HasName("PK__TimeUnit__8304AF475C5F36A7");
+            entity.HasKey(e => e.TimeUnitId).HasName("PK__TimeUnit__8304AF4754C8923B");
 
             entity.ToTable("TimeUnitPackage");
 
             entity.Property(e => e.TimeUnitId).HasColumnName("time_unit_id");
+            entity.Property(e => e.Data)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("data");
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .HasColumnName("description");
@@ -734,11 +777,11 @@ public partial class RentNestSystemContext : DbContext
 
         modelBuilder.Entity<UserProfile>(entity =>
         {
-            entity.HasKey(e => e.ProfileId).HasName("PK__UserProf__AEBB701F88E07967");
+            entity.HasKey(e => e.ProfileId).HasName("PK__UserProf__AEBB701F9FEA7AE0");
 
             entity.ToTable("UserProfile");
 
-            entity.HasIndex(e => e.AccountId, "UQ__UserProf__46A222CCBA12D4FA").IsUnique();
+            entity.HasIndex(e => e.AccountId, "UQ__UserProf__46A222CC2B3A0147").IsUnique();
 
             entity.Property(e => e.ProfileId).HasColumnName("profile_id");
             entity.Property(e => e.AccountId).HasColumnName("account_id");

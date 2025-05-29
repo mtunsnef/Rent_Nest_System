@@ -21,6 +21,7 @@ namespace RentNest.Web
         {
 
             var builder = WebApplication.CreateBuilder(args);
+
             //load file .env
             var webRoot = builder.Environment.ContentRootPath;
             var solutionRoot = Path.GetFullPath(Path.Combine(webRoot, ".."));
@@ -33,7 +34,6 @@ namespace RentNest.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
             builder.Services.AddHttpContextAccessor();
 
             //DAO
@@ -49,6 +49,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<ConversationDAO>();
             builder.Services.AddScoped<MessageDAO>();
             builder.Services.AddScoped<FavoriteDAO>();
+            builder.Services.AddScoped<QuickReplyTemplateDAO>();
 
             //Repository
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -61,6 +62,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
             builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+            builder.Services.AddScoped<IQuickReplyTemplateRepository, QuickReplyTemplateRepository>();
 
             //Service
             builder.Services.AddScoped<IMailService, MailService>();
@@ -76,6 +78,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<IConversationService, ConversationService>();
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+            builder.Services.AddScoped<IQuicklyReplyTemplateService, QuicklyReplyTemplateService>();
 
             //Config
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
@@ -100,6 +103,7 @@ namespace RentNest.Web
                     options.MaximumReceiveMessageSize = 10 * 1024 * 1024;
                 });
 
+            //customize getUserid
             builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
             //su dung cache de luu session

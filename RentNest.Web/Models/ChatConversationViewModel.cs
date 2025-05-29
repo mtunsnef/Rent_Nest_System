@@ -1,4 +1,7 @@
-﻿namespace RentNest.Web.Models
+﻿using RentNest.Core.Domains;
+using RentNest.Core.DTO;
+
+namespace RentNest.Web.Models
 {
     public class ChatConversationViewModel
     {
@@ -12,8 +15,9 @@
         public string? PostTitle { get; set; }
         public string? PostImageUrl { get; set; }
         public decimal? PostPrice { get; set; }
-
         public List<MessageViewModel> Messages { get; set; } = new();
+        public List<QuickMessDto> QuickReplies { get; set; }
+
     }
 
     public class MessageViewModel

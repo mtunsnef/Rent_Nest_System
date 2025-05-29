@@ -481,7 +481,7 @@ CREATE TABLE Message (
     conversation_id INT NOT NULL,
     sender_id INT NOT NULL,
     content NVARCHAR(MAX),
-    image_url VARCHAR(255),     
+    image_url VARCHAR(MAX),     
     is_read BIT DEFAULT 0,       
     sent_at DATETIME DEFAULT GETDATE(),
 
@@ -502,29 +502,29 @@ VALUES (5, 1, 1);
 INSERT INTO Conversation (sender_id, receiver_id, post_id)
 VALUES (5, 2, null);
 
-CREATE TABLE QuickReplyTemplate (
+create TABLE QuickReplyTemplate (
     template_id INT IDENTITY(1,1) PRIMARY KEY,
     message NVARCHAR(255) NOT NULL,
     is_active BIT DEFAULT 1,
     is_default BIT DEFAULT 1,             
     account_id INT NULL,                  
-    target_role NVARCHAR(20) NULL,        
+    target_role char(1) NULL,        
     created_at DATETIME DEFAULT GETDATE(),
     CONSTRAINT FK_QuickReplyTemplate_Account FOREIGN KEY (account_id) REFERENCES Account(account_id)
 );
 
 INSERT INTO QuickReplyTemplate (message, is_default, account_id, target_role)
 VALUES 
-(N'Phòng này còn cho thuê không ạ?', 1, NULL, 'tenant'),
-(N'Giờ giấc ra vào có tự do không ạ?', 1, NULL, 'tenant'),
-(N'Chi phí điện nước tính như thế nào ạ?', 1, NULL, 'tenant'),
-(N'Có chỗ để xe không ạ?', 1, NULL, 'tenant'),
-(N'Cho nuôi thú cưng không ạ?', 1, NULL, 'tenant');
+(N'Phòng này còn cho thuê không ạ?', 1, NULL, 'U'),
+(N'Giờ giấc ra vào có tự do không ạ?', 1, NULL, 'U'),
+(N'Chi phí điện nước tính như thế nào ạ?', 1, NULL, 'U'),
+(N'Có chỗ để xe không ạ?', 1, NULL, 'U'),
+(N'Cho nuôi thú cưng không ạ?', 1, NULL, 'U');
 
 INSERT INTO QuickReplyTemplate (message, is_default, account_id, target_role)
 VALUES 
-(N'Phòng vẫn còn, bạn muốn xem phòng khi nào?', 1, NULL, 'landlord'),
-(N'Chi phí điện nước theo giá nhà nước nha bạn.', 1, NULL, 'landlord'),
-(N'Phòng có chỗ để xe máy và an ninh 24/7.', 1, NULL, 'landlord'),
-(N'Giờ giấc ra vào thoải mái, không giới hạn.', 1, NULL, 'landlord'),
-(N'Phòng không hỗ trợ nuôi thú cưng nha bạn.', 1, NULL, 'landlord');
+(N'Phòng vẫn còn, bạn muốn xem phòng khi nào?', 1, NULL, 'L'),
+(N'Chi phí điện nước theo giá nhà nước nha bạn.', 1, NULL, 'L'),
+(N'Phòng có chỗ để xe máy và an ninh 24/7.', 1, NULL, 'L'),
+(N'Giờ giấc ra vào thoải mái, không giới hạn.', 1, NULL, 'L'),
+(N'Phòng không hỗ trợ nuôi thú cưng nha bạn.', 1, NULL, 'L');
