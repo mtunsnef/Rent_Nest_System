@@ -12,6 +12,8 @@ using Newtonsoft.Json;
 using RentNest.Core.Consts;
 using RentNest.Core.Domains;
 using RentNest.Core.DTO;
+using RentNest.Core.UtilHelper;
+using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
 using RentNest.Web.Models;
 
@@ -24,14 +26,16 @@ namespace RentNest.Web.Controllers
         private readonly IAmenitiesSerivce _amenitiesSerivce;
         private readonly IFavoriteService _favoriteService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConversationService _conversationService;
         public AccommodationsController(IConfiguration configuration, IAccommodationService accommodationService, IPostService postService,
-        IFavoriteService favoriteService, IAmenitiesSerivce amenitiesSerivce, IHttpContextAccessor httpContextAccessor)
+        IFavoriteService favoriteService, IAmenitiesSerivce amenitiesSerivce, IHttpContextAccessor httpContextAccessor, IConversationService conversationService)
         {
             _accommodationService = accommodationService;
             _postService = postService;
             _amenitiesSerivce = amenitiesSerivce;
             _favoriteService = favoriteService;
             _httpContextAccessor = httpContextAccessor;
+            _conversationService = conversationService;
         }
 
         [HttpGet]
@@ -50,7 +54,10 @@ namespace RentNest.Web.Controllers
                 BathroomCount = p.Accommodation?.AccommodationDetail?.BathroomCount,
                 BedroomCount = p.Accommodation?.AccommodationDetail?.BedroomCount,
                 ImageUrl = p.Accommodation?.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "default-image.jpg",
-                CreatedAt = p.CreatedAt
+                CreatedAt = p.CreatedAt,
+                DistrictName = p.Accommodation.DistrictName ?? "",
+                ProvinceName = p.Accommodation.ProvinceName ?? "",
+                WardName = p.Accommodation.WardName ?? ""
             }).ToList();
 
             return View(model);
@@ -74,7 +81,10 @@ namespace RentNest.Web.Controllers
                 Area = f.Post.Accommodation.Area,
                 BedroomCount = f.Post.Accommodation.AccommodationDetail?.BedroomCount,
                 BathroomCount = f.Post.Accommodation.AccommodationDetail?.BathroomCount,
-                CreatedAt = f.Post.CreatedAt
+                CreatedAt = f.Post.CreatedAt,
+                DistrictName = f.Post.Accommodation.DistrictName ?? "",
+                ProvinceName = f.Post.Accommodation.ProvinceName ?? "",
+                WardName = f.Post.Accommodation.WardName ?? ""
             }).ToList();
 
             return View("FavoritePosts", viewModelList);
@@ -115,13 +125,17 @@ namespace RentNest.Web.Controllers
                 CreatedAt = post.Accommodation.AccommodationDetail.CreatedAt,
                 UpdatedAt = post.Accommodation.AccommodationDetail.UpdatedAt,
                 Address = post.Accommodation.Address ?? "",
+                AccountId = post.Account.AccountId,
                 AccountImg = post.Account.UserProfile.AvatarUrl,
                 AccountName = post.Account.UserProfile.FirstName + " " + post.Account.UserProfile.LastName,
                 AccountPhone = post.Account.UserProfile.PhoneNumber,
                 Amenities = post.Accommodation.AccommodationAmenities?
                     .Where(a => a.Amenity != null)
                     .Select(a => a.Amenity.AmenityName)
-                    .ToList() ?? new List<string>()
+                    .ToList() ?? new List<string>(),
+                DistrictName = post.Accommodation.DistrictName ?? "",
+                ProvinceName = post.Accommodation.ProvinceName ?? "",
+                WardName = post.Accommodation.WardName ?? ""
             };
 
             ViewData["Address"] = viewModel.Address;
@@ -173,10 +187,11 @@ namespace RentNest.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.User},{UserRoles.Landlord}")]
         public IActionResult IsFavorite(int postId)
         {
-            var accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-            var isFavorite = _favoriteService.IsFavorite(postId, accountId);
+            var accountId = User.GetUserId();
+            var isFavorite = _favoriteService.IsFavorite(postId, accountId ?? 0);
             return Json(isFavorite);
         }
 
@@ -184,7 +199,7 @@ namespace RentNest.Web.Controllers
         [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.User},{UserRoles.Landlord}")]
         public IActionResult AddToFavorite(int postId)
         {
-            var accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var accountId = User.GetUserId();
             Console.WriteLine($"Adding favorite - Account: {accountId}, Post: {postId}");
 
             if (accountId == 0)
@@ -192,7 +207,7 @@ namespace RentNest.Web.Controllers
                 return Unauthorized();
             }
 
-            _favoriteService.AddToFavorite(postId, accountId);
+            _favoriteService.AddToFavorite(postId, accountId ?? 0);
             return Ok();
         }
 
@@ -200,15 +215,28 @@ namespace RentNest.Web.Controllers
         [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.User},{UserRoles.Landlord}")]
         public IActionResult RemoveFromFavorite(int postId)
         {
-            var accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var accountId = User.GetUserId();
 
             if (accountId == 0)
             {
                 return Unauthorized();
             }
 
-            _favoriteService.RemoveFromFavorite(postId, accountId);
+            _favoriteService.RemoveFromFavorite(postId, accountId ?? 0);
             return Ok();
         }
+
+        [HttpGet("/bat-dau-tro-chuyen")]
+        public async Task<IActionResult> StartConversation(int postId, int receiverId)
+        {
+            int senderId = User.GetUserId() ?? 0;
+
+            var conversation = await _conversationService.AddIfNotExistsAsync(senderId, receiverId, postId);
+
+            TempData["OpenedConversationId"] = conversation.ConversationId;
+
+            return RedirectToAction("Index", "ChatRoom");
+        }
+
     }
 }

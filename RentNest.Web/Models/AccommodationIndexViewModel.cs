@@ -12,6 +12,9 @@
         public int? BedroomCount { get; set; }
         public int? BathroomCount { get; set; }
         public DateTime? CreatedAt { get; set; }
+        public string DistrictName { get; set; }
+        public string WardName { get; set; }
+        public string ProvinceName { get; set; }
 
     }
 }

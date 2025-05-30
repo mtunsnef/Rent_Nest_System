@@ -31,12 +31,15 @@ namespace RentNest.Web.Controllers
         public async Task<IActionResult> Index()
         {
             int? userId = User.GetUserId();
-
             ViewData["CurrentUserId"] = userId;
+
+            int? openedConversationId = TempData["OpenedConversationId"] as int?;
+            ViewData["OpenedConversationId"] = openedConversationId;
 
             var conversations = await _conversationService.GetByUserIdAsync(userId.Value);
             return View(conversations);
         }
+
 
         [HttpGet]
         [Route("api/v1/chatroom/detail/{id}")]

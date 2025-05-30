@@ -43,7 +43,16 @@
 
 		public string Address { get; set; }
 
+		public string DistrictName { get; set; }
+
+		public string WardName { get; set; }
+
+		public string ProvinceName { get; set; }
+
+
 		//Owner
+		public int? AccountId { get; set; }
+
 		public string? AccountName { get; set; }
 
 		public string? AccountImg { get; set; }
@@ -57,3 +66,4 @@
 	}
 
 }
+

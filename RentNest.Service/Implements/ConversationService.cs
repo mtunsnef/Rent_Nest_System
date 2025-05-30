@@ -19,6 +19,11 @@ namespace RentNest.Service.Implements
             _conversationRepository = conversationRepository;
         }
 
+        public async Task<Conversation> AddIfNotExistsAsync(int senderId, int receiverId, int? postId)
+        {
+            return await _conversationRepository.AddIfNotExistsAsync(senderId, receiverId, postId);
+        }
+
         public async Task<IEnumerable<Conversation>> GetAll()
         {
            return await _conversationRepository.GetAll();

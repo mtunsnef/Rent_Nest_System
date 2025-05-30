@@ -1,4 +1,5 @@
 ﻿var currentUserId = parseInt(document.getElementById('currentUserId').value);
+var openedId = parseInt(document.getElementById('openedConversationId').value);
 
 const chatState = {
     currentConversationId: null,
@@ -15,60 +16,65 @@ $(document).ready(function () {
         chatState.currentConversationId = $(this).data("id");
         chatState.currentReceiverId = $(this).data("receiver-id");
 
-        $.ajax({
-            url: `/api/v1/chatroom/detail/${chatState.currentConversationId}`,
-            method: 'GET',
-            success: function (data) {
-                console.log("DATA from /chatroom/detail API:", data);
+        loadConversation(chatState.currentConversationId);
+    });
 
-                chatState.currentReceiverId = data.receiverId;
-                bindSendButton(currentUserId);
+    if (openedId) {
+        chatState.currentConversationId = openedId;
+        loadConversation(openedId); 
+    } else {
+        $('.conversation-item').first().trigger('click');
+    }
+});
+function loadConversation(conversationId) {
+    $.ajax({
+        url: `/api/v1/chatroom/detail/${conversationId}`,
+        method: 'GET',
+        success: function (data) {
+            chatState.currentReceiverId = data.receiverId;
+            bindSendButton(currentUserId);
 
-                const activityStatus = getActivityStatus(data.isOnline, data.lastActiveAt);
-                const statusDotClass = data.isOnline ? "status-online" : "status-offline";
-                $("#receiverInfo").html(`
+            const activityStatus = getActivityStatus(data.isOnline, data.lastActiveAt);
+            const statusDotClass = data.isOnline ? "status-online" : "status-offline";
+            $("#receiverInfo").html(`
+                <div class="d-flex align-items-center">
+                    <img src="${data.receiverAvatarUrl}" class="rounded-circle mr-3" width="40" height="40" />
+                    <div>
+                        <div class="font-weight-bold">${data.receiverFullName}</div>
+                        <div class="d-flex align-items-center my-2">
+                            <span class="status-dot ${statusDotClass}"></span>
+                            <small class="ml-2" style="line-height: 0 !important;">${activityStatus}</small>
+                        </div>
+                    </div>
+                </div>
+            `);
+
+            if (data.postId != null) {
+                $('#postInfo').removeClass('d-none').html(`
                     <div class="d-flex align-items-center">
-                        <img src="${data.receiverAvatarUrl}" class="rounded-circle mr-3" width="40" height="40" />
+                        <img src="${data.postImageUrl}" class="mr-3" width="60" height="60" style="object-fit: cover;" />
                         <div>
-                            <div class="font-weight-bold">${data.receiverFullName}</div>
-                            <div class="d-flex align-items-center my-2">
-                                <span class="status-dot ${statusDotClass}"></span>
-                                <small class="ml-2" style="line-height: 0 !important;">${activityStatus}</small>
-                            </div>
+                            <div class="font-weight-bold">${data.postTitle}</div>
+                            <div class="text-muted">${data.postPrice ? data.postPrice.toLocaleString() + ' VNĐ/tháng' : ''}</div>
                         </div>
                     </div>
                 `);
-
-                if (data.postId != null) {
-                    $('#postInfo').removeClass('d-none').html(`
-                        <div class="d-flex align-items-center">
-                            <img src="${data.postImageUrl}" class="mr-3" width="60" height="60" style="object-fit: cover;" />
-                            <div>
-                                <div class="font-weight-bold">${data.postTitle}</div>
-                                <div class="text-muted">${data.postPrice ? data.postPrice.toLocaleString() + ' VNĐ/tháng' : ''}</div>
-                            </div>
-                        </div>
-                    `);
-                } else {
-                    $('#postInfo').removeClass('d-flex');
-                    $('#postInfo').addClass('d-none');
-                }
-
-                const messagesHtml = renderMessages(data.messages, currentUserId);
-                $('#chatBox').html(messagesHtml);
-                $('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
-
-                renderQuickReplies(data.quickReplies);
-
-            },
-            error: function () {
-                alert("Không thể tải nội dung cuộc trò chuyện.");
+            } else {
+                $('#postInfo').removeClass('d-flex');
+                $('#postInfo').addClass('d-none');
             }
-        });
-    });
 
-    $('.conversation-item').first().trigger('click');
-});
+            const messagesHtml = renderMessages(data.messages, currentUserId);
+            $('#chatBox').html(messagesHtml);
+            $('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
+
+            renderQuickReplies(data.quickReplies);
+        },
+        error: function () {
+            alert("Không thể tải nội dung cuộc trò chuyện.");
+        }
+    });
+}
 function getActivityStatus(isOnline, lastActiveAt) {
     if (isOnline) return "Đang hoạt động";
 

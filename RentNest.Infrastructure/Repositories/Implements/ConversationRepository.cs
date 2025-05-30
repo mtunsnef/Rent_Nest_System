@@ -1,4 +1,5 @@
-﻿using RentNest.Core.Domains;
+﻿using Microsoft.EntityFrameworkCore;
+using RentNest.Core.Domains;
 using RentNest.Infrastructure.DataAccess;
 using RentNest.Infrastructure.Repositories.Interfaces;
 using System;
@@ -16,6 +17,26 @@ namespace RentNest.Infrastructure.Repositories.Implements
         {
             _conversationDAO = conversationDAO;
         }
+
+        public async Task<Conversation> AddIfNotExistsAsync(int senderId, int receiverId, int? postId)
+        {
+            var existing = await _conversationDAO.GetExistingConversationAsync(senderId, receiverId, postId);
+
+            if (existing != null) return existing;
+
+            var conversation = new Conversation
+            {
+                SenderId = senderId,
+                ReceiverId = receiverId,
+                PostId = postId,
+                StartedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+            };
+
+            await _conversationDAO.AddAsync(conversation);
+            return conversation;
+        }
+
         public async Task<IEnumerable<Conversation>> GetAll()
         {
             return await _conversationDAO.GetAllAsync();

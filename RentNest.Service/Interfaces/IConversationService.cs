@@ -13,6 +13,6 @@ namespace RentNest.Service.Interfaces
         Task<List<Conversation>> GetByUserIdAsync(int userId);
         Task<IEnumerable<object>> GetConversationMessagesAsync(int conversationId, int currentUserId);
         Task<Conversation?> GetConversationWithMessagesAsync(int conversationId);
-
+        Task<Conversation> AddIfNotExistsAsync(int senderId, int receiverId, int? postId);
     }
 }

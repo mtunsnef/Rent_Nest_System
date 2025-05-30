@@ -63,9 +63,10 @@ namespace RentNest.Service.Implements
 
             foreach (var post in allPosts)
             {
-                sb.AppendLine($"Tiêu đề: {post.Title} - Địa chỉ: {post.Accommodation.Address} - Giá: {post.Accommodation.Price:N0} VNĐ - " +
-                              $"Link: <a href=\"/chi-tiet/{post.Accommodation.AccommodationId}\" style=\"color: #fff !important; text-decoration: underline\">Xem chi tiết</a>");
+                sb.Append($"Tiêu đề: {post.Title} - Địa chỉ: {post.Accommodation.Address} - Giá: {post.Accommodation.Price:N0} VNĐ - " +
+                          $"Link: <a href=\"/chi-tiet/{post.Accommodation.AccommodationId}\" style=\"color: #fff !important; text-decoration: underline\">Xem chi tiết</a><br>");
             }
+
 
             var messages = new List<ChatMessage>
                 {
@@ -74,8 +75,9 @@ namespace RentNest.Service.Implements
                         Khi người dùng hỏi về địa điểm hoặc nhu cầu thuê trọ, hãy tìm trong danh sách bài viết đã được cung cấp {allPosts}.
                         Nếu có bài đăng phù hợp theo dữ liệu ${allPosts}, hãy trả lời rõ ràng và ghi rõ đường dẫn bài đăng - hãy chèn liên kết bằng thẻ <a>.
                         KHÔNG DÙNG BẤT KỂ TỪ IN ĐẬM NÀO.
+                        NẾU TRẢ VỀ DANH SÁCH BÀI ĐĂNG HÃY XUỐNG HÀNG FORMAT CHO ĐẸP (THÊM THẺ <BR> CUỐI THẺ <A>)
                     "),
-                    new AssistantChatMessage("Dưới đây là danh sách bài đăng hiện có:\n" + sb.ToString()),
+                    new AssistantChatMessage("Dưới đây là danh sách bài đăng hiện có:<br>" + sb.ToString()),
                     new UserChatMessage(userMessage)
                 };
 
