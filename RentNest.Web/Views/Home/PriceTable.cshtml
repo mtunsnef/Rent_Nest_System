@@ -1,0 +1,177 @@
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    .table tbody tr td {
+        text-align: center !important;
+        vertical-align: middle;
+        padding: 20px 0;
+        border: 1px solid transparent !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    }
+
+    .pricing-table {
+        background-color: #fff;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .1);
+        overflow: hidden;
+    }
+
+    .pricing-table th,
+    .pricing-table td {
+        vertical-align: middle;
+        text-align: center !important;
+        padding: 0.85rem 0.75rem !important;
+        font-size: 0.9rem;
+        border: 1px solid #dee2e6;
+    }
+
+    .pricing-table thead th {
+        color: #fff;
+        border-bottom-width: 0;
+    }
+
+    .pricing-table tbody th {
+        text-align: left;
+        background-color: #f8f9fa;
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .stars .fa-star {
+        color: #FFD700;
+        font-size: 0.8rem;
+        margin: 0 1px;
+    }
+
+    .original-price {
+        text-decoration: line-through;
+        color: #adb5bd;
+        font-size: 0.8rem;
+    }
+
+    .check-icon {
+        font-size: 1.2rem;
+    }
+
+    .check-icon.active {
+        color: #28a745;
+    }
+
+    .check-icon.inactive {
+        color: #ced4da;
+    }
+</style>
+<section class="ftco-animate hero-wrap-boxed fadeInUp ftco-animated">
+    <div class="overlay"></div>
+    <div class="container mb-5">
+    <div class="mb-3">
+        <h3 class="text-center font-weight-bolder">Bảng giá tin đăng</h3>
+    </div>
+
+    <div class="table-responsive pricing-table">
+        <table class="table table-bordered mb-3">
+            <thead>
+                <tr>
+                    <th class="border-0" style="background-color: #f8f9fa;"></th>
+                    <th class="bg-danger font-weight-bold">Tin VIP Kim Cương </th>
+                    <th class="bg-warning font-weight-bold">Tin VIP Vàng</th>
+                    <th class="bg-info font-weight-bold">Tin VIP Bạc</th>
+                    <th class="bg-secondary font-weight-bold">Tin thường</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Giá ngày</th>
+                    <td>
+                            <span class="text-dark font-weight-bolder">11.700<span class="currency">đ</span></span>
+                        <span class="small d-block">(Tối thiểu 7 ngày)</span>
+                    </td>
+                    <td>
+                        <span class="text-dark font-weight-bolder">7.900<span class="currency">đ</span></span>
+                        <span class="small d-block">(Tối thiểu 7 ngày)</span>
+                    </td>
+                    <td>
+                        <span class="text-dark font-weight-bolder">4.500<span class="currency">đ</span></span>
+                        <span class="small d-block">(Tối thiểu 7 ngày)</span>
+                    </td>
+                    <td>
+                        <span class="text-dark font-weight-bolder">2.000<span class="currency">đ</span></span>
+                        <span class="small d-block">(Tối thiểu 7 ngày)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Giá tuần <span class="text-black-50 d-block small">(7 ngày)</span></th>
+                    <td><span class="text-dark font-weight-bolder">315.000<span class="currency">đ</span></span></td>
+                    <td><span class="text-dark font-weight-bolder">190.000<span class="currency">đ</span></span></td>
+                    <td><span class="text-dark font-weight-bolder">63.000<span class="currency">đ</span></span></td>
+                    <td><span class="text-dark font-weight-bolder">12.000<span class="currency">đ</span></span></td>
+                </tr>
+                <tr>
+                    <th>Giá tháng <span class="text-black-50 d-block small">(30 ngày)</span></th>
+                    <td>
+                        <span class="original-price">1.500.000<span class="currency">đ</span></span>
+                        <span class="font-weight-bold text-success d-block">Giảm 20%</span>
+                        <span class="text-dark font-weight-bolder">1.200.000<span class="currency">đ</span></span>
+                    </td>
+                    <td>
+                        <span class="original-price">900.000<span class="currency">đ</span></span>
+                        <span class="font-weight-bold text-success d-block">Giảm 11%</span>
+                        <span class="text-dark font-weight-bolder">800.000<span class="currency">đ</span></span>
+                    </td>
+                    <td>
+                        <span class="original-price">300.000<span class="currency">đ</span></span>
+                        <span class="font-weight-bold text-success d-block">Giảm 20%</span>
+                        <span class="text-dark font-weight-bolder">240.000<span class="currency">đ</span></span>
+                    </td>
+                    <td>
+                        <span class="original-price">60.000<span class="currency">đ</span></span>
+                        <span class="font-weight-bold text-success d-block">Giảm 20%</span>
+                        <span class="text-dark font-weight-bolder">48.000<span class="currency">đ</span></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Nhãn VIP</th>
+                    <td><span class="text-danger font-weight-bolder">MÀU ĐỎ</span></td>
+                    <td><span class="text-warning font-weight-bolder">MÀU VÀNG</span></td>
+                    <td><span class="text-info font-weight-bolder">MÀU XANH</span></td>
+                    <td><span class="text-black-50 font-weight-bolder">MÀU MẶC ĐỊNH</span></td>
+                </tr>
+                <tr>
+                    <th>Kích thước tin</th>
+                    <td class="text-dark">Rất lớn</td>
+                    <td class="text-dark">Lớn</td>
+                    <td class="text-dark">Trung bình</td>
+                    <td class="text-dark">Bình thường</td>
+                </tr>
+                <tr>
+                    <th>Vị trí tin đăng</th>
+                    <td class="text-dark">Đứng đầu trang</td>
+                    <td class="text-dark">Sau tin VIP Kim Cương</td>
+                    <td class="text-dark">Sau tin VIP Vàng</td>
+                    <td class="text-dark">Sau tin VIP Bạc</td>
+                </tr>
+                <tr>
+                    <th>Tự động duyệt (*)</th>
+                    <td><i class="fas fa-check-circle check-icon active"></i></td>
+                    <td><i class="fas fa-check-circle check-icon active"></i></td>
+                    <td><i class="fas fa-check-circle check-icon active"></i></td>
+                    <td><i class="fas fa-check-circle check-icon inactive"></i></td>
+                </tr>
+                <tr>
+                    <th>Hiển thị nút gọi điện</th>
+                    <td><i class="fas fa-check-circle check-icon active"></i></td>
+                    <td><i class="fas fa-check-circle check-icon active"></i></td>
+                    <td><i class="fas fa-check-circle check-icon inactive"></i></td>
+                    <td><i class="fas fa-check-circle check-icon inactive"></i></td>
+                </tr>
+                <tr style="background-color: #f8f9fa;">
+                    <th></th>
+                    <td><button class="btn btn-sm btn-primary">Xem demo</button></td>
+                    <td><button class="btn btn-sm btn-primary">Xem demo</button></td>
+                    <td><button class="btn btn-sm btn-primary">Xem demo</button></td>
+                    <td><button class="btn btn-sm btn-primary">Xem demo</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</section>

@@ -11,49 +11,66 @@
                 <div class="row">
                     <div class="col-md-8">
                         <h2 class="mb-4">Thông Tin Cá Nhân</h2>
-                        <form asp-action="UpdateProfile" asp-controller="Account" method="post" class="contact-form">
-                            <input type="hidden" asp-for="ProfileId" />
-                            <input type="hidden" asp-for="AccountId" />
 
-                            <div class="form-group">
-                                <label asp-for="FirstName" class="control-label"></label>
-                                <input asp-for="FirstName" class="form-control" id="FirstName" readonly />
+                        <form asp-action="UpdateProfile" asp-controller="Account" method="post" class="contact-form">
+                            <input type="hidden" asp-for="AccountId" />
+                            <input type="hidden" asp-for="AvatarUrl" />
+
+                            <div class="form-group mb-3" id="fullname-display">
+                                <label class="control-label">Họ và Tên</label>
+                                <input class="form-control" value="@($"{Model.FirstName} {Model.LastName}")" readonly />
                             </div>
-                            <div class="form-group">
-                                <label asp-for="LastName" class="control-label"></label>
-                                <input asp-for="LastName" class="form-control" id="LastName" readonly />
+
+                            <div class="row mb-3 d-none" id="fullname-edit">
+                                <div class="col-md-6">
+                                    <label asp-for="FirstName" class="control-label"></label>
+                                    <input asp-for="FirstName" class="form-control" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="LastName" class="control-label"></label>
+                                    <input asp-for="LastName" class="form-control" />
+                                </div>
                             </div>
-                            <div class="form-group">
+
+                            <div class="form-group mb-3">
                                 <label asp-for="Address" class="control-label"></label>
-                                <input asp-for="Address" class="form-control" id="Address" readonly />
+                                <input asp-for="Address" class="form-control" readonly />
                                 <span asp-validation-for="Address" class="text-danger"></span>
                             </div>
-                            <div class="form-group">
-                                <label asp-for="DateOfBirth" class="control-label"></label>
-                                <input asp-for="DateOfBirth" class="form-control" type="date" id="DateOfBirth" readonly />
-                                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Gender" class="control-label"></label>
-                                <select asp-for="Gender" class="form-control" id="Gender" disabled>
-                                    <option value="M">Nam</option>
-                                    <option value="F">Nữ</option>   
-                                    <option value="O">Khác</option>
-                                </select>
-                                <span asp-validation-for="Gender" class="text-danger"></span>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="PhoneNumber" class="control-label"></label>
+                                <input asp-for="PhoneNumber" class="form-control" readonly />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                             </div>
 
-                            <div class="form-group">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label asp-for="DateOfBirth" class="control-label"></label>
+                                    <input asp-for="DateOfBirth" class="form-control" type="date" readonly id="DateOfBirth" />
+                                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Gender" class="control-label"></label>
+                                    <select asp-for="Gender" class="form-control" disabled>
+                                        <option value="M">Nam</option>
+                                        <option value="F">Nữ</option>
+                                        <option value="O">Khác</option>
+                                    </select>
+                                    <span asp-validation-for="Gender" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
                                 <label asp-for="Occupation" class="control-label"></label>
-                                <input asp-for="Occupation" class="form-control" id="Occupation" readonly />
+                                <input asp-for="Occupation" class="form-control" readonly />
                                 <span asp-validation-for="Occupation" class="text-danger"></span>
                             </div>
 
-
-                            <div class="d-flex justify-content-between mt-4">
-                                <button type="button" id="editButton" onclick="toggleEdit()" class="btn btn-primary py-2 px-4">Chỉnh sửa</button>
-                                <button type="submit" id="saveButton" class="btn btn-success py-2 px-4 d-none">Lưu thay đổi</button>
-                                <a href="#" class="btn btn-secondary py-2 px-4">Đổi mật khẩu</a>
+                            <div class="form-group mt-3">
+                                <button type="button" class="btn btn-primary" id="btn-edit">Chỉnh sửa</button>
+                                <button type="submit" class="btn btn-success d-none" id="btn-save">Lưu thay đổi</button>
+                                <button type="button" class="btn btn-secondary d-none" id="btn-cancel">Hủy</button>
                             </div>
                         </form>
                     </div>
@@ -109,16 +126,16 @@
         const editButton = document.getElementById("editButton");
         const saveButton = document.getElementById("saveButton");
 
-        // Make all fields editable
         inputs.forEach(input => input.removeAttribute("readonly"));
         genderSelect.removeAttribute("disabled");
 
-        // Show save button, hide edit button
         editButton.classList.add("d-none");
         saveButton.classList.remove("d-none");
     }
 
-    document.getElementById("avatarInput").addEventListener("change", function () {
+    document.getElementById("avatarInput").addEventListener("change", function (e) {
+        e.preventDefault();
+
         var formData = new FormData();
         formData.append("avatar", this.files[0]);
         formData.append("__RequestVerificationToken", $('input[name="__RequestVerificationToken"]').val());
@@ -143,4 +160,28 @@
         });
     });
 
+
 </script>
+@section Scripts {
+    <script>
+        const btnEdit = document.getElementById('btn-edit');
+        const btnSave = document.getElementById('btn-save');
+        const btnCancel = document.getElementById('btn-cancel');
+
+        btnEdit.addEventListener('click', () => {
+            document.getElementById('fullname-display').classList.add('d-none');
+            document.getElementById('fullname-edit').classList.remove('d-none');
+
+            document.querySelectorAll('input[readonly]').forEach(e => e.removeAttribute('readonly'));
+            document.querySelector('select[disabled]').removeAttribute('disabled');
+
+            btnEdit.classList.add('d-none');
+            btnSave.classList.remove('d-none');
+            btnCancel.classList.remove('d-none');
+        });
+
+        btnCancel.addEventListener('click', () => {
+            location.reload();
+        });
+    </script>
+}

@@ -3337,6 +3337,10 @@ fieldset:disabled a.btn {
             box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
         }
 
+.currency {
+    text-decoration: underline;
+}
+
 .btn-link {
     font-weight: 400;
     color: #007bff;

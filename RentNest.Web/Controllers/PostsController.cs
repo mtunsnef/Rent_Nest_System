@@ -82,6 +82,9 @@ namespace RentNest.Web.Controllers
             return Ok(new { content });
         }
 
+        [Route("/quan-ly-tin")]
+        public IActionResult ManagePost() { return View("User/ManagePost"); }
+
 
     }
 

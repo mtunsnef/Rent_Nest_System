@@ -109,7 +109,6 @@ namespace RentNest.Web.Controllers
             var profile = await _accountService.GetProfileAsync(accountId);
             var model = new ProfileViewModel
             {
-                ProfileId = profile.ProfileId,
                 FirstName = profile.FirstName,
                 LastName = profile.LastName,
                 Gender = profile.Gender,
@@ -118,7 +117,9 @@ namespace RentNest.Web.Controllers
                 AvatarUrl = profile.AvatarUrl,
                 AccountId = accountId,
                 Username = profile.Account?.Username,
-                Email = profile.Account?.Email
+                Email = profile.Account?.Email,
+                PhoneNumber = profile.PhoneNumber,
+                Occupation = profile.Occupation
             };
 
             return View(model);
@@ -137,29 +138,28 @@ namespace RentNest.Web.Controllers
             {
                 var userProfile = new UserProfile
                 {
-                    ProfileId = model.ProfileId,
+                    AccountId = model.AccountId,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Gender = model.Gender,
                     DateOfBirth = model.DateOfBirth,
                     Address = model.Address,
+                    Occupation = model.Occupation,
+                    PhoneNumber = model.PhoneNumber,
                     AvatarUrl = model.AvatarUrl,
-                    AccountId = model.AccountId,
-                    UpdatedAt = DateTime.Now
+                    UpdatedAt = model.UpdatedAt
                 };
 
                 await _accountService.UpdateProfileAsync(userProfile);
                 TempData["SuccessMessage"] = "Thông tin cá nhân đã được cập nhật.";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "Đã xảy ra lỗi khi cập nhật thông tin.";
-                // Optional: log ex.Message to understand what failed
             }
 
             return RedirectToAction("Profile");
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -176,7 +176,5 @@ namespace RentNest.Web.Controllers
 
             return Json(new { success, message });
         }
-
-
     }
 }

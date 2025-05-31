@@ -6,6 +6,7 @@ using RentNest.Service.Interfaces;
 using System.Security.Claims;
 using RentNest.Core.UtilHelper;
 using RentNest.Core.Domains;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 namespace RentNest.Web.Controllers
 {
     public class AuthController : Controller
@@ -253,6 +254,16 @@ namespace RentNest.Web.Controllers
             HttpContext.Session.SetInt32("AccountId", account.AccountId);
             HttpContext.Session.SetString("AccountName", model.Username);
             HttpContext.Session.SetString("Email", model.Email);
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
+                new Claim(ClaimTypes.Email, account.Email ?? ""),
+                new Claim(ClaimTypes.Role, account.Role)
+            };
+
+            var identity = new ClaimsIdentity(claims, AuthSchemes.Cookie);
+            await HttpContext.SignInAsync(AuthSchemes.Cookie, new ClaimsPrincipal(identity));
 
             TempData["SuccessMessage"] = "Tài khoản đã được tạo thành công!";
             return RedirectToAction("Login", "Auth");
