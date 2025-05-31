@@ -76,9 +76,15 @@ function loadConversation(conversationId) {
     });
 }
 function getActivityStatus(isOnline, lastActiveAt) {
-    if (isOnline) return "Đang hoạt động";
+    const online = isOnline === true || isOnline === "true";
+
+    if (online) return "Đang hoạt động";
+
+    if (!lastActiveAt) return "";
 
     const lastActive = new Date(lastActiveAt);
+    if (isNaN(lastActive.getTime())) return "";
+
     const now = new Date();
     const diffMs = now - lastActive;
 
@@ -94,6 +100,7 @@ function getActivityStatus(isOnline, lastActiveAt) {
 
     return `Hoạt động vào ${lastActive.toLocaleDateString("vi-VN")}`;
 }
+
 
 function renderDateLabelIfNeeded(msgDate) {
     const now = new Date();
@@ -168,7 +175,8 @@ async function initChatHub(userId) {
 
         if (chatState.currentConversationId) {
             $.get(`/api/v1/chatroom/detail/${chatState.currentConversationId}`, function (data) {
-                $('#receiverInfo small').text(data.lastActiveAt);
+                const formattedStatus = getActivityStatus(data.isOnline, data.lastActiveAt);
+                $('#receiverInfo small').text(formattedStatus);
             });
         }
     });

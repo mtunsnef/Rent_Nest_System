@@ -13,7 +13,7 @@ namespace RentNest.Service.Implements
         {
             _accommodationRepository = accommodationRepository;
         }
-        public async Task<List<Accommodation>> GetAccommodationsBySearchDto(string provinceName,
+        public async Task<List<Post>> GetAccommodationsBySearchDto(string provinceName,
             string districtName,
             string wardName,
             double? area,

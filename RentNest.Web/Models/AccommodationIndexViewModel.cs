@@ -15,6 +15,10 @@
         public string DistrictName { get; set; }
         public string WardName { get; set; }
         public string ProvinceName { get; set; }
-
+        public string PackageTypeName { get; set; }
+        public string TimeUnitName { get; set; }
+        public decimal TotalPrice { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 }

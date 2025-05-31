@@ -35,16 +35,21 @@
 							var d => $"{(int)d.TotalDays} ngày trước"
 						} : "";
 
-						<div class="col-md-12 mb-4">
-							<div class="ftco-animate properties d-flex border rounded overflow-hidden shadow-sm bg-white" style="min-height: 200px;">
-								<div class="flex-shrink-0" style="width: 250px; height: 180px; overflow: hidden;">
+						<div class="col-md-12 mb-2">
+								<div class="ftco-animate properties d-flex border rounded overflow-hidden shadow-sm bg-white" style="min-height: 200px; margin-bottom: 0em !important">
+									<div class="flex-shrink-0" style="width: 250px; height: 180px; overflow: hidden;">
 									<img src="@item.ImageUrl" alt="@item.Title" class="img-fluid h-100 w-100" style="object-fit: cover;">
+									<span id="packageBadgeVIP"
+											class="badge position-absolute @BadgeHelper.GetBadgeClass(item.PackageTypeName)"
+											style="color: #fff;top: 7px;left: 8px;font-size: 13px;padding: 6px;">
+										@item.PackageTypeName
+									</span>
 								</div>
 
 								<div class="flex-grow-1 p-3 d-flex flex-column justify-content-between">
 									<div>
 										<h5 class="mb-1">
-											<a href="@Url.Action("Detail", "Accommodations", new { id = item.Id })" class="text-dark font-weight-bold text-decoration-none">
+											<a href="@Url.RouteUrl("PostDetailRoute", new { postId = item.Id })" class="text-dark font-weight-bold text-decoration-none">
 												@item.Title
 											</a>
 										</h5>

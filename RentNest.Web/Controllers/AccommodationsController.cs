@@ -42,33 +42,85 @@ namespace RentNest.Web.Controllers
         [Route("danh-sach-phong-tro")]
         public async Task<IActionResult> Index()
         {
-            var posts = await _postService.GetAllPostsWithAccommodation();
-            var model = posts.Select(p => new AccommodationIndexViewModel
+            string provinceName = TempData["provinceName"] as string;
+            string districtName = TempData["districtName"] as string;
+            string wardName = TempData["wardName"] as string;
+            double? area = double.TryParse(TempData["area"] as string, out var a) ? a : null;
+            decimal? minMoney = decimal.TryParse(TempData["minMoney"] as string, out var min) ? min : null;
+            decimal? maxMoney = decimal.TryParse(TempData["maxMoney"] as string, out var max) ? max : null;
+
+            ViewBag.ProvinceName = provinceName;
+            ViewBag.DistrictName = districtName;
+            ViewBag.WardName = wardName;
+            ViewBag.Area = area;
+            ViewBag.MinMoney = minMoney;
+            ViewBag.MaxMoney = maxMoney;
+
+
+            List<AccommodationIndexViewModel> model;
+
+            if (TempData["HasSearched"] != null)
             {
-                Id = p.PostId,
-                Status = p.CurrentStatus,
-                Title = p.Title,
-                Price = p.Accommodation.Price,
-                Address = p.Accommodation.Address,
-                Area = p.Accommodation.Area,
-                BathroomCount = p.Accommodation?.AccommodationDetail?.BathroomCount,
-                BedroomCount = p.Accommodation?.AccommodationDetail?.BedroomCount,
-                ImageUrl = p.Accommodation?.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "default-image.jpg",
-                CreatedAt = p.CreatedAt,
-                DistrictName = p.Accommodation.DistrictName ?? "",
-                ProvinceName = p.Accommodation.ProvinceName ?? "",
-                WardName = p.Accommodation.WardName ?? ""
+                ViewBag.HasSearched = true;
+
+                if (TempData["RoomList"] != null)
+                {
+                    model = JsonConvert.DeserializeObject<List<AccommodationIndexViewModel>>(TempData["RoomList"].ToString());
+                }
+                else
+                {
+                    model = new List<AccommodationIndexViewModel>();
+                }
+
+                return View(model);
+            }
+
+            ViewBag.HasSearched = false;
+
+            var posts = await _postService.GetAllPostsWithAccommodation();
+            model = posts.Select(p =>
+            {
+                var latestPackageDetail = p.PostPackageDetails
+                    .OrderByDescending(d => d.StartDate)
+                    .FirstOrDefault();
+
+                return new AccommodationIndexViewModel
+                {
+                    Id = p.PostId,
+                    Status = p.CurrentStatus,
+                    Title = p.Title,
+                    Price = p.Accommodation.Price,
+                    Address = p.Accommodation.Address,
+                    Area = p.Accommodation.Area,
+                    BathroomCount = p.Accommodation?.AccommodationDetail?.BathroomCount,
+                    BedroomCount = p.Accommodation?.AccommodationDetail?.BedroomCount,
+                    ImageUrl = p.Accommodation?.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "default-image.jpg",
+                    CreatedAt = p.CreatedAt,
+                    DistrictName = p.Accommodation.DistrictName ?? "",
+                    ProvinceName = p.Accommodation.ProvinceName ?? "",
+                    WardName = p.Accommodation.WardName ?? "",
+                    PackageTypeName = latestPackageDetail?.Pricing?.PackageType?.PackageTypeName ?? "",
+                    TimeUnitName = latestPackageDetail?.Pricing?.TimeUnit?.TimeUnitName ?? "",
+                    TotalPrice = latestPackageDetail?.TotalPrice ?? 0,
+                    StartDate = latestPackageDetail?.StartDate,
+                    EndDate = latestPackageDetail?.EndDate
+                };
             }).ToList();
 
             return View(model);
         }
+
+
         [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.User},{UserRoles.Landlord}")]
         [Route("bai-viet-yeu-thich")]
         public IActionResult FavoritePosts()
         {
-            var accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-
-            var favoritePosts = _favoriteService.GetFavoriteByUser(accountId);
+            var accountId = User.GetUserId();
+            if (accountId == 0)
+            {
+                return Unauthorized();
+            }
+            var favoritePosts = _favoriteService.GetFavoriteByUser(accountId ?? 0);
 
             var viewModelList = favoritePosts.Select(f => new AccommodationIndexViewModel
             {
@@ -84,13 +136,17 @@ namespace RentNest.Web.Controllers
                 CreatedAt = f.Post.CreatedAt,
                 DistrictName = f.Post.Accommodation.DistrictName ?? "",
                 ProvinceName = f.Post.Accommodation.ProvinceName ?? "",
-                WardName = f.Post.Accommodation.WardName ?? ""
+                WardName = f.Post.Accommodation.WardName ?? "",
+                PackageTypeName = f.Post.PostPackageDetails
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Select(p => p.Pricing.PackageType.PackageTypeName)
+                    .FirstOrDefault() ?? ""
             }).ToList();
 
             return View("FavoritePosts", viewModelList);
         }
 
-        [HttpGet("chi-tiet/{postId:int}")]
+        [HttpGet("chi-tiet/{postId:int}", Name = "PostDetailRoute")]
         public async Task<IActionResult> Detail(int postId)
         {
             var post = await _postService.GetPostDetailWithAccommodationDetailAsync(postId);
@@ -103,6 +159,10 @@ namespace RentNest.Web.Controllers
             var imageUrls = post.Accommodation.AccommodationImages?
                 .Select(img => img.ImageUrl)
                 .ToList() ?? new List<string>();
+
+            var latestPackage = post.PostPackageDetails
+                 .OrderByDescending(p => p.StartDate)
+                 .FirstOrDefault();
 
             var viewModel = new AccommodationDetailViewModel
             {
@@ -135,8 +195,15 @@ namespace RentNest.Web.Controllers
                     .ToList() ?? new List<string>(),
                 DistrictName = post.Accommodation.DistrictName ?? "",
                 ProvinceName = post.Accommodation.ProvinceName ?? "",
-                WardName = post.Accommodation.WardName ?? ""
+                WardName = post.Accommodation.WardName ?? "",
+
+                PackageTypeName = latestPackage?.Pricing?.PackageType?.PackageTypeName ?? "Tin thường",
+                TimeUnitName = latestPackage?.Pricing?.TimeUnit?.TimeUnitName ?? "",
+                TotalPrice = latestPackage?.TotalPrice ?? 0,
+                StartDate = latestPackage?.StartDate,
+                EndDate = latestPackage?.EndDate
             };
+
 
             ViewData["Address"] = viewModel.Address;
 
@@ -144,47 +211,59 @@ namespace RentNest.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Search([FromForm] string provinceName, string districtName, string wardName, double area, decimal minMoney, decimal maxMoney)
+        public async Task<IActionResult> Search(string provinceName, string districtName, string? wardName, double? area, decimal? minMoney, decimal? maxMoney, string provinceId, string districtId, string? wardId)
         {
-            if (ModelState.IsValid)
+            //luu gia tri
+            TempData["provinceName"] = provinceName;
+            TempData["districtName"] = districtName;
+            TempData["wardName"] = wardName;
+            TempData["provinceId"] = provinceId;
+            TempData["districtId"] = districtId;
+            TempData["wardId"] = wardId;
+            TempData["area"] = area?.ToString();
+            TempData["minMoney"] = minMoney?.ToString();
+            TempData["maxMoney"] = maxMoney?.ToString();
+
+            if (!ModelState.IsValid)
+                return View();
+
+            var accommodations = await _accommodationService.GetAccommodationsBySearchDto(provinceName, districtName, wardName, area, minMoney, maxMoney);
+
+            var viewModelList = accommodations.Select(p =>
             {
-                var rooms = await _accommodationService.GetAccommodationsBySearchDto(provinceName, districtName, wardName, area, minMoney, maxMoney);
-                List<RoomCardDto> roomList = new List<RoomCardDto>();
-                foreach (var room in rooms)
+                var latestPackageDetail = p.PostPackageDetails
+                    .OrderByDescending(d => d.StartDate)
+                    .FirstOrDefault();
+
+                return new AccommodationIndexViewModel
                 {
-                    string status;
+                    Id = p.PostId,
+                    Status = p.CurrentStatus,
+                    Title = p.Title,
+                    Price = p.Accommodation.Price,
+                    Address = p.Accommodation.Address,
+                    Area = p.Accommodation.Area,
+                    BathroomCount = p.Accommodation?.AccommodationDetail?.BathroomCount,
+                    BedroomCount = p.Accommodation?.AccommodationDetail?.BedroomCount,
+                    ImageUrl = p.Accommodation?.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "default-image.jpg",
+                    CreatedAt = p.CreatedAt,
+                    DistrictName = p.Accommodation.DistrictName ?? "",
+                    ProvinceName = p.Accommodation.ProvinceName ?? "",
+                    WardName = p.Accommodation.WardName ?? "",
+                    PackageTypeName = latestPackageDetail?.Pricing?.PackageType?.PackageTypeName ?? "",
+                    TimeUnitName = latestPackageDetail?.Pricing?.TimeUnit?.TimeUnitName ?? "",
+                    TotalPrice = latestPackageDetail?.TotalPrice ?? 0,
+                    StartDate = latestPackageDetail?.StartDate,
+                    EndDate = latestPackageDetail?.EndDate
+                };
+            }).ToList();
 
-                    if (room.Status.Contains("A"))
-                    {
-                        status = "Available";
-                    }
-                    else if (room.Status.Contains("I"))
-                    {
-                        status = "Inactive";
-                    }
-                    else
-                    {
-                        status = "Rented";
-                    }
-                    var roomCart = new RoomCardDto
-                    {
-                        RoomTitle = room.Title,
-                        RoomArea = room.Area,
-                        RoomImage = await _accommodationService.GetAccommodationImage(room.AccommodationId),
-                        RoomPrice = room.Price,
-                        roomType = await _accommodationService.GetAccommodationType(room.TypeId),
-                        RoomAddress = room.Address,
-                        RoomStatus = status
+            TempData["RoomList"] = JsonConvert.SerializeObject(viewModelList);
+            TempData["HasSearched"] = true;
 
-                    };
-                    roomList.Add(roomCart);
-                }
-                TempData["RoomList"] = JsonConvert.SerializeObject(roomList);
-                return RedirectToAction("Index", "Accommodations");
-            }
-
-            return View();
+            return RedirectToAction("Index", "Accommodations");
         }
+
 
         [HttpGet]
         [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.User},{UserRoles.Landlord}")]
@@ -200,8 +279,6 @@ namespace RentNest.Web.Controllers
         public IActionResult AddToFavorite(int postId)
         {
             var accountId = User.GetUserId();
-            Console.WriteLine($"Adding favorite - Account: {accountId}, Post: {postId}");
-
             if (accountId == 0)
             {
                 return Unauthorized();

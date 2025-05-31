@@ -7,7 +7,10 @@
 		<div class="hero-content">
 			<h1 class="hero-title">Tìm phòng trọ, căn hộ phù hợp nơi bạn sống</h1>
 			<form asp-action="Search" method="post" asp-controller="Accommodations" style="margin: 7.5rem 1rem">
-				<div class="row g-2 align-items-end">
+				<input type="hidden" name="ProvinceId" id="provinceId" />
+				<input type="hidden" name="DistrictId" id="districtId" />
+				<input type="hidden" name="WardId" id="wardId" />
+				<div class="row g-2 align-items-end text-left">
 					<div class="col-md">
 						<label for="provinceDropdown" class="form-label text-white fw-semibold">
 							Tỉnh/Thành phố <span class="text-danger">*</span>
@@ -31,9 +34,9 @@
 
 					<div class="col-md">
 						<label for="wardDropdown" class="form-label text-white fw-semibold">
-							Phường/Xã <span class="text-danger">*</span>
+							Phường/Xã
 						</label>
-						<select id="wardDropdown" class="form-control text-white bg-transparent border-light" required>
+						<select id="wardDropdown" class="form-control text-white bg-transparent border-light">
 							<option value="">Chọn phường/xã...</option>
 						</select>
 						<input name="WardName" type="hidden" id="wardName" />
@@ -290,138 +293,6 @@
 		</div>
 	</div>
 </section>
-@* <section class="ftco-agent" id="agent-section">
-	<div class="container">
-		<div class="row justify-content-center pb-5">
-			<div class="col-md-12 heading-section text-center ftco-animate">
-				<h2 class="mb-4">Đội Ngũ Chúng Tôi</h2>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<div class="carousel-agent owl-carousel">
-					<div class="item">
-						<div class="agent">
-							<div style="height: 430px;" class="img">
-								<img src="images/hai.jpg" class="img-fluid" alt="Colorlib Template">
-								<div>
-									<h3>Tôi là Hải</h3>
-								</div>
-							</div>
-							<div class="desc pt-3">
-								<div>
-									<h3>
-										<a style="font-family: system-ui;" href="#">
-											Nguyễn Đình Hoàng
-											Hải
-										</a>
-									</h3>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="agent">
-							<div style="height: 430px;" class="img">
-								<img src="images/tuan3.jpg" class="img-fluid" alt="Colorlib Template">
-								<div>
-									<h3>Tôi là Tuấn</h3>
-								</div>
-							</div>
-							<div class="desc pt-3">
-								<div>
-									<h3>
-										<a style="font-family: system-ui;" href="#">
-											Nguyễn Minh
-											Tuấn
-										</a>
-									</h3>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="agent">
-							<div style="height: 430px;" class="img">
-								<img src="images/tuanminh.jpg" class="img-fluid" alt="Colorlib Template">
-								<div>
-									<h3>Tôi là Minh</h3>
-								</div>
-							</div>
-							<div class="desc pt-3">
-								<div>
-									<h3>
-										<a style="font-family: system-ui;" href="#">
-											Nguyễn Tuấn
-											Minh
-										</a>
-									</h3>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="agent">
-							<div style="height: 430px;" class="img">
-								<img src="images/chi.jpg" class="img-fluid" alt="Colorlib Template">
-								<div>
-									<h3>Tôi là Chi</h3>
-								</div>
-							</div>
-							<div class="desc pt-3">
-								<div>
-									<h3>
-										<a style="font-family: system-ui;" href="#">Trần Quỳnh Chi</a>
-									</h3>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="agent">
-							<div style="height: 430px;" class="img">
-								<img src="images/maivy.jpg" class="img-fluid" alt="Colorlib Template">
-								<div>
-									<h3>Tôi là Vy</h3>
-								</div>
-							</div>
-							<div class="desc pt-3">
-								<div>
-									<h3>
-										<a style="font-family: system-ui;" href="#">
-											Mai Thị Thùy
-											Vy
-										</a>
-									</h3>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="agent">
-							<div style="height: 430px;" class="img">
-								<img src="images/quynh.jpg" class="img-fluid" alt="Colorlib Template">
-								<div>
-									<h3>Tôi là Quỳnh</h3>
-								</div>
-							</div>
-							<div class="desc pt-3">
-								<div>
-									<h3>
-										<a style="font-family: system-ui;" href="#">
-											Hoàng Thị Lệ
-											Quỳnh
-										</a>
-									</h3>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</section> *@
 
 <section class="ftco-section testimony-section">
 	<div class="container">
@@ -629,3 +500,13 @@
 	<script src="~/js/search.js"></script>
 	<script src="~/js/home/home-index.js"></script>
 }
+<script>
+	document.querySelector("form").addEventListener("submit", function (e) {
+		document.getElementById("provinceId").value = document.getElementById("provinceDropdown").value;
+		document.getElementById("districtId").value = document.getElementById("districtDropdown").value;
+		document.getElementById("wardId").value = document.getElementById("wardDropdown").value;
+		document.getElementById("provinceName").value = document.getElementById("provinceDropdown").selectedOptions[0].text;
+		document.getElementById("districtName").value = document.getElementById("districtDropdown").selectedOptions[0].text;
+		document.getElementById("wardName").value = document.getElementById("wardDropdown").selectedOptions[0].text;
+	});
+</script>

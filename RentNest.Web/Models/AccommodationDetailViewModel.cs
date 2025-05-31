@@ -49,9 +49,19 @@
 
 		public string ProvinceName { get; set; }
 
+        public string PackageTypeName { get; set; }
 
-		//Owner
-		public int? AccountId { get; set; }
+        public string TimeUnitName { get; set; }
+
+        public decimal TotalPrice { get; set; }
+
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
+
+        //Owner
+        public int? AccountId { get; set; }
 
 		public string? AccountName { get; set; }
 

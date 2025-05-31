@@ -27,9 +27,9 @@ namespace RentNest.Infrastructure.Repositories.Implements
         {
             return _accommodationDAO.GetAccommodationType((int)accommodationId);
         }
-        public Task<List<Accommodation>> GetAccommodationsBySearchDto(string provinceName, string districtName, string wardName, double? area, decimal? minMoney, decimal? maxMoney)
+        public Task<List<Post>> GetAccommodationsBySearchDto(string provinceName, string districtName, string wardName, double? area, decimal? minMoney, decimal? maxMoney)
         {
-            return _accommodationDAO.GetRoomsBySearchDto(provinceName, districtName, wardName, area, minMoney, maxMoney);
+            return _accommodationDAO.GetAccommodationsBySearchDto(provinceName, districtName, wardName, area, minMoney, maxMoney);
         }
     }
 }

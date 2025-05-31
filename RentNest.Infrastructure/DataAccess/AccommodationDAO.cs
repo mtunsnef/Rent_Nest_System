@@ -11,7 +11,7 @@ namespace RentNest.Infrastructure.DataAccess
     public class AccommodationDAO : BaseDAO<Accommodation>
     {
         public AccommodationDAO(RentNestSystemContext context) : base(context) { }
-        public async Task<List<Accommodation>> GetRoomsBySearchDto(
+        public async Task<List<Post>> GetAccommodationsBySearchDto(
             string provinceName,
             string districtName,
             string wardName,
@@ -19,37 +19,58 @@ namespace RentNest.Infrastructure.DataAccess
             decimal? minMoney,
             decimal? maxMoney)
         {
-            var query = _context.Accommodations.AsQueryable();
+            var query = _context.Posts
+                .Include(p => p.Accommodation)
+                    .ThenInclude(a => a.AccommodationImages)
+                .Include(p => p.Accommodation)
+                    .ThenInclude(a => a.AccommodationDetail)
+                .Include(p => p.PostPackageDetails)
+                    .ThenInclude(p => p.Pricing)
+                        .ThenInclude(t => t.PackageType)
+                .Include(p => p.PostPackageDetails)
+                    .ThenInclude(d => d.Pricing)
+                        .ThenInclude(p => p.TimeUnit)
+                .Where(p => p.CurrentStatus == "A" && p.Accommodation.Status != "I")
+                .OrderByDescending(p => p.PublishedAt)
+                .AsQueryable();
 
-            if (!string.IsNullOrEmpty(provinceName))
+            if (!string.IsNullOrWhiteSpace(provinceName))
             {
-                query = query.Where(r => r.ProvinceName.Contains(provinceName));
+                string keyword = $"%{provinceName.Trim()}%";
+                query = query.Where(p =>
+                    EF.Functions.Like(EF.Functions.Collate(p.Accommodation.ProvinceName, "Vietnamese_CI_AI"), keyword));
             }
 
-            if (!string.IsNullOrEmpty(districtName))
+            if (!string.IsNullOrWhiteSpace(districtName))
             {
-                query = query.Where(r => r.DistrictName.Contains(districtName));
+                string keyword = $"%{districtName.Trim()}%";
+                query = query.Where(p =>
+                    EF.Functions.Like(EF.Functions.Collate(p.Accommodation.DistrictName, "Vietnamese_CI_AI"), keyword));
             }
 
-            if (!string.IsNullOrEmpty(wardName))
+            if (!string.IsNullOrWhiteSpace(wardName))
             {
-                query = query.Where(r => r.WardName.Contains(wardName));
+                string keyword = $"%{wardName.Trim()}%";
+                query = query.Where(p =>
+                    EF.Functions.Like(EF.Functions.Collate(p.Accommodation.WardName, "Vietnamese_CI_AI"), keyword));
             }
 
             if (area.HasValue)
             {
-                query = query.Where(r => r.Area >= area.Value);
+                query = query.Where(p => p.Accommodation.Area >= area.Value);
             }
 
             if (minMoney.HasValue)
             {
-                query = query.Where(r => r.Price >= minMoney.Value);
+                query = query.Where(p => p.Accommodation.Price >= minMoney.Value);
             }
 
             if (maxMoney.HasValue)
             {
-                query = query.Where(r => r.Price <= maxMoney.Value);
+                query = query.Where(p => p.Accommodation.Price <= maxMoney.Value);
             }
+
+            Console.WriteLine(query.ToQueryString());
 
             return await query.ToListAsync();
         }

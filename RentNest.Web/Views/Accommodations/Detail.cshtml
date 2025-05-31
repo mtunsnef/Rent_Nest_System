@@ -49,6 +49,11 @@
                     <div class="col-md-6">
                         <!-- Ảnh chính -->
                         <div class="swiper mySwiper2 mb-2">
+                            <span id="packageBadgeVIP"
+                                  class="badge position-absolute @BadgeHelper.GetBadgeClass(Model.PackageTypeName)"
+                                  style="color: #fff;top: 8px;left: 8px;font-size: 15px;padding: 8px; z-index: 1000">
+                                @Model.PackageTypeName
+                            </span>
                             <div class="swiper-wrapper">
                                 @foreach (var img in Model.ImageUrls)
                                 {
@@ -75,7 +80,7 @@
 
                     <!-- Thông tin phòng -->
                     <div class="col-md-6 py-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
                             <h3 class="mb-0" style="word-break: break-word;"><a href="#">@Model.PostTitle</a></h3>
                             <div class="d-flex align-items-center">
                                 <button class="btn btn-light border favorite-btn" data-post-id="@Model.PostId">
@@ -83,11 +88,11 @@
                                 </button>
                             </div>
                         </div>
-                        <span style="font-size: 110% !important" class="badge badge-danger mb-2 p-2">@(((@Model.Price ??
+                        <span style="font-size: 135% !important" class="badge text-danger p-0">@(((@Model.Price ??
                                                         0) / 1_000_000M).ToString("0.#").Replace('.', ',')) triệu / tháng</span>
                         <span style="float: right" class="text-warning mr-2"> 4.5 ★★★★☆</span>
 
-                        <p>@Model.Description</p>
+                        <p class="my-3">@Model.Description</p>
 
                         <div class="d-flex align-items-center my-3">
                             <img src="@Model.AccountImg" class="rounded-circle" style="width: 50px; height: 50px;">
@@ -115,12 +120,6 @@
                         </div>
 
                         <small class="text-success d-none" id="copyMsg">Đã sao chép</small>
-
-
-                        <div class="mt-2">
-                            <button class="btn btn-light btn-sm">Phòng này còn cho thuê không ạ?</button>
-                            <button class="btn btn-light btn-sm">Giá cuối là bao nhiêu vậy?</button>
-                        </div>
                     </div>
                 </div>
             </div>

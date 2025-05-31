@@ -10,7 +10,7 @@ namespace RentNest.Service.Interfaces
 {
     public interface IAccommodationService
     {
-        Task<List<Accommodation>> GetAccommodationsBySearchDto(
+        Task<List<Post>> GetAccommodationsBySearchDto(
             string provinceName,
             string districtName,
             string wardName,
