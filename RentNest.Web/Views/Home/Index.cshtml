@@ -1,7 +1,7 @@
 ﻿@{
 	ViewData["Title"] = "Trang chủ";
 }
-<section class="hero-wrapper ftco-animate">
+<<<<<<< Updated upstream <section class="hero-wrapper ftco-animate">
 	<div class="hero-banner">
 		<div class="hero-overlay"></div>
 		<div class="hero-content">
@@ -12,7 +12,8 @@
 						<label for="provinceDropdown" class="form-label text-white fw-semibold">
 							Tỉnh/Thành phố <span class="text-danger">*</span>
 						</label>
-						<select id="provinceDropdown" class="form-control text-white bg-transparent border-light" required>
+						<select id="provinceDropdown" class="form-control text-white bg-transparent border-light"
+							required>
 							<option value="">Chọn tỉnh/thành phố...</option>
 						</select>
 						<input name="provinceName" type="hidden" id="provinceName" />
@@ -22,43 +23,143 @@
 						<label for="districtDropdown" class="form-label text-white fw-semibold">
 							Quận/Huyện <span class="text-danger">*</span>
 						</label>
-						<select id="districtDropdown" class="form-control text-white bg-transparent border-light" required>
+						<select id="districtDropdown" class="form-control text-white bg-transparent border-light"
+							required>
 							<option value="">Chọn quận/huyện...</option>
 						</select>
 						<input name="DistrictName" type="hidden" id="districtName" />
 						<div class="invalid-feedback">Vui lòng chọn quận/huyện.</div>
-					</div>
+						=======
+						<section class="hero-wrap js-fullheight" style="background-image: url('images/bg_2.jpg');"
+							data-section="home" data-stellar-background-ratio="0.5">
+							<div class="overlay"></div>
+							<div class="container">
+								<div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start"
+									data-scrollax-parent="true">
+									<div class="col-md-5 ftco-animate"
+										data-scrollax=" properties: { translateY: '70%' }">
+										<h1 style="font-family: system-ui; font-weight: 700;" class="mb-4"
+											data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">
+											Nền tảng thuê nhà, phòng trọ, căn hộ số 1 tại ĐÀ NẴNG
+										</h1>
+										<p class="mb-4" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">
+											Tìm thuê dễ dàng, nhanh chóng, tiện lợi và phù hợp với mọi nhu cầu của bạn.
+										</p>
+									</div>
+									<div class="col-md-12">
+										<div class="row g-2 align-items-end">
+											<!-- Province -->
+											<div class="col-md">
+												<label for="provinceDropdown" style="color:black; font-weight:500;">
+													Province <span style="color:red;">*</span>
+												</label>
+												<select id="provinceDropdown" class="form-control" required
+													style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+													<option value="">Chọn tỉnh/thành phố...</option>
+												</select>
+												<input name="provinceName" type="hidden" id="provinceName" />
+												<div class="invalid-feedback">Vui lòng chọn tỉnh/thành phố.</div>
+											</div>
 
-					<div class="col-md">
-						<label for="wardDropdown" class="form-label text-white fw-semibold">
-							Phường/Xã <span class="text-danger">*</span>
-						</label>
-						<select id="wardDropdown" class="form-control text-white bg-transparent border-light" required>
-							<option value="">Chọn phường/xã...</option>
-						</select>
-						<input name="WardName" type="hidden" id="wardName" />
-						<div class="invalid-feedback">Vui lòng chọn phường/xã.</div>
-					</div>
+											<!-- District -->
+											<div class="col-md">
+												<label for="districtDropdown" style="color:black; font-weight:500;">
+													District <span style="color:red;">*</span>
+												</label>
+												<select id="districtDropdown" class="form-control" required
+													style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+													<option value="">Chọn quận/huyện...</option>
+												</select>
+												<input name="DistrictName" type="hidden" id="districtName" />
+												<div class="invalid-feedback">Vui lòng chọn quận/huyện.</div>
+											</div>
 
-					<div class="col-md">
-						<label for="area" class="form-label text-white">Diện tích (m²)</label>
-						<input type="number" id="area" name="area" min="0" step="0.5" class="form-control text-white bg-transparent border-light" placeholder="Diện tích (m²)">
-					</div>
+											<!-- Ward -->
+											<div class="col-md">
+												<label for="wardDropdown" style="color:black; font-weight:500;">
+													Ward <span style="color:red;">*</span>
+												</label>
+												<select id="wardDropdown" class="form-control" required
+													style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+													<option value="">Chọn phường/xã...</option>
+												</select>
+												<input name="WardName" type="hidden" id="wardName" />
+												<div class="invalid-feedback">Vui lòng chọn phường/xã.</div>
+											</div>
 
-					<div class="col-md">
-						<label for="minMoney" class="form-label text-white">Giá thấp nhất</label>
-						<input type="number" id="minMoney" name="minMoney" min="0" step="10000" class="form-control text-white bg-transparent border-light" placeholder="Tối thiểu (VNĐ)">
-					</div>
+											<!-- Area -->
+											<div class="col-md">
+												<label for="area" style="color:black; font-weight:500;">Diện tích
+													(m²)</label>
+												<input type="number" class="form-control" id="area" name="area" min="0"
+													step="0.1" placeholder="Diện tích (m²)"
+													style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+											</div>
 
-					<div class="col-md">
-						<label for="maxMoney" class="form-label text-white">Giá cao nhất</label>
-						<input type="number" id="maxMoney" name="maxMoney" min="0" step="10000" class="form-control text-white bg-transparent border-light" placeholder="Tối đa (VNĐ)">
-					</div>
+											<!-- Min Money -->
+											<div class="col-md">
+												<label for="minMoney" style="color:black; font-weight:500;">Giá tiền
+													thấp nhất (VNĐ)</label>
+												<input name="minMoney" type="number" class="form-control" id="minMoney"
+													min="0" step="1000" placeholder="Giá tiền (VNĐ)"
+													style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+											</div>
 
-					<div class="col-auto d-flex align-items-end">
-						<button type="submit" class="btn btn-primary px-4 h-100 mb-2">Tìm</button>
-					</div>
-				</div>
+											<!-- Max Money -->
+											<div class="col-md">
+												<label for="maxMoney" style="color:black; font-weight:500;">Giá tiền
+													cao nhất (VNĐ)</label>
+												<input name="maxMoney" type="number" class="form-control" id="maxMoney"
+													min="0" step="1000" placeholder="Giá tiền (VNĐ)"
+													style="background:transparent; color:white; border:1px solid rgba(255,255,255,0.7);">
+											</div>
+
+
+											<!-- Submit -->
+											<div class="col-auto d-flex align-items-end">
+												<button type="submit" class="btn btn-primary px-4 h-100">Tìm</button>
+											</div>
+											>>>>>>> Stashed changes
+										</div>
+
+										<div class="col-md">
+											<label for="wardDropdown" class="form-label text-white fw-semibold">
+												Phường/Xã <span class="text-danger">*</span>
+											</label>
+											<select id="wardDropdown"
+												class="form-control text-white bg-transparent border-light" required>
+												<option value="">Chọn phường/xã...</option>
+											</select>
+											<input name="WardName" type="hidden" id="wardName" />
+											<div class="invalid-feedback">Vui lòng chọn phường/xã.</div>
+										</div>
+
+										<div class="col-md">
+											<label for="area" class="form-label text-white">Diện tích (m²)</label>
+											<input type="number" id="area" name="area" min="0" step="0.5"
+												class="form-control text-white bg-transparent border-light"
+												placeholder="Diện tích (m²)">
+										</div>
+
+										<div class="col-md">
+											<label for="minMoney" class="form-label text-white">Giá thấp
+												nhất</label>
+											<input type="number" id="minMoney" name="minMoney" min="0" step="10000"
+												class="form-control text-white bg-transparent border-light"
+												placeholder="Tối thiểu (VNĐ)">
+										</div>
+
+										<div class="col-md">
+											<label for="maxMoney" class="form-label text-white">Giá cao nhất</label>
+											<input type="number" id="maxMoney" name="maxMoney" min="0" step="10000"
+												class="form-control text-white bg-transparent border-light"
+												placeholder="Tối đa (VNĐ)">
+										</div>
+
+										<div class="col-auto d-flex align-items-end">
+											<button type="submit" class="btn btn-primary px-4 h-100 mb-2">Tìm</button>
+										</div>
+									</div>
 			</form>
 		</div>
 	</div>
@@ -66,230 +167,230 @@
 
 @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
 {
-	<script>
-		Swal.fire({
-			icon: 'error',
-			title: 'Lỗi!',
-			text: '@Html.Raw(TempData["ErrorMessage"])'
-		});
-	</script>
+		<script>
+			Swal.fire({
+				icon: 'error',
+				title: 'Lỗi!',
+				text: '@Html.Raw(TempData["ErrorMessage"])'
+			});
+		</script>
 }
 
 @if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
 {
-	<script>
-		Swal.fire({
-			icon: 'success',
-			title: 'Gửi Email thành công!',
-			text: '@Html.Raw(TempData["SuccessMessage"])'
-		});
-	</script>
+		<script>
+			Swal.fire({
+				icon: 'success',
+				title: 'Gửi Email thành công!',
+				text: '@Html.Raw(TempData["SuccessMessage"])'
+			});
+		</script>
 }
-<section class="ftco-section ftco-properties" id="properties-section" style="padding: 2rem 0 !important;">
-	<div class="container">
-		<div class="row justify-content-center pb-5">
-			<div class="col-md-12 heading-section text-center ftco-animate">
-				<h2 class="mb-4">Danh sách các phòng nổi bật</h2>
+	<section class="ftco-section ftco-properties" id="properties-section" style="padding: 2rem 0 !important;">
+		<div class="container">
+			<div class="row justify-content-center pb-5">
+				<div class="col-md-12 heading-section text-center ftco-animate">
+					<h2 class="mb-4">Danh sách các phòng nổi bật</h2>
+				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<div class="carousel-properties owl-carousel">
-					<div class="item">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-1.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div
-									class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="carousel-properties owl-carousel">
+						<div class="item">
+							<div class="properties ftco-animate">
+								<div class="img">
+									<img src="images/work-1.jpg" class="img-fluid" alt="Colorlib Template">
 								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
+								<div class="desc">
+									<div
+										class="text bg-primary d-flex text-center align-items-center justify-content-center">
+										<span>Cho thuê</span>
 									</div>
-									<div class="pl-md-4">
-										<h4 class="price">2.4tr/tháng</h4>
+									<div class="d-flex pt-5">
+										<div>
+											<h3>
+												<a style="font-family: system-ui;" href="/Detail">
+													Khu trọ
+													FPT
+												</a>
+											</h3>
+										</div>
+										<div class="pl-md-4">
+											<h4 class="price">2.4tr/tháng</h4>
+										</div>
 									</div>
+									<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
 								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-2.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div
-									class="text bg-secondary d-flex text-center align-items-center justify-content-center">
-									<span>Đã thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">3.5tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
 							</div>
 						</div>
-					</div>
-					<div class="item">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-3.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div
-									class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
+						<div class="item">
+							<div class="properties ftco-animate">
+								<div class="img">
+									<img src="images/work-2.jpg" class="img-fluid" alt="Colorlib Template">
 								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
+								<div class="desc">
+									<div
+										class="text bg-secondary d-flex text-center align-items-center justify-content-center">
+										<span>Đã thuê</span>
 									</div>
-									<div class="pl-md-4">
-										<h4 class="price">4.5tr/tháng</h4>
+									<div class="d-flex pt-5">
+										<div>
+											<h3>
+												<a style="font-family: system-ui;" href="/Detail">
+													Khu trọ
+													FPT
+												</a>
+											</h3>
+										</div>
+										<div class="pl-md-4">
+											<h4 class="price">3.5tr/tháng</h4>
+										</div>
 									</div>
+									<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
 								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-4.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div
-									class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">2.5tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
 							</div>
 						</div>
-					</div>
-					<div class="item">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-5.jpg" class="img-fluid" alt="Colorlib Template">
+						<div class="item">
+							<div class="properties ftco-animate">
+								<div class="img">
+									<img src="images/work-3.jpg" class="img-fluid" alt="Colorlib Template">
+								</div>
+								<div class="desc">
+									<div
+										class="text bg-primary d-flex text-center align-items-center justify-content-center">
+										<span>Cho thuê</span>
+									</div>
+									<div class="d-flex pt-5">
+										<div>
+											<h3>
+												<a style="font-family: system-ui;" href="/Detail">
+													Khu trọ
+													FPT
+												</a>
+											</h3>
+										</div>
+										<div class="pl-md-4">
+											<h4 class="price">4.5tr/tháng</h4>
+										</div>
+									</div>
+									<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
+								</div>
 							</div>
-							<div class="desc">
-								<div
-									class="text bg-secondary d-flex text-center align-items-center justify-content-center">
-									<span>Đã thuê</span>
+						</div>
+						<div class="item">
+							<div class="properties ftco-animate">
+								<div class="img">
+									<img src="images/work-4.jpg" class="img-fluid" alt="Colorlib Template">
 								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
+								<div class="desc">
+									<div
+										class="text bg-primary d-flex text-center align-items-center justify-content-center">
+										<span>Cho thuê</span>
 									</div>
-									<div class="pl-md-4">
-										<h4 class="price">2.1tr/tháng</h4>
+									<div class="d-flex pt-5">
+										<div>
+											<h3>
+												<a style="font-family: system-ui;" href="/Detail">
+													Khu trọ
+													FPT
+												</a>
+											</h3>
+										</div>
+										<div class="pl-md-4">
+											<h4 class="price">2.5tr/tháng</h4>
+										</div>
 									</div>
+									<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
 								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
+							</div>
+						</div>
+						<div class="item">
+							<div class="properties ftco-animate">
+								<div class="img">
+									<img src="images/work-5.jpg" class="img-fluid" alt="Colorlib Template">
+								</div>
+								<div class="desc">
+									<div
+										class="text bg-secondary d-flex text-center align-items-center justify-content-center">
+										<span>Đã thuê</span>
+									</div>
+									<div class="d-flex pt-5">
+										<div>
+											<h3>
+												<a style="font-family: system-ui;" href="/Detail">
+													Khu trọ
+													FPT
+												</a>
+											</h3>
+										</div>
+										<div class="pl-md-4">
+											<h4 class="price">2.1tr/tháng</h4>
+										</div>
+									</div>
+									<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
 
-<section class="ftco-intro img" id="about-section" style="background-image: url(images/bg_1.jpg);">
-	<div class="overlay"></div>
-	<div class="container">
-		<div class="row justify-content-center">
-			<div class="col-md-9 text-center">
-				<h2 style="font-family: system-ui;">
-					Chọn Phòng Trọ Mơ Ước Của Bạn
-				</h2>
-				<p>
-					Chúng tôi giúp bạn tìm kiếm và quản lý chỗ ở lý tưởng tại Đà Nẵng.
-				</p>
+	<section class="ftco-intro img" id="about-section" style="background-image: url(images/bg_1.jpg);">
+		<div class="overlay"></div>
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-9 text-center">
+					<h2 style="font-family: system-ui;">
+						Chọn Phòng Trọ Mơ Ước Của Bạn
+					</h2>
+					<p>
+						Chúng tôi giúp bạn tìm kiếm và quản lý chỗ ở lý tưởng tại Đà Nẵng.
+					</p>
+				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
 
-<section class="ftco-counter img ftco-section ftco-no-pt ftco-no-pb">
-	<div class="container">
-		<div class="row no-gutters d-flex">
-			<div class="px-lg-5 py-md-5">
-				<div>
-					<div class="row justify-content-start pb-3">
-						<div class="col-md-12 heading-section ftco-animate p-4 p-lg-5">
-							<h2 style="font-size: 31px;" class="mb-4">
-								Kết Nối Người Thuê & Chủ Trọ Một Cách Dễ Dàng
-							</h2>
-							<p>
-								Nhu cầu thuê nhà trọ ngày càng tăng, đặc biệt là sinh viên và người lao động trẻ tại
-								các thành phố lớn. Tuy nhiên, việc tìm kiếm phòng trọ vẫn gặp nhiều khó khăn như
-								thiếu thông tin đáng tin cậy, tốn nhiều thời gian và rủi ro lừa đảo.
-							</p>
-							<p>
-								Stayhome ra đời để giúp kết nối người thuê và chủ nhà trọ một cách minh bạch, nhanh
-								chóng và an toàn. Với công nghệ hiện đại, người dùng có thể tìm kiếm phòng trọ theo
-								vị trí, giá cả, tiện ích mong muốn và xem đánh giá từ người thuê trước.
-							</p>
-							<p>
-								Bên cạnh đó, hệ thống còn hỗ trợ xác minh thông tin chủ nhà, giảm thiểu rủi ro cho
-								người thuê. Chủ trọ cũng dễ dàng tiếp cận khách hàng tiềm năng mà không mất nhiều
-								công sức quảng bá. Stayhome – giúp bạn tìm nhà trọ phù hợp dễ dàng hơn bao giờ hết!
-							</p>
-							<p style="margin-top: 45px;">
-								<a href="/Room" class="btn btn-primary py-3 px-4">
-									Tìm phòng
-									ngay
-								</a> <a href="/Contact" class="btn btn-secondary py-3 px-4">Liên hệ chúng tôi</a>
-							</p>
+	<section class="ftco-counter img ftco-section ftco-no-pt ftco-no-pb">
+		<div class="container">
+			<div class="row no-gutters d-flex">
+				<div class="px-lg-5 py-md-5">
+					<div>
+						<div class="row justify-content-start pb-3">
+							<div class="col-md-12 heading-section ftco-animate p-4 p-lg-5">
+								<h2 style="font-size: 31px;" class="mb-4">
+									Kết Nối Người Thuê & Chủ Trọ Một Cách Dễ Dàng
+								</h2>
+								<p>
+									Nhu cầu thuê nhà trọ ngày càng tăng, đặc biệt là sinh viên và người lao động trẻ tại
+									các thành phố lớn. Tuy nhiên, việc tìm kiếm phòng trọ vẫn gặp nhiều khó khăn như
+									thiếu thông tin đáng tin cậy, tốn nhiều thời gian và rủi ro lừa đảo.
+								</p>
+								<p>
+									Stayhome ra đời để giúp kết nối người thuê và chủ nhà trọ một cách minh bạch, nhanh
+									chóng và an toàn. Với công nghệ hiện đại, người dùng có thể tìm kiếm phòng trọ theo
+									vị trí, giá cả, tiện ích mong muốn và xem đánh giá từ người thuê trước.
+								</p>
+								<p>
+									Bên cạnh đó, hệ thống còn hỗ trợ xác minh thông tin chủ nhà, giảm thiểu rủi ro cho
+									người thuê. Chủ trọ cũng dễ dàng tiếp cận khách hàng tiềm năng mà không mất nhiều
+									công sức quảng bá. Stayhome – giúp bạn tìm nhà trọ phù hợp dễ dàng hơn bao giờ hết!
+								</p>
+								<p style="margin-top: 45px;">
+									<a href="/Room" class="btn btn-primary py-3 px-4">
+										Tìm phòng
+										ngay
+									</a> <a href="/Contact" class="btn btn-secondary py-3 px-4">Liên hệ chúng tôi</a>
+								</p>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
 @* <section class="ftco-agent" id="agent-section">
 	<div class="container">
 		<div class="row justify-content-center pb-5">
@@ -423,209 +524,218 @@
 	</div>
 </section> *@
 
-<section class="ftco-section testimony-section">
-	<div class="container">
-		<div class="row justify-content-center pb-3">
-			<div class="col-md-7 text-center heading-section heading-section-white ftco-animate">
-				<span class="subheading">Đọc đánh giá</span>
-				<h2 class="mb-4">Khách hàng nói gì?</h2>
+	<section class="ftco-section testimony-section">
+		<div class="container">
+			<div class="row justify-content-center pb-3">
+				<div class="col-md-7 text-center heading-section heading-section-white ftco-animate">
+					<span class="subheading">Đọc đánh giá</span>
+					<h2 class="mb-4">Khách hàng nói gì?</h2>
+				</div>
 			</div>
-		</div>
-		<div class="row ftco-animate justify-content-center">
-			<div class="col-md-12">
-				<div class="carousel-testimony owl-carousel ftco-owl">
-					<div class="item">
-						<div class="testimony-wrap text-center py-4 pb-5">
-							<div class="user-img" style="background-image: url(images/person_1.jpg)">
-								<span class="quote d-flex align-items-center justify-content-center">
-									<i class="icon-quote-left"></i>
-								</span>
-							</div>
-							<div class="text px-4 pb-5">
-								<p style="height: 170px" class="mb-4">
-									Nhờ trang web này, mình đã tìm được phòng trọ
-									ưng ý chỉ trong vài
-									ngày mà không cần đi xem quá nhiều nơi. Thông tin minh bạch, hình ảnh rõ ràng,
-									chủ nhà uy tín. Rất tiện lợi!
-								</p>
-								<p class="name">Phạm Đắc Nhật Huy</p>
-								<span class="position">Sinh viên</span>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="testimony-wrap text-center py-4 pb-5">
-							<div class="user-img" style="background-image: url(images/person_2.jpg)">
-								<span class="quote d-flex align-items-center justify-content-center">
-									<i class="icon-quote-left"></i>
-								</span>
-							</div>
-							<div class="text px-4 pb-5">
-								<p style="height: 170px" class="mb-4">
-									Trước đây mình phải mất rất nhiều thời gian
-									tìm phòng, nhưng từ khi
-									biết đến nền tảng này, mọi thứ trở nên dễ dàng hơn nhiều. Chỉ cần vài cú click
-									là có thể xem được danh sách nhà trọ phù hợp với nhu cầu!
-								</p>
-								<p class="name">Nguyễn Gia Phương Tuấn</p>
-								<span class="position">Sinh viên</span>
+			<div class="row ftco-animate justify-content-center">
+				<div class="col-md-12">
+					<div class="carousel-testimony owl-carousel ftco-owl">
+						<div class="item">
+							<div class="testimony-wrap text-center py-4 pb-5">
+								<div class="user-img" style="background-image: url(images/person_1.jpg)">
+									<span class="quote d-flex align-items-center justify-content-center">
+										<i class="icon-quote-left"></i>
+									</span>
+								</div>
+								<div class="text px-4 pb-5">
+									<p style="height: 170px" class="mb-4">
+										Nhờ trang web này, mình đã tìm được phòng trọ
+										ưng ý chỉ trong vài
+										ngày mà không cần đi xem quá nhiều nơi. Thông tin minh bạch, hình ảnh rõ ràng,
+										chủ nhà uy tín. Rất tiện lợi!
+									</p>
+									<p class="name">Phạm Đắc Nhật Huy</p>
+									<span class="position">Sinh viên</span>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="item">
-						<div class="testimony-wrap text-center py-4 pb-5">
-							<div class="user-img" style="background-image: url(images/person_3.jpg)">
-								<span class="quote d-flex align-items-center justify-content-center">
-									<i class="icon-quote-left"></i>
-								</span>
-							</div>
-							<div class="text px-4 pb-5">
-								<p style="height: 170px" class="mb-4">
-									Lần đầu tiên lên thành phố học nên mình không
-									biết tìm nhà trọ ở
-									đâu. May mắn nhờ website này, mình đã tìm được phòng sạch sẽ, giá hợp lý và gần
-									trường. Rất cảm ơn!
-								</p>
-								<p class="name">Trần Công Nữ Ngọc Diệp</p>
-								<span class="position">Sinh viên</span>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="testimony-wrap text-center py-4 pb-5">
-							<div class="user-img" style="background-image: url(images/person_1.jpg)">
-								<span class="quote d-flex align-items-center justify-content-center">
-									<i class="icon-quote-left"></i>
-								</span>
-							</div>
-							<div class="text px-4 pb-5">
-								<p style="height: 170px" class="mb-4">
-									Tôi đã đăng tin cho thuê phòng và nhận được
-									nhiều phản hồi nhanh
-									chóng. Trang web giúp kết nối với đúng đối tượng cần tìm phòng mà không mất
-									nhiều thời gian. Rất hữu ích!
-								</p>
-								<p class="name">Phạm Đức Huy</p>
-								<span class="position">Chủ nhà trọ</span>
+						<div class="item">
+							<div class="testimony-wrap text-center py-4 pb-5">
+								<div class="user-img" style="background-image: url(images/person_2.jpg)">
+									<span class="quote d-flex align-items-center justify-content-center">
+										<i class="icon-quote-left"></i>
+									</span>
+								</div>
+								<div class="text px-4 pb-5">
+									<p style="height: 170px" class="mb-4">
+										Trước đây mình phải mất rất nhiều thời gian
+										tìm phòng, nhưng từ khi
+										biết đến nền tảng này, mọi thứ trở nên dễ dàng hơn nhiều. Chỉ cần vài cú click
+										là có thể xem được danh sách nhà trọ phù hợp với nhu cầu!
+									</p>
+									<p class="name">Nguyễn Gia Phương Tuấn</p>
+									<span class="position">Sinh viên</span>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="item">
-						<div class="testimony-wrap text-center py-4 pb-5">
-							<div class="user-img" style="background-image: url(images/person_3.jpg)">
-								<span class="quote d-flex align-items-center justify-content-center">
-									<i class="icon-quote-left"></i>
-								</span>
+						<div class="item">
+							<div class="testimony-wrap text-center py-4 pb-5">
+								<div class="user-img" style="background-image: url(images/person_3.jpg)">
+									<span class="quote d-flex align-items-center justify-content-center">
+										<i class="icon-quote-left"></i>
+									</span>
+								</div>
+								<div class="text px-4 pb-5">
+									<p style="height: 170px" class="mb-4">
+										Lần đầu tiên lên thành phố học nên mình không
+										biết tìm nhà trọ ở
+										đâu. May mắn nhờ website này, mình đã tìm được phòng sạch sẽ, giá hợp lý và gần
+										trường. Rất cảm ơn!
+									</p>
+									<p class="name">Trần Công Nữ Ngọc Diệp</p>
+									<span class="position">Sinh viên</span>
+								</div>
 							</div>
-							<div class="text px-4 pb-5">
-								<p style="height: 170px" class="mb-4">
-									Công việc bận rộn khiến tôi không có nhiều
-									thời gian đi tìm nhà trọ.
-									Nhờ nền tảng này, tôi dễ dàng lọc và tìm kiếm theo nhu cầu, tiết kiệm rất nhiều
-									thời gian!
-								</p>
-								<p class="name">Nguyễn Tuyết Nhi</p>
-								<span class="position">Nhân viên FSOFT</span>
+						</div>
+						<div class="item">
+							<div class="testimony-wrap text-center py-4 pb-5">
+								<div class="user-img" style="background-image: url(images/person_1.jpg)">
+									<span class="quote d-flex align-items-center justify-content-center">
+										<i class="icon-quote-left"></i>
+									</span>
+								</div>
+								<div class="text px-4 pb-5">
+									<p style="height: 170px" class="mb-4">
+										Tôi đã đăng tin cho thuê phòng và nhận được
+										nhiều phản hồi nhanh
+										chóng. Trang web giúp kết nối với đúng đối tượng cần tìm phòng mà không mất
+										nhiều thời gian. Rất hữu ích!
+									</p>
+									<p class="name">Phạm Đức Huy</p>
+									<span class="position">Chủ nhà trọ</span>
+								</div>
+							</div>
+						</div>
+						<div class="item">
+							<div class="testimony-wrap text-center py-4 pb-5">
+								<div class="user-img" style="background-image: url(images/person_3.jpg)">
+									<span class="quote d-flex align-items-center justify-content-center">
+										<i class="icon-quote-left"></i>
+									</span>
+								</div>
+								<div class="text px-4 pb-5">
+									<p style="height: 170px" class="mb-4">
+										Công việc bận rộn khiến tôi không có nhiều
+										thời gian đi tìm nhà trọ.
+										Nhờ nền tảng này, tôi dễ dàng lọc và tìm kiếm theo nhu cầu, tiết kiệm rất nhiều
+										thời gian!
+									</p>
+									<p class="name">Nguyễn Tuyết Nhi</p>
+									<span class="position">Nhân viên FSOFT</span>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
 
-<section class="ftco-section contact-section ftco-no-pb" id="contact-section">
-	<div class="container">
-		<div class="row justify-content-center mb-5 pb-3">
-			<div class="col-md-7 heading-section text-center ftco-animate">
-				<span class="subheading">Liên hệ</span>
-				<h2 style="font-family: system-ui;" class="mb-4">Liên hệ với chúng tôi</h2>
-				<p>
-					Chúng tôi luôn sẵn sàng hỗ trợ bạn trong việc tìm kiếm nhà trọ phù hợp một cách nhanh chóng và
-					an
-					toàn. Hãy liên hệ ngay để được tư vấn chi tiết!
-				</p>
-			</div>
-		</div>
-
-		<div class="row block-9">
-			<div class="col-md-7 order-md-last d-flex ftco-animate">
-				<form action="#" class="bg-light p-4 p-md-5 contact-form">
-					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Họ và tên">
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Email">
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Nghề nghiệp">
-					</div>
-					<div class="form-group">
-						<textarea name="" id="" cols="30" rows="7" class="form-control"
-							placeholder="Nội dung"></textarea>
-					</div>
-					<div class="form-group">
-						<input type="submit" value="Gửi" class="btn btn-primary py-3 px-5">
-					</div>
-				</form>
-
+	<section class="ftco-section contact-section ftco-no-pb" id="contact-section">
+		<div class="container">
+			<div class="row justify-content-center mb-5 pb-3">
+				<div class="col-md-7 heading-section text-center ftco-animate">
+					<span class="subheading">Liên hệ</span>
+					<h2 style="font-family: system-ui;" class="mb-4">Liên hệ với chúng tôi</h2>
+					<p>
+						Chúng tôi luôn sẵn sàng hỗ trợ bạn trong việc tìm kiếm nhà trọ phù hợp một cách nhanh chóng và
+						an
+						toàn. Hãy liên hệ ngay để được tư vấn chi tiết!
+					</p>
+				</div>
 			</div>
 
-			<div class="col-md-5 d-flex">
-				<div class="row d-flex contact-info mb-5">
-					<div class="col-md-12 ftco-animate">
-						<div class="box p-2 px-3 bg-light d-flex">
-							<div class="icon mr-3">
-								<span class="icon-map-signs"></span>
-							</div>
-							<div>
-								<h3 class="mb-3">Địa chỉ</h3>
-								<p>Hòa Hải, Khu Đô Thị FPT, Đại Học FPT</p>
+			<div class="row block-9">
+				<div class="col-md-7 order-md-last d-flex ftco-animate">
+					<form action="#" class="bg-light p-4 p-md-5 contact-form">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Họ và tên">
+						</div>
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Email">
+						</div>
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Nghề nghiệp">
+						</div>
+						<div class="form-group">
+							<textarea name="" id="" cols="30" rows="7" class="form-control"
+								placeholder="Nội dung"></textarea>
+						</div>
+						<div class="form-group">
+							<input type="submit" value="Gửi" class="btn btn-primary py-3 px-5">
+						</div>
+					</form>
+
+				</div>
+
+				<div class="col-md-5 d-flex">
+					<div class="row d-flex contact-info mb-5">
+						<div class="col-md-12 ftco-animate">
+							<div class="box p-2 px-3 bg-light d-flex">
+								<div class="icon mr-3">
+									<span class="icon-map-signs"></span>
+								</div>
+								<div>
+									<h3 class="mb-3">Địa chỉ</h3>
+									<p>Hòa Hải, Khu Đô Thị FPT, Đại Học FPT</p>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-md-12 ftco-animate">
-						<div class="box p-2 px-3 bg-light d-flex">
-							<div class="icon mr-3">
-								<span class="icon-phone2"></span>
-							</div>
-							<div>
-								<h3 class="mb-3">Số điện thoại</h3>
-								<p><a href="tel://1234567920">(+84) 941 673 660</a></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-12 ftco-animate">
-						<div class="box p-2 px-3 bg-light d-flex">
-							<div class="icon mr-3">
-								<span class="icon-paper-plane"></span>
-							</div>
-							<div>
-								<h3 class="mb-3">Email</h3>
-								<p><a href="mailto:info@yoursite.com">bluedream.company@email.com</a></p>
+						<div class="col-md-12 ftco-animate">
+							<div class="box p-2 px-3 bg-light d-flex">
+								<div class="icon mr-3">
+									<span class="icon-phone2"></span>
+								</div>
+								<div>
+									<h3 class="mb-3">Số điện thoại</h3>
+									<p><a href="tel://1234567920">(+84) 941 673 660</a></p>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-md-12 ftco-animate">
-						<div class="box p-2 px-3 bg-light d-flex">
-							<div class="icon mr-3">
-								<span class="icon-globe"></span>
+						<div class="col-md-12 ftco-animate">
+							<div class="box p-2 px-3 bg-light d-flex">
+								<div class="icon mr-3">
+									<span class="icon-paper-plane"></span>
+								</div>
+								<div>
+									<h3 class="mb-3">Email</h3>
+									<p><a href="mailto:info@yoursite.com">bluedream.company@email.com</a></p>
+								</div>
 							</div>
-							<div>
-								<h3 class="mb-3">Website</h3>
-								<p><a href="#">bluehouseDaNang.com</a></p>
+						</div>
+						<div class="col-md-12 ftco-animate">
+							<div class="box p-2 px-3 bg-light d-flex">
+								<div class="icon mr-3">
+									<span class="icon-globe"></span>
+								</div>
+								<div>
+									<h3 class="mb-3">Website</h3>
+									<p><a href="#">bluehouseDaNang.com</a></p>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
 @section script {
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<script src="~/js/address.js"></script>
-	<script src="~/js/search.js"></script>
-	<script src="~/js/home/home-index.js"></script>
+		<!-- Thư viện SweetAlert -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+		<!-- Nhúng jQuery trước tất cả script sử dụng jQuery -->
+		<script src="~/js/jquery.min.js"></script>
+		<!-- Hoặc nếu bạn dùng phiên bản cụ thể -->
+		<!-- <script src="~/js/jquery-3.2.1.min.js"></script> -->
+
+		<!-- Các file khác phụ thuộc jQuery -->
+		<script src="~/js/address.js"></script>
+		<script src="~/js/search.js"></script>
+		<script src="~/js/home/home-index.js"></script>
+		<script src="~/js/validation.js"></script>
 }

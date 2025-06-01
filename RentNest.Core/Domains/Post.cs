@@ -6,7 +6,6 @@ namespace RentNest.Core.Domains;
 public partial class Post
 {
     public int PostId { get; set; }
-
     public string CurrentStatus { get; set; } = null!;
 
     public int? ViewCount { get; set; }

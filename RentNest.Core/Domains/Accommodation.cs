@@ -10,7 +10,6 @@ public partial class Accommodation
     public string Title { get; set; } = null!;
 
     public string? Description { get; set; }
-
     public string Address { get; set; } = null!;
 
     public decimal? Price { get; set; }
