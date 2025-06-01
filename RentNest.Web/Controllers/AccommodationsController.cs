@@ -22,17 +22,17 @@ namespace RentNest.Web.Controllers
         private readonly IConfiguration _configuration;
         private readonly IAccommodationService _accommodationService;
         private readonly IPostService _postService;
-		private readonly IFavoriteService _favoriteService;
-		private readonly IHttpContextAccessor _httpContextAccessor;
-		public AccommodationsController(IConfiguration configuration, IAccommodationService accommodationService, IPostService postService, IFavoriteService favoriteService, 
+        private readonly IFavoriteService _favoriteService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public AccommodationsController(IConfiguration configuration, IAccommodationService accommodationService, IPostService postService, IFavoriteService favoriteService,
                                         IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
             _accommodationService = accommodationService;
             _postService = postService;
-			_favoriteService = favoriteService;
-			_httpContextAccessor = httpContextAccessor;
-		}
+            _favoriteService = favoriteService;
+            _httpContextAccessor = httpContextAccessor;
+        }
 
         [HttpGet]
         [Route("danh-sach-phong-tro")]
@@ -56,41 +56,41 @@ namespace RentNest.Web.Controllers
             return View(model);
         }
 
-		public IActionResult FavoritePosts()
-		{
-			var accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        public IActionResult FavoritePosts()
+        {
+            var accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
 
-			var favoritePosts = _favoriteService.GetFavoriteByUser(accountId);
+            var favoritePosts = _favoriteService.GetFavoriteByUser(accountId);
 
-			var viewModelList = favoritePosts.Select(f => new AccommodationIndexViewModel
-			{
-				Id = f.Post.PostId,
-				Title = f.Post.Accommodation.Title,
-				Address = f.Post.Accommodation.Address,
-				Price = f.Post.Accommodation.Price,
-				Status = f.Post.Accommodation.Status,
-				ImageUrl = f.Post.Accommodation?.AccommodationImages?.FirstOrDefault()?.ImageUrl?? "default-image.jpg",
-				Area = f.Post.Accommodation.Area,
-				BedroomCount = f.Post.Accommodation.AccommodationDetail?.BedroomCount,
-				BathroomCount = f.Post.Accommodation.AccommodationDetail?.BathroomCount,
-				CreatedAt = f.Post.CreatedAt
-			}).ToList();
+            var viewModelList = favoritePosts.Select(f => new AccommodationIndexViewModel
+            {
+                Id = f.Post.PostId,
+                Title = f.Post.Accommodation.Title,
+                Address = f.Post.Accommodation.Address,
+                Price = f.Post.Accommodation.Price,
+                Status = f.Post.Accommodation.Status,
+                ImageUrl = f.Post.Accommodation?.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "default-image.jpg",
+                Area = f.Post.Accommodation.Area,
+                BedroomCount = f.Post.Accommodation.AccommodationDetail?.BedroomCount,
+                BathroomCount = f.Post.Accommodation.AccommodationDetail?.BathroomCount,
+                CreatedAt = f.Post.CreatedAt
+            }).ToList();
 
-			return View("FavoritePosts", viewModelList);
-		}
+            return View("FavoritePosts", viewModelList);
+        }
 
 
 
-		[HttpGet("chi-tiet/{id:int}")]
-		public async Task<IActionResult> Detail(int id)
-		{
-			var accommodationId = await _postService.GetAccommodationIdByPostId(id);
-			if (accommodationId == null)
-			{
-				return Content("AccommodationId not found for given PostId");
-			}
-			var detailId = _accommodationService.GetDetailIdByAccommodationId(accommodationId.Value);
-			Console.WriteLine($"This is AccommodationId = {id}, DetailId = {detailId}");
+        [HttpGet("chi-tiet/{id:int}")]
+        public async Task<IActionResult> Detail(int id)
+        {
+            var accommodationId = await _postService.GetAccommodationIdByPostId(id);
+            if (accommodationId == null)
+            {
+                return Content("AccommodationId not found for given PostId");
+            }
+            var detailId = _accommodationService.GetDetailIdByAccommodationId(accommodationId.Value);
+            Console.WriteLine($"This is AccommodationId = {id}, DetailId = {detailId}");
 
             if (detailId == null)
             {
@@ -137,6 +137,8 @@ namespace RentNest.Web.Controllers
             if (ModelState.IsValid)
             {
                 var rooms = await _accommodationService.GetAccommodationsBySearchDto(provinceName, districtName, wardName, area, minMoney, maxMoney);
+                HttpContext.Session.SetObject("FilteredRooms", rooms);
+                rooms = rooms.Where(r => r.Status.Contains("A")).ToList();
                 List<RoomCardDto> roomList = new List<RoomCardDto>();
                 foreach (var room in rooms)
                 {
@@ -211,5 +213,43 @@ namespace RentNest.Web.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> FilterRooms(string roomType, string roomStatus, int? minPrice, int? maxPrice, int? minArea, int? maxArea)
+        {
+            var rooms = HttpContext.Session.GetObject<List<Accommodation>>("FilteredRooms");
+
+            if (!string.IsNullOrEmpty(roomType))
+            {
+                // Duyệt từng phòng và lọc theo loại phòng bất đồng bộ
+                var filteredByType = new List<Accommodation>();
+                foreach (var r in rooms)
+                {
+                    var typeName = await _accommodationService.GetAccommodationType(r.TypeId);
+                    if (typeName == roomType)
+                    {
+                        filteredByType.Add(r);
+                    }
+                }
+                rooms = filteredByType;
+            }
+
+            if (!string.IsNullOrEmpty(roomStatus))
+                rooms = rooms!.Where(r => r.Status == roomStatus).ToList();
+
+            if (minPrice.HasValue)
+                rooms = rooms!.Where(r => r.Price >= minPrice).ToList();
+
+            if (maxPrice.HasValue)
+                rooms = rooms!.Where(r => r.Price <= maxPrice).ToList();
+
+            if (minArea.HasValue)
+                rooms = rooms!.Where(r => r.Area >= minArea).ToList();
+
+            if (maxArea.HasValue)
+                rooms = rooms!.Where(r => r.Area <= maxArea).ToList();
+
+            return PartialView("_RoomListPartial", rooms);
+        }
     }
+
 }

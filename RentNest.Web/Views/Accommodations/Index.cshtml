@@ -1,4 +1,4 @@
-﻿@model List<RentNest.Web.Models.AccommodationIndexViewModel>
+﻿@model IEnumerable<RentNest.Web.Models.AccommodationIndexViewModel>
 @{
 	ViewData["Title"] = "Phòng";
 }
@@ -245,31 +245,106 @@ data-stellar-background-ratio="0.5">
 								</div>
 							</div>
 						</div>
-					}
+						}
+						<!-- Giá thuê tối đa -->
+						<div class="col-md-12 align-items-end ftco-animate">
+							<div class="form-group">
+								<label for="max-price">Giá thuê tối đa</label>
+								<div class="form-field">
+									<input type="number" id="maxPrice" name="max-price" class="form-control"
+										placeholder="Nhập giá tối đa (VNĐ)">
+								</div>
+							</div>
+						</div>
+
+						<!-- Diện tích tối thiểu -->
+						<div class="col-md-12 align-items-end ftco-animate">
+							<div class="form-group">
+								<label for="#">Diện tích tối thiểu <span>(m²)</span></label>
+								<div class="form-field">
+									<div class="icon"><span class="icon-pencil"></span></div>
+									<input id="minArea" type="text" class="form-control"
+										placeholder="Nhập diện tích tối thiểu">
+								</div>
+							</div>
+						</div>
+						<!-- Diện tích tối đa -->
+						<div class="col-md-12 align-items-end ftco-animate">
+							<div class="form-group">
+								<label for="#">Diện tích tối đa <span>(m²)</span></label>
+								<div class="form-field">
+									<div class="icon"><span class="icon-pencil"></span></div>
+									<input id="maxArea" type="text" class="form-control"
+										placeholder="Nhập diện tích tối đa">
+								</div>
+							</div>
+						</div>
+						<div class="col-auto d-flex align-items-end"></div>
+						<button id="filterButton" class="btn btn-primary mt-3">Lọc</button>
+					</div>
 				</div>
 			</div>
-				
-				<div class="row mt-5">
-					<div class="col text-center">
-						<div class="block-27">
-							<ul>
-								<li><a href="#">&lt;</a></li>
-								<li class="active"><span>1</span></li>
-								<li><a href="#">2</a></li>
-								<li><a href="#">3</a></li>
-								<li><a href="#">4</a></li>
-								<li><a href="#">5</a></li>
-							</ul>
+		</div><!-- end -->
+		<div class="col-lg-9">
+			<div class="row" id="room-list">
+				@foreach (var item in Model)
+				{
+					var statusColor = item.Status == "A" ? "bg-primary" : "bg-secondary";
+					var statusText = item.Status == "A" ? "Cho thuê" : item.Status == "R" ? "Đã thuê" : "Không hoạt động";
+
+					<div class="col-md-6 col-lg-6">
+						<div class="properties ftco-animate">
+							<div class="img" style="height: 325px;">
+								<img src="@item.ImageUrl" class="img-fluid" alt="@item.Title"
+									style="height: auto; object-fit: cover;">
+							</div>
+							<div class="desc">
+								<div class="text @statusColor d-flex text-center align-items-center justify-content-center">
+									<span>@statusText</span>
+								</div>
+								<div class="d-flex pt-5">
+									<div>
+										<h3>
+											<a style="font-family: system-ui;"
+												href="@Url.Action("Detail", "Accommodations", new {id = item.Id })">
+												@item.Title
+											</a>
+										</h3>
+									</div>
+									<div class="pl-md-4">
+										<h4 class="price">@(((item.Price ?? 0) / 1_000_000M).ToString("0.#").Replace('.',
+																					',')) tr/tháng</h4>
+								</div>
+							</div>
+							<p class="h-info"><span class="location">@item.Address</span></p>
 						</div>
 					</div>
+				</div>
+				}
+			</div>
+		</div>
+
+		<div class="row mt-5">
+			<div class="col text-center">
+				<div class="block-27">
+					<ul>
+						<li><a href="#">&lt;</a></li>
+						<li class="active"><span>1</span></li>
+						<li><a href="#">2</a></li>
+						<li><a href="#">3</a></li>
+						<li><a href="#">4</a></li>
+						<li><a href="#">5</a></li>
+					</ul>
 				</div>
 			</div>
 		</div>
 	</div>
+	</div>
+	</div>
 </section>
 @section script {
+	<script src="~/js/jquery.min.js"></script>
 	<script src="~/js/address.js"></script>
 	<script src="~/js/filter.js"></script>
 }
-
 

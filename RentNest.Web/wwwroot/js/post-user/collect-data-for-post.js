@@ -1,4 +1,4 @@
-﻿async function collectMainFormData() {
+﻿        async function collectMainFormData() {
     const form = document.getElementById('filterForm');
     const data = {};
 

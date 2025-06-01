@@ -1,0 +1,157 @@
+@model RentNest.Core.Model.PayOS.PayOSResponseModel;
+@{
+    ViewData["Title"] = "Thanh Toán Thành Công";
+}
+
+<div class="container-fluid py-4 hero-wrap-boxed " style="background: white; min-height: 100vh;">
+    <div class="invoice-container"
+        style="max-width: 800px; margin: 2rem auto; background: #fff; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); overflow: hidden;">
+
+        <!-- Header -->
+        <div class="invoice-header"
+            style="background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 2rem; text-align: center;">
+            <div class="success-icon" style="font-size: 4rem; margin-bottom: 1rem;">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="mb-2">Thanh Toán Thành Công!</h2>
+            <p class="mb-0">Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi</p>
+        </div>
+
+        <!-- Body -->
+        <div class="invoice-body" style="padding: 2rem;">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h5 class="text-center mb-3">Chi Tiết Giao Dịch</h5>
+                </div>
+            </div>
+
+            <!-- Dịch vụ -->
+            <div class="info-row"
+                style="border-bottom: 1px solid #e9ecef; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+                <div class="info-label" style="font-weight: 600; color: #495057; display: flex; align-items: center;">
+                    <i class="fas fa-box" style="margin-right: 0.5rem; width: 20px; color: #28a745;"></i>
+                    Dịch vụ
+                </div>
+                <div class="info-value" style="font-weight: 500; color: #212529; text-align: right;">
+                    @Model.ItemName
+                </div>
+            </div>
+
+            <!-- Số tiền -->
+            <div class="info-row"
+                style="border-bottom: 1px solid #e9ecef; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+                <div class="info-label" style="font-weight: 600; color: #495057; display: flex; align-items: center;">
+                    <i class="fas fa-money-bill-wave" style="margin-right: 0.5rem; width: 20px; color: #28a745;"></i>
+                    Số tiền
+                </div>
+                <div class="info-value" style="font-weight: 500; color: #212529; text-align: right;">
+                    @Model.Amount.ToString("N0") VNĐ
+                </div>
+            </div>
+
+            <!-- Phương thức thanh toán -->
+            <div class="info-row"
+                style="border-bottom: 1px solid #e9ecef; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+                <div class="info-label" style="font-weight: 600; color: #495057; display: flex; align-items: center;">
+                    <i class="fas fa-credit-card" style="margin-right: 0.5rem; width: 20px; color: #28a745;"></i>
+                    Phương thức thanh toán
+                </div>
+                <div class="info-value" style="font-weight: 500; color: #212529; text-align: right;">
+                    <span>@Model.PaymentMethod</span>
+                    <span class="payment-method-icon"
+                        style="padding: 0.25rem 0.5rem; background: #e3f2fd; border-radius: 5px; color: #1976d2; font-size: 0.9rem; margin-left: 0.5rem;">
+                        <i class="fas fa-mobile-alt"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Trạng thái -->
+            <div class="info-row"
+                style="border-bottom: 1px solid #e9ecef; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+                <div class="info-label" style="font-weight: 600; color: #495057; display: flex; align-items: center;">
+                    <i class="fas fa-info-circle" style="margin-right: 0.5rem; width: 20px; color: #28a745;"></i>
+                    Trạng thái
+                </div>
+                <div class="info-value" style="font-weight: 500; color: #212529; text-align: right;">
+                    <span class="status-badge status-success"
+                        style="padding: 0.5rem 1rem; border-radius: 25px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb;">
+                        @Model.Status
+                    </span>
+                </div>
+            </div>
+
+            <!-- Thời gian -->
+            <div class="info-row"
+                style="padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+                <div class="info-label" style="font-weight: 600; color: #495057; display: flex; align-items: center;">
+                    <i class="fas fa-clock" style="margin-right: 0.5rem; width: 20px; color: #28a745;"></i>
+                    Thời gian giao dịch
+                </div>
+                <div class="info-value" style="font-weight: 500; color: #212529; text-align: right;">
+                    @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="invoice-footer"
+            style="background: #f8f9fa; padding: 1.5rem 2rem; text-align: center; border-top: 1px solid #e9ecef;">
+            <button class="btn btn-primary" onclick="window.print()"
+                style="background: #007bff; border: none; padding: 0.75rem 2rem; border-radius: 25px; color: white; font-weight: 600; transition: all 0.3s ease;">
+                <i class="fas fa-print me-2"></i>
+                In hóa đơn
+            </button>
+            <a href="/" class="btn btn-secondary ms-3"
+                style="padding: 0.75rem 2rem; border-radius: 25px; font-weight: 600; text-decoration: none;">
+                <i class="fas fa-home me-2"></i>
+                Về trang chủ
+            </a>
+            <div class="mt-3">
+                <small class="text-muted">
+                    Hóa đơn này được tạo tự động bởi hệ thống thanh toán
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @@keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .success-icon {
+            animation: bounce 1s ease-in-out;
+        }
+
+        @@media print {
+
+            .btn-primary,
+            .btn-secondary {
+                display: none;
+            }
+
+            .invoice-container {
+                box-shadow: none;
+                margin: 0;
+            }
+        }
+    </style>
+}
