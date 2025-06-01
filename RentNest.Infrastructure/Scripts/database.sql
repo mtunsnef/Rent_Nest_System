@@ -97,7 +97,6 @@ ADD district_name NVARCHAR(255) NULL,
     ward_name NVARCHAR(255) NULL,
     province_name NVARCHAR(255) NULL;
 
-
 -- 4. T?o b?ng giá gói tin
 CREATE TABLE PackagePricing (
     pricing_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -171,7 +170,7 @@ CREATE TABLE Post (
     post_id INT IDENTITY(1,1) PRIMARY KEY,
     title NVARCHAR(150) NOT NULL,
     content NVARCHAR(MAX) NULL,
-    current_status CHAR(1) NOT NULL DEFAULT 'P' CHECK (current_status IN ('P', 'A', 'R')),
+    current_status CHAR(1) NOT NULL DEFAULT 'P' CHECK (current_status IN ('P', 'A', 'R', 'U', 'E', 'C')), -- 'P' (Pending), 'A' (Active), 'R'(Rejected), 'C' (Cancel), 'U' (Unpaid), 'E'(Expired)
     view_count INT DEFAULT 0 CHECK (view_count >= 0),
     published_at DATETIME,
     created_at DATETIME DEFAULT GETDATE(),
@@ -193,7 +192,7 @@ CREATE TABLE PostPackageDetails (
     total_price DECIMAL(10, 2) CHECK (total_price >= 0) NOT NULL,
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
-    payment_status VARCHAR(20) DEFAULT 'Pending' CHECK (payment_status IN ('Pending', 'Completed', 'Failed', 'Refunded')),
+    payment_status CHAR(1) NOT NULL DEFAULT 'P' CHECK (payment_status IN ('P', 'C', 'R')),  --Pending, Completed, Refuned
     payment_transaction_id VARCHAR(100),
     created_at DATETIME DEFAULT GETDATE(),
     CONSTRAINT FK_PostPackageDetails_Post FOREIGN KEY (post_id)
@@ -427,7 +426,8 @@ VALUES
 (N'Phòng trọ cao cấp gần đại học FPT', N'Phòng trọ rộng rãi, thoáng mát, gần trường và đầy đủ tiện nghi.', 
 N'Phường Hòa Hải', N'Quận Ngũ Hành Sơn', N'Đà Nẵng', 
 N'12 Nguyễn Văn Thoại', 
-3500000, 1000000, 30, 2, null, 'A', 1, 1);
+3500000, 1000000, 30, 2, null, 'A', 1, 1),
+;
 
 INSERT INTO AccommodationDetails (
     has_kitchen_cabinet, has_air_conditioner, has_refrigerator, has_washing_machine, has_loft,
@@ -481,7 +481,7 @@ CREATE TABLE Message (
     conversation_id INT NOT NULL,
     sender_id INT NOT NULL,
     content NVARCHAR(MAX),
-    image_url VARCHAR(MAX),     
+    image_url VARCHAR(255),     
     is_read BIT DEFAULT 0,       
     sent_at DATETIME DEFAULT GETDATE(),
 
@@ -502,29 +502,45 @@ VALUES (5, 1, 1);
 INSERT INTO Conversation (sender_id, receiver_id, post_id)
 VALUES (5, 2, null);
 
-create TABLE QuickReplyTemplate (
+CREATE TABLE QuickReplyTemplate (
     template_id INT IDENTITY(1,1) PRIMARY KEY,
     message NVARCHAR(255) NOT NULL,
     is_active BIT DEFAULT 1,
     is_default BIT DEFAULT 1,             
     account_id INT NULL,                  
-    target_role char(1) NULL,        
+    target_role NVARCHAR(20) NULL,        
     created_at DATETIME DEFAULT GETDATE(),
     CONSTRAINT FK_QuickReplyTemplate_Account FOREIGN KEY (account_id) REFERENCES Account(account_id)
 );
 
 INSERT INTO QuickReplyTemplate (message, is_default, account_id, target_role)
 VALUES 
-(N'Phòng này còn cho thuê không ạ?', 1, NULL, 'U'),
-(N'Giờ giấc ra vào có tự do không ạ?', 1, NULL, 'U'),
-(N'Chi phí điện nước tính như thế nào ạ?', 1, NULL, 'U'),
-(N'Có chỗ để xe không ạ?', 1, NULL, 'U'),
-(N'Cho nuôi thú cưng không ạ?', 1, NULL, 'U');
+(N'Phòng này còn cho thuê không ạ?', 1, NULL, 'tenant'),
+(N'Giờ giấc ra vào có tự do không ạ?', 1, NULL, 'tenant'),
+(N'Chi phí điện nước tính như thế nào ạ?', 1, NULL, 'tenant'),
+(N'Có chỗ để xe không ạ?', 1, NULL, 'tenant'),
+(N'Cho nuôi thú cưng không ạ?', 1, NULL, 'tenant');
 
 INSERT INTO QuickReplyTemplate (message, is_default, account_id, target_role)
 VALUES 
-(N'Phòng vẫn còn, bạn muốn xem phòng khi nào?', 1, NULL, 'L'),
-(N'Chi phí điện nước theo giá nhà nước nha bạn.', 1, NULL, 'L'),
-(N'Phòng có chỗ để xe máy và an ninh 24/7.', 1, NULL, 'L'),
-(N'Giờ giấc ra vào thoải mái, không giới hạn.', 1, NULL, 'L'),
-(N'Phòng không hỗ trợ nuôi thú cưng nha bạn.', 1, NULL, 'L');
+(N'Phòng vẫn còn, bạn muốn xem phòng khi nào?', 1, NULL, 'landlord'),
+(N'Chi phí điện nước theo giá nhà nước nha bạn.', 1, NULL, 'landlord'),
+(N'Phòng có chỗ để xe máy và an ninh 24/7.', 1, NULL, 'landlord'),
+(N'Giờ giấc ra vào thoải mái, không giới hạn.', 1, NULL, 'landlord'),
+(N'Phòng không hỗ trợ nuôi thú cưng nha bạn.', 1, NULL, 'landlord');
+
+INSERT INTO PaymentMethod (method_name, description, is_active, icon_url)
+VALUES 
+(N'VNPay', N'Phương thức thanh toán qua cổng VNPay', 1, null),
+(N'PayOs', N'Phương thức thanh toán qua cổng PayOs', 1, null);
+
+INSERT INTO PostPackageDetails (post_id, pricing_id, total_price, start_date, end_date, payment_status, payment_transaction_id)
+VALUES
+(1, 5, 31500, GETDATE(), DATEADD(DAY, 7, GETDATE()), 'Pending', 'TXN001'),
+(2, 10, 75050, GETDATE(), DATEADD(DAY, 10, GETDATE()), 'Pending', 'TXN002');
+
+INSERT INTO Payment (post_package_details_id, total_price, status, payment_date, method_id, account_id)
+VALUES
+(1, 31500, 'P', GETDATE(), 1, 1),
+(2, 75050, 'P', GETDATE(), 2, 1);
+

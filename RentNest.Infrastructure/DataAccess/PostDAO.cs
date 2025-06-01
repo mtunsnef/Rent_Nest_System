@@ -49,5 +49,26 @@ namespace RentNest.Infrastructure.DataAccess
                 .FirstOrDefaultAsync(p => p.PostId == postId);
         }
 
+        public async Task<List<Post>> GetAllPostsByUserAsync(int accountId)
+        {
+            return await _context.Posts
+                .Include(p => p.Accommodation)
+                    .ThenInclude(a => a.AccommodationImages)
+                .Include(p => p.Accommodation)
+                    .ThenInclude(a => a.AccommodationDetail)
+                .Include(p => p.PostPackageDetails)
+                    .ThenInclude(d => d.Pricing)
+                        .ThenInclude(p => p.PackageType)
+                .Include(p => p.PostPackageDetails)
+                    .ThenInclude(d => d.Pricing)
+                        .ThenInclude(t => t.TimeUnit)
+                .Include(p => p.PostApprovals)
+                .Include(a => a.Account)
+                    .ThenInclude(u => u.UserProfile)
+                .Where(p => p.AccountId == accountId)
+                .OrderByDescending(p => p.PublishedAt)
+                .ToListAsync();
+        }
+
     }
 }

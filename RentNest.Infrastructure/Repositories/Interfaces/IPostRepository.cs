@@ -11,5 +11,6 @@ namespace RentNest.Infrastructure.Repositories.Interfaces
     {
         Task<List<Post>> GetAllPostsWithAccommodation();
         Task<Post?> GetPostDetailWithAccommodationDetailAsync(int postId);
+        Task<List<Post>> GetAllPostsByUserAsync(int accountId);
     }
 }

@@ -114,7 +114,7 @@ namespace RentNest.Web.Controllers
                 Gender = profile.Gender,
                 DateOfBirth = profile.DateOfBirth,
                 Address = profile.Address,
-                AvatarUrl = profile.AvatarUrl,
+                AvatarUrl = profile.AvatarUrl ?? "/images/default-avatar.jpg",
                 AccountId = accountId,
                 Username = profile.Account?.Username,
                 Email = profile.Account?.Email,

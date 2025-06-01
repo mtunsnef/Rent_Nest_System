@@ -59,7 +59,7 @@ namespace RentNest.Web.Controllers
                 ConversationId = conversation.ConversationId,
                 ReceiverId = otherUser?.AccountId ?? 0,
                 ReceiverFullName = otherUser?.UserProfile?.FirstName + " " + otherUser?.UserProfile?.LastName ?? "Không xác định",
-                ReceiverAvatarUrl = otherUser?.UserProfile?.AvatarUrl ?? "/images/person_1.jpg",
+                ReceiverAvatarUrl = otherUser?.UserProfile?.AvatarUrl ?? "/images/default-avatar.jpg",
                 LastActiveAt = otherUser.LastActiveAt,
                 IsOnline = otherUser.IsOnline,
 

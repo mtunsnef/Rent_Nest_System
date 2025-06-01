@@ -1,6 +1,6 @@
 ﻿namespace RentNest.Web.Models
 {
-    public class AccommodationIndexViewModel
+    public class ManagePostViewModel
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -20,6 +20,8 @@
         public decimal TotalPrice { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public List<string> ListImages { get; set; }
+        public string? RejectionReason { get; set; }
+        public string? AccountName { get; set; }
+        public string? AvatarUrl { get; set; }
     }
 }

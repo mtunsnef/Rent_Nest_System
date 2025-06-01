@@ -103,7 +103,8 @@ namespace RentNest.Web.Controllers
                     TimeUnitName = latestPackageDetail?.Pricing?.TimeUnit?.TimeUnitName ?? "",
                     TotalPrice = latestPackageDetail?.TotalPrice ?? 0,
                     StartDate = latestPackageDetail?.StartDate,
-                    EndDate = latestPackageDetail?.EndDate
+                    EndDate = latestPackageDetail?.EndDate,
+                    ListImages = p.Accommodation?.AccommodationImages?.Select(i => i.ImageUrl).ToList() ?? new List<string>()
                 };
             }).ToList();
 
@@ -186,7 +187,7 @@ namespace RentNest.Web.Controllers
                 UpdatedAt = post.Accommodation.AccommodationDetail.UpdatedAt,
                 Address = post.Accommodation.Address ?? "",
                 AccountId = post.Account.AccountId,
-                AccountImg = post.Account.UserProfile.AvatarUrl,
+                AccountImg = post.Account.UserProfile.AvatarUrl ?? "/images/default-avatar.jpg",
                 AccountName = post.Account.UserProfile.FirstName + " " + post.Account.UserProfile.LastName,
                 AccountPhone = post.Account.UserProfile.PhoneNumber,
                 Amenities = post.Accommodation.AccommodationAmenities?

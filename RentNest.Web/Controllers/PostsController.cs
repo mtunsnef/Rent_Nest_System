@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RentNest.Core.Consts;
+using RentNest.Core.Domains;
 using RentNest.Core.DTO;
+using RentNest.Core.UtilHelper;
+using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
 using RentNest.Web.Models;
 
@@ -15,13 +18,15 @@ namespace RentNest.Web.Controllers
         private readonly IAmenitiesSerivce _amenitiesService;
         private readonly ITimeUnitPackageService _timeUnitPackageService;
         private readonly IPackagePricingService _packagePricingService;
-        public PostsController(IAzureOpenAIService azureOpenAIService, IAccommodationTypeService accommodationTypeService, IAmenitiesSerivce amenitiesService, ITimeUnitPackageService timeUnitPackageService, IPackagePricingService packagePricingService)
+        private readonly IPostService _postService;
+        public PostsController(IAzureOpenAIService azureOpenAIService, IAccommodationTypeService accommodationTypeService, IAmenitiesSerivce amenitiesService, ITimeUnitPackageService timeUnitPackageService, IPackagePricingService packagePricingService, IPostService postService)
         {
             _azureOpenAIService = azureOpenAIService;
             _accommodationTypeService = accommodationTypeService;
             _amenitiesService = amenitiesService;
             _timeUnitPackageService = timeUnitPackageService;
             _packagePricingService = packagePricingService;
+            _postService = postService;
         }
 
         //api
@@ -83,9 +88,59 @@ namespace RentNest.Web.Controllers
         }
 
         [Route("/quan-ly-tin")]
-        public IActionResult ManagePost() { return View("User/ManagePost"); }
+        public async Task<IActionResult> ManagePost(string status = "P")
+        {
+            var accountId = User.GetUserId();
 
+            if (accountId == 0) return Unauthorized();
 
+            var allPosts = await _postService.GetAllPostsByUserAsync(accountId.Value);
+
+            var userProfile = allPosts.FirstOrDefault()?.Account?.UserProfile;
+
+            var statusCounts = allPosts
+                .GroupBy(p => p.CurrentStatus)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            var filteredPosts = allPosts
+                .Where(p => p.CurrentStatus == status)
+                .ToList();
+
+            var viewModelList = filteredPosts.Select(f => new ManagePostViewModel
+            {
+                Id = f.PostId,
+                Title = f.Title,
+                Address = f.Accommodation.Address,
+                DistrictName = f.Accommodation.DistrictName ?? "",
+                ProvinceName = f.Accommodation.ProvinceName ?? "",
+                WardName = f.Accommodation.WardName ?? "",
+                Price = f.Accommodation.Price,
+                Status = f.CurrentStatus,
+                ImageUrl = f.Accommodation?.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "",
+                Area = f.Accommodation.Area,
+                BedroomCount = f.Accommodation.AccommodationDetail?.BedroomCount,
+                BathroomCount = f.Accommodation.AccommodationDetail?.BathroomCount,
+                CreatedAt = f.CreatedAt,
+                PackageTypeName = f.PostPackageDetails
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Select(p => p.Pricing.PackageType.PackageTypeName)
+                    .FirstOrDefault() ?? "",
+                RejectionReason = f.PostApprovals
+                                .Where(p => p.Status == "R")
+                                .OrderByDescending(p => p.ProcessedAt)
+                                .Select(p => p.RejectionReason)
+                                .FirstOrDefault(),
+                AccountName = f.Account.UserProfile.FirstName ?? "" + " " + f.Account.UserProfile.LastName ?? "",
+                AvatarUrl = f.Account.UserProfile.AvatarUrl 
+            }).ToList();
+
+            ViewBag.CurrentStatus = status;
+            ViewBag.StatusCounts = statusCounts;
+            ViewBag.AccountName = $"{userProfile?.FirstName} {userProfile?.LastName}".Trim();
+            ViewBag.AvatarUrl = userProfile?.AvatarUrl ?? "/images/default-avatar.jpg";
+
+            return View("User/ManagePost", viewModelList);
+        }
     }
 
 }

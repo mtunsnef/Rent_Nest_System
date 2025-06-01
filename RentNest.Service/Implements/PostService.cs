@@ -11,6 +11,12 @@ namespace RentNest.Service.Implements
         {
             _postRepository = postRepository;
         }
+
+        public async Task<List<Post>> GetAllPostsByUserAsync(int accountId)
+        {
+            return await _postRepository.GetAllPostsByUserAsync(accountId);
+        }
+
         public async Task<List<Post>> GetAllPostsWithAccommodation()
         {
             return await _postRepository.GetAllPostsWithAccommodation();
