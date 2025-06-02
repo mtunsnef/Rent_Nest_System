@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RentNest.Core.Domains;
+using RentNest.Core.UtilHelper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,9 +37,11 @@ namespace RentNest.Infrastructure.DataAccess
 
             if (!string.IsNullOrWhiteSpace(provinceName))
             {
-                string keyword = $"%{provinceName.Trim()}%";
+                string normalized = ProvinceNameNormalizer.Normalize(provinceName);
+                string keyword = $"%{normalized.Trim()}%";
                 query = query.Where(p =>
-                    EF.Functions.Like(EF.Functions.Collate(p.Accommodation.ProvinceName, "Vietnamese_CI_AI"), keyword));
+                    EF.Functions.Like(
+                        EF.Functions.Collate(p.Accommodation.ProvinceName, "Vietnamese_CI_AI"), keyword));
             }
 
             if (!string.IsNullOrWhiteSpace(districtName))

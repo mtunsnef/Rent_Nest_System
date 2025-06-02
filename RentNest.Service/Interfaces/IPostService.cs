@@ -1,4 +1,5 @@
 ﻿using RentNest.Core.Domains;
+using RentNest.Core.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace RentNest.Service.Interfaces
             Task<List<Post>> GetAllPostsWithAccommodation();
             Task<Post?> GetPostDetailWithAccommodationDetailAsync(int postId);
             Task<List<Post>> GetAllPostsByUserAsync(int accountId);
+            Task<int> SavePost(LandlordPostDto dto);
         }
 }

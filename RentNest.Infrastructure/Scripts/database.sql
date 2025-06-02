@@ -76,10 +76,11 @@ CREATE TABLE Accommodation (
     title NVARCHAR(150) NOT NULL,
     description NVARCHAR(MAX),
     address NVARCHAR(255) NOT NULL,
+	ward_name NVARCHAR(255) NULL,
+	district_name NVARCHAR(255) NULL,
+    province_name NVARCHAR(255) NULL,
     price DECIMAL(10, 2) CHECK (price >= 0),
-    deposit_amount DECIMAL(10, 2) CHECK (deposit_amount >= 0),
     area INT CHECK (area > 0),
-    max_occupancy INT CHECK (max_occupancy > 0),
     video_url VARCHAR(255),
     status CHAR(1) NOT NULL DEFAULT 'A' CHECK (status IN ('A', 'R', 'I')), -- available, rented, inactive
     created_at DATETIME DEFAULT GETDATE(),
@@ -92,10 +93,6 @@ CREATE TABLE Accommodation (
     CONSTRAINT FK_Accommodation_Type FOREIGN KEY (type_id)
         REFERENCES AccommodationType(type_id)
 );
-ALTER TABLE Accommodation
-ADD district_name NVARCHAR(255) NULL,
-    ward_name NVARCHAR(255) NULL,
-    province_name NVARCHAR(255) NULL;
 
 -- 4. T?o b?ng giá gói tin
 CREATE TABLE PackagePricing (
@@ -171,7 +168,6 @@ CREATE TABLE Post (
     title NVARCHAR(150) NOT NULL,
     content NVARCHAR(MAX) NULL,
     current_status CHAR(1) NOT NULL DEFAULT 'P' CHECK (current_status IN ('P', 'A', 'R', 'U', 'E', 'C')), -- 'P' (Pending), 'A' (Active), 'R'(Rejected), 'C' (Cancel), 'U' (Unpaid), 'E'(Expired)
-    view_count INT DEFAULT 0 CHECK (view_count >= 0),
     published_at DATETIME,
     created_at DATETIME DEFAULT GETDATE(),
     updated_at DATETIME DEFAULT GETDATE(),
@@ -192,7 +188,7 @@ CREATE TABLE PostPackageDetails (
     total_price DECIMAL(10, 2) CHECK (total_price >= 0) NOT NULL,
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
-    payment_status CHAR(1) NOT NULL DEFAULT 'P' CHECK (payment_status IN ('P', 'C', 'R')),  --Pending, Completed, Refuned
+    payment_status CHAR(1) NOT NULL DEFAULT 'P' CHECK (payment_status IN ('P', 'C', 'R', 'I')),  --Pending, Completed, Refuned, Inactive
     payment_transaction_id VARCHAR(100),
     created_at DATETIME DEFAULT GETDATE(),
     CONSTRAINT FK_PostPackageDetails_Post FOREIGN KEY (post_id)
@@ -418,16 +414,12 @@ VALUES
 ('Lan', 'Nguyen', '0912345678', 'F', '1985-05-05', '/images/person_2.jpg', 'Sinh viên', 'Trần Duy Hưng, Hà Nội', 5);
 
 INSERT INTO Accommodation (
-    title, description, ward_name, district_name, province_name, address,
-    price, deposit_amount, area, max_occupancy, video_url, status,
-    owner_id, type_id
+    title, description, address, ward_name, district_name, province_name,
+    price, area, video_url, status, owner_id, type_id
 )
 VALUES 
 (N'Phòng trọ cao cấp gần đại học FPT', N'Phòng trọ rộng rãi, thoáng mát, gần trường và đầy đủ tiện nghi.', 
-N'Phường Hòa Hải', N'Quận Ngũ Hành Sơn', N'Đà Nẵng', 
-N'12 Nguyễn Văn Thoại', 
-3500000, 1000000, 30, 2, null, 'A', 1, 1),
-;
+N'12 Nguyễn Văn Thoại', N'Phường Hòa Hải', N'Quận Ngũ Hành Sơn', N'Thành Phố Đà Nẵng', 3500000, 75, null, 'A', 1, 1);
 
 INSERT INTO AccommodationDetails (
     has_kitchen_cabinet, has_air_conditioner, has_refrigerator, has_washing_machine, has_loft,
@@ -445,12 +437,12 @@ VALUES
 (1, 5);
 
 INSERT INTO Post (
-    title, content, current_status, view_count, published_at, accommodation_id, account_id
+    title, content, current_status, published_at, accommodation_id, account_id
 )
 VALUES 
 (N'Cho thuê phòng trọ gần FPT Đà Nẵng', 
 N'Phòng sạch sẽ, an ninh, có gác lửng, đầy đủ tiện nghi như máy lạnh, tủ lạnh, bếp.', 
-'A', 10, GETDATE(), 1, 1);
+'A', GETDATE(), 1, 1);
 
 INSERT INTO AccommodationImage (image_url, caption, accommodation_id)
 VALUES
@@ -496,12 +488,6 @@ CREATE INDEX IX_Conversation_Users ON Conversation(sender_id, receiver_id);
 CREATE UNIQUE INDEX UX_Conversation_Uniqueness
 ON Conversation (sender_id, receiver_id, post_id);
 
-INSERT INTO Conversation (sender_id, receiver_id, post_id)
-VALUES (5, 1, 1);
-
-INSERT INTO Conversation (sender_id, receiver_id, post_id)
-VALUES (5, 2, null);
-
 CREATE TABLE QuickReplyTemplate (
     template_id INT IDENTITY(1,1) PRIMARY KEY,
     message NVARCHAR(255) NOT NULL,
@@ -536,11 +522,8 @@ VALUES
 
 INSERT INTO PostPackageDetails (post_id, pricing_id, total_price, start_date, end_date, payment_status, payment_transaction_id)
 VALUES
-(1, 5, 31500, GETDATE(), DATEADD(DAY, 7, GETDATE()), 'Pending', 'TXN001'),
-(2, 10, 75050, GETDATE(), DATEADD(DAY, 10, GETDATE()), 'Pending', 'TXN002');
+(1, 5, 31500, GETDATE(), DATEADD(DAY, 7, GETDATE()), 'P', 'TXN001');
 
 INSERT INTO Payment (post_package_details_id, total_price, status, payment_date, method_id, account_id)
 VALUES
-(1, 31500, 'P', GETDATE(), 1, 1),
-(2, 75050, 'P', GETDATE(), 2, 1);
-
+(1, 31500, 'P', GETDATE(), 1, 1);

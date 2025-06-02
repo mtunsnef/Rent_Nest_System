@@ -13,8 +13,6 @@ public partial class Post
 
     public string CurrentStatus { get; set; } = null!;
 
-    public int? ViewCount { get; set; }
-
     public DateTime? PublishedAt { get; set; }
 
     public DateTime? CreatedAt { get; set; }

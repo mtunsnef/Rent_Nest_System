@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using RentNest.Core.Domains;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RentNest.Infrastructure.DataAccess
 {
-    public class PostDAO : BaseDAO<PostDAO>
+    public class PostDAO : BaseDAO<Post>
     {
         public PostDAO(RentNestSystemContext context) : base(context) { }
 
@@ -25,6 +26,8 @@ namespace RentNest.Infrastructure.DataAccess
                 .Include(p => p.PostPackageDetails)
                     .ThenInclude(d => d.Pricing)
                         .ThenInclude(p => p.TimeUnit)
+                .Include(a => a.Account)
+                    .ThenInclude(u => u.UserProfile)
                 .Where(p => p.CurrentStatus == "A" && p.Accommodation.Status != "I")
                 .OrderByDescending(p => p.PublishedAt)
                 .ToListAsync();
@@ -69,6 +72,9 @@ namespace RentNest.Infrastructure.DataAccess
                 .OrderByDescending(p => p.PublishedAt)
                 .ToListAsync();
         }
-
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
+        }
     }
 }

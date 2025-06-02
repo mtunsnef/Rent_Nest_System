@@ -2,6 +2,17 @@
 @{
     ViewData["Title"] = "Chi tiết phòng thuê";
 }
+
+@{
+    var addressParts = new List<string> {
+        Model.Address,
+        Model.WardName,
+        Model.DistrictName,
+        Model.ProvinceName
+    };
+    var fullAddress = string.Join(", ", addressParts.Where(p => !string.IsNullOrWhiteSpace(p)));
+    var encodedAddress = System.Net.WebUtility.UrlEncode(fullAddress);
+}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 @functions {
@@ -49,11 +60,14 @@
                     <div class="col-md-6">
                         <!-- Ảnh chính -->
                         <div class="swiper mySwiper2 mb-2">
-                            <span id="packageBadgeVIP"
-                                  class="badge position-absolute @BadgeHelper.GetBadgeClass(Model.PackageTypeName)"
-                                  style="color: #fff;top: 8px;left: 8px;font-size: 15px;padding: 8px; z-index: 1000">
-                                @Model.PackageTypeName
-                            </span>
+                            @if (Model.PackageTypeName != "Tin thường")
+                            {
+                                <span id="packageBadgeVIP"
+                                      class="badge position-absolute @BadgeHelper.GetBadgeClass(Model.PackageTypeName)"
+                                      style="color: #fff; top: 8px; left: 8px; font-size: 15px; padding: 8px; z-index: 1000">
+                                    @Model.PackageTypeName
+                                </span>
+                            }
                             <div class="swiper-wrapper">
                                 @foreach (var img in Model.ImageUrls)
                                 {
@@ -126,8 +140,12 @@
 
             <div class="col-md-12 tour-wrap">
                 <div class="mb-4">
+                    <h5 class="font-weight-bold mb-3">Địa chỉ</h5>
+                    <p>@fullAddress</p>
+                </div>
+                <div class="mb-4">
                     <h5 class="font-weight-bold mb-3">Thông tin mô tả</h5>
-                    <p>@Model.PostContent</p>
+                    <p>@Html.Raw(Model.PostContent?.Replace("\n", "<br>"))</p>
                 </div>
                 <div class="mb-4">
                     <h5 class="font-weight-bold mb-3">Đặc điểm</h5>
@@ -194,11 +212,6 @@
                     </table>
                 </div>
 
-                <!-- Vị trí -->
-                @{
-                    var fullAddress = $"{Model.Address}, {Model.WardName}, {Model.DistrictName}, {Model.ProvinceName}";
-                    var encodedAddress = System.Net.WebUtility.UrlEncode(fullAddress);
-                }
                 <div class="mb-4">
                     <h5 class="font-weight-bold mb-3">Vị trí</h5>
                     <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
@@ -340,6 +353,9 @@
         const copyBtn = document.getElementById("copyBtn");
 
         phoneBtn.innerHTML = '<i class="fa fa-phone"></i> ' + fullPhone;
+        phoneBtn.classList.remove("btn-success");
+        phoneBtn.classList.add("btn-outline-success");
+
         copyBtn.classList.remove("d-none");
     }
 

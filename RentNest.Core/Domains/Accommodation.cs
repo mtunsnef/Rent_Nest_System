@@ -13,13 +13,15 @@ public partial class Accommodation
 
     public string Address { get; set; } = null!;
 
+    public string? WardName { get; set; }
+
+    public string? DistrictName { get; set; }
+
+    public string? ProvinceName { get; set; }
+
     public decimal? Price { get; set; }
 
-    public decimal? DepositAmount { get; set; }
-
     public int? Area { get; set; }
-
-    public int? MaxOccupancy { get; set; }
 
     public string? VideoUrl { get; set; }
 
@@ -32,12 +34,6 @@ public partial class Accommodation
     public int OwnerId { get; set; }
 
     public int TypeId { get; set; }
-
-    public string? DistrictName { get; set; }
-
-    public string? WardName { get; set; }
-
-    public string? ProvinceName { get; set; }
 
     public virtual ICollection<AccommodationAmenity> AccommodationAmenities { get; set; } = new List<AccommodationAmenity>();
 

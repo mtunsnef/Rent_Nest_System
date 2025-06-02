@@ -3,15 +3,19 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Net.payOS;
 using RentNest.Core.Configs;
 using RentNest.Core.Consts;
 using RentNest.Core.Domains;
+using RentNest.Core.Model.Momo;
 using RentNest.Infrastructure.DataAccess;
 using RentNest.Infrastructure.Repositories.Implements;
 using RentNest.Infrastructure.Repositories.Interfaces;
 using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
 using RentNest.Web.Hubs;
+using RentNest.Web.Service.Implement;
+using RentNest.Web.Service.Interface;
 
 namespace RentNest.Web
 {
@@ -21,6 +25,10 @@ namespace RentNest.Web
         {
 
             var builder = WebApplication.CreateBuilder(args);
+            // dang ki momo
+            builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+            builder.Services.AddScoped<IMomoSerivce, MomoService>();
+            IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             //load file .env
             var webRoot = builder.Environment.ContentRootPath;
@@ -28,6 +36,10 @@ namespace RentNest.Web
             var envPath = Path.Combine(solutionRoot, ".env");
             Env.Load(envPath);
 
+            PayOS payOS = new PayOS(configuration["PayOS:ClientId"] ?? throw new Exception("Cannot find PayOS Client ID"),
+                                configuration["PayOS:ApiKey"] ?? throw new Exception("Cannot find PayOS API Key"),
+                                configuration["PayOS:ChecksumKey"] ?? throw new Exception("Cannot find PayOS Checksum Key"));
+            builder.Services.AddSingleton(payOS);
             //Add dbcontext
             builder.Services.AddDbContext<RentNestSystemContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
@@ -50,6 +62,10 @@ namespace RentNest.Web
             builder.Services.AddScoped<MessageDAO>();
             builder.Services.AddScoped<FavoriteDAO>();
             builder.Services.AddScoped<QuickReplyTemplateDAO>();
+            builder.Services.AddScoped<AccommodationAmenityDAO>();
+            builder.Services.AddScoped<AccommodationDetailDAO>();
+            builder.Services.AddScoped<AccommodationImageDAO>();
+            builder.Services.AddScoped<PostPackageDetailDAO>();
 
             //Repository
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -151,7 +167,8 @@ namespace RentNest.Web
                         }
                     };
                 });
-
+            // dang ki vn pay
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
             var app = builder.Build();
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

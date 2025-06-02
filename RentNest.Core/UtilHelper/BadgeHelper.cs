@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RentNest.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,5 +19,16 @@ namespace RentNest.Core.UtilHelper
                 _ => ""
             };
         }
+        public static PackageTypeEnum ParsePackageType(string? typeName)
+        {
+            return typeName switch
+            {
+                "VIP Kim Cương" => PackageTypeEnum.Diamond,
+                "VIP Vàng" => PackageTypeEnum.Gold,
+                "VIP Bạc" => PackageTypeEnum.Silver,
+                _ => PackageTypeEnum.Normal
+            };
+        }
+        public static bool IsVip(PackageTypeEnum type) => type != PackageTypeEnum.Normal;
     }
 }

@@ -1,4 +1,6 @@
-﻿@model List<RentNest.Web.Models.AccommodationIndexViewModel>
+﻿@using RentNest.Core.Enums;
+@using RentNest.Core.UtilHelper;
+@model IEnumerable<RentNest.Web.Models.AccommodationIndexViewModel>
 @{
 	ViewData["Title"] = "Phòng";
 }
@@ -182,19 +184,17 @@
 				</div>
 			</div><!-- end -->
 			<div class="col-lg-9">
-					@if (hasSearched && !Model.Any())
-					{	
-						<div class="alert alert-warning text-center mt-3">
-							Hiện tại không có phòng nào phù hợp với tiêu chí bạn chọn.
-						</div>
-					} 
-					else 
-					{
-						<div class="row">
+				@if (hasSearched && !Model.Any())
+				{	
+					<div class="alert alert-warning text-center mt-3">
+						Hiện tại không có phòng nào phù hợp với tiêu chí bạn chọn.
+					</div>
+				} 
+				else 
+				{
+					<div class="row">
 						@foreach (var item in Model)
 						{
-							var statusColor = item.Status == "A" ? "bg-primary" : "bg-secondary";
-							var statusText = item.Status == "A" ? "Cho thuê" : item.Status == "R" ? "Đã thuê" : "Không hoạt động";
 							var postedAgo = item.CreatedAt.HasValue
 							? (DateTime.Now - item.CreatedAt.Value) switch
 							{
@@ -203,29 +203,33 @@
 								var d => $"{(int)d.TotalDays} ngày trước"
 							} : "";
 
-							var isVip = item.PackageTypeName != null && item.PackageTypeName != "Tin thường";
-							var isDiamond = item.PackageTypeName == "VIP Kim Cương";
-							var phone = "0123456789"; // bạn lấy từ đâu thì gán vào
-							var maskedPhone = phone[..3] + "*****" + phone[^2..];
+							var typeEnum = BadgeHelper.ParsePackageType(item.PackageTypeName);
+							var isVip = BadgeHelper.IsVip(typeEnum);
+							var isDiamond = typeEnum == PackageTypeEnum.Diamond;
+							var isGold = typeEnum == PackageTypeEnum.Gold;
+							var isSilver = typeEnum == PackageTypeEnum.Silver;
+							var isNormal = typeEnum == PackageTypeEnum.Normal;
+							var phone = item.PhoneNumber;
+							var maskedPhone = string.IsNullOrEmpty(phone) || phone.Length < 3 ? phone : phone[..^3] + "XXX";
 
 							<div class="col-md-12 mb-2">
 								<div class="ftco-animate properties d-flex border rounded overflow-hidden shadow-sm bg-white" style="min-height: 200px; margin-bottom: 15px">
-									<!-- PHẦN HÌNH ẢNH -->
-									<div class="flex-shrink-0" style="width: @(isDiamond ? "365px" : "250px"); height: @(isDiamond ? "300px" : "180px"); overflow: hidden;">
+									<div class="flex-shrink-0"
+									     style="width: @(isDiamond ? "400px" : isGold ? "320px" : isSilver ? "270px" : "200px");
+												height: @(isDiamond ? "350px" : isGold ? "250px" : isSilver ? "200px" : "180px");
+												overflow: hidden;">
 										@if (isDiamond)
 										{
 											var images = item.ListImages?.Take(6).ToList() ?? new List<string> { item.ImageUrl };
 											<div class="h-100 d-flex flex-column gap-1">
 												@if (images.Count > 0)
 												{
-													<!-- Ảnh lớn -->
 													<div class="flex-grow-1" style="height: 110px;">
 														<img src="@images[0]" class="img-fluid w-100 h-100 rounded" style="object-fit: cover;" />
 													</div>
 												}
 												@if (images.Count > 1)
 												{
-													<!-- Ảnh nhỏ hơn -->
 													<div class="d-flex gap-1 mt-1" style="height: 85px;">
 														@for (int i = 1; i < Math.Min(images.Count, 6); i++)
 														{
@@ -242,15 +246,16 @@
 											<img src="@item.ImageUrl" alt="@item.Title" class="img-fluid h-100 w-100" style="object-fit: cover;">
 										}
 
-
-										<span id="packageBadgeVIP"
-											  class="badge position-absolute @BadgeHelper.GetBadgeClass(item.PackageTypeName)"
-											  style="color: #fff;top: 7px;left: 8px;font-size: 13px;padding: 6px;">
-											@item.PackageTypeName
-										</span>
+										@if (item.PackageTypeName != PackageTypeEnum.Normal.GetDisplayName())
+										{
+											<span id="packageBadgeVIP"
+												  class="badge position-absolute @BadgeHelper.GetBadgeClass(item.PackageTypeName)"
+												  style="color: #fff; top: 8px; left: 8px; font-size: 15px; padding: 8px; z-index: 1000">
+												@item.PackageTypeName
+											</span>
+										}
 									</div>
 
-									<!-- PHẦN NỘI DUNG -->
 									<div class="flex-grow-1 p-3 d-flex flex-column justify-content-between">
 										<div>
 											<h5 class="mb-1">
@@ -274,13 +279,15 @@
 											<p class="text-muted mt-1 mb-2">@fullAddress</p>
 										</div>
 
-										<!-- NÚT FAVORITE & SỐ ĐIỆN THOẠI -->
 										<div class="d-flex justify-content-between align-items-center small">
 											<span class="text-secondary">@postedAgo</span>
 											<div class="d-flex align-items-center">
-												@if (isVip)
+												@if (isDiamond || isGold)
 												{
-													<button class="btn btn-success mr-2" onclick="showFullPhone('@phone')" id="phoneBtn">
+													<button class="btn btn-success mr-2 phone-btn"
+															data-full-phone="@phone"
+															data-post-id="@item.Id"
+															id="phoneBtn-@item.Id">
 														<i class="fa fa-phone"></i> @maskedPhone
 													</button>
 												}
@@ -303,6 +310,7 @@
 @Html.AntiForgeryToken()
 <div id="custom-toast" class="custom-toast"></div>
 @section script {
+	<script src="~/js/jquery.min.js"></script>
 	<script src="~/js/address.js"></script>
 	<script src="~/js/filter.js"></script>
 	<script>
@@ -340,6 +348,20 @@
 		document.getElementById("provinceName").value = document.getElementById("provinceDropdown").selectedOptions[0].text;
 		document.getElementById("districtName").value = document.getElementById("districtDropdown").selectedOptions[0].text;
 		document.getElementById("wardName").value = document.getElementById("wardDropdown").selectedOptions[0].text;
+	});
+
+	document.addEventListener("DOMContentLoaded", function () {
+		const phoneButtons = document.querySelectorAll(".phone-btn");
+
+		phoneButtons.forEach(btn => {
+			btn.addEventListener("click", function () {
+				const fullPhone = btn.getAttribute("data-full-phone");
+				btn.innerHTML = `<i class="fa fa-phone"></i> ${fullPhone}`;
+				btn.classList.remove("btn-success");
+				btn.classList.add("btn-outline-success");
+				btn.disabled = true;
+			});
+		});
 	});
 </script>
 

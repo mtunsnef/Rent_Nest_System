@@ -104,7 +104,8 @@ namespace RentNest.Web.Controllers
                     TotalPrice = latestPackageDetail?.TotalPrice ?? 0,
                     StartDate = latestPackageDetail?.StartDate,
                     EndDate = latestPackageDetail?.EndDate,
-                    ListImages = p.Accommodation?.AccommodationImages?.Select(i => i.ImageUrl).ToList() ?? new List<string>()
+                    ListImages = p.Accommodation?.AccommodationImages?.Select(i => i.ImageUrl).ToList() ?? new List<string>(),
+                    PhoneNumber = p.Account.UserProfile?.PhoneNumber ?? ""
                 };
             }).ToList();
 
@@ -316,5 +317,43 @@ namespace RentNest.Web.Controllers
             return RedirectToAction("Index", "ChatRoom");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> FilterRooms(string roomType, string roomStatus, int? minPrice, int? maxPrice, int? minArea, int? maxArea)
+        {
+            var rooms = HttpContext.Session.GetObject<List<Accommodation>>("FilteredRooms");
+
+            if (!string.IsNullOrEmpty(roomType))
+            {
+                // Duyệt từng phòng và lọc theo loại phòng bất đồng bộ
+                var filteredByType = new List<Accommodation>();
+                foreach (var r in rooms)
+                {
+                    var typeName = await _accommodationService.GetAccommodationType(r.TypeId);
+                    if (typeName == roomType)
+                    {
+                        filteredByType.Add(r);
+                    }
+                }
+                rooms = filteredByType;
+            }
+
+            if (!string.IsNullOrEmpty(roomStatus))
+                rooms = rooms!.Where(r => r.Status == roomStatus).ToList();
+
+            if (minPrice.HasValue)
+                rooms = rooms!.Where(r => r.Price >= minPrice).ToList();
+
+            if (maxPrice.HasValue)
+                rooms = rooms!.Where(r => r.Price <= maxPrice).ToList();
+
+            if (minArea.HasValue)
+                rooms = rooms!.Where(r => r.Area >= minArea).ToList();
+
+            if (maxArea.HasValue)
+                rooms = rooms!.Where(r => r.Area <= maxArea).ToList();
+
+            return PartialView("_RoomListPartial", rooms);
+        }
     }
+
 }
