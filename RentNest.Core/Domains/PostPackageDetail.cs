@@ -17,7 +17,7 @@ public partial class PostPackageDetail
 
     public DateTime EndDate { get; set; }
 
-    public string? PaymentStatus { get; set; }
+    public string PaymentStatus { get; set; } = null!;
 
     public string? PaymentTransactionId { get; set; }
 

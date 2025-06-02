@@ -79,5 +79,20 @@ namespace RentNest.Service.Implements
         {
             return await _accountRepository.RegisterAccountAsync(model);
         }
+
+        public async Task SetUserOnlineAsync(int userId, bool isOnline)
+        {
+            await _accountRepository.SetUserOnlineAsync(userId, isOnline);
+        }
+
+        public async Task UpdateLastActiveAsync(int userId)
+        {
+            await _accountRepository.UpdateLastActiveAsync(userId);
+        }
+
+        public async Task<Account> GetAccountById(int accountId)
+        {
+            return await _accountRepository.GetAccountById(accountId);
+        }
     }
 }

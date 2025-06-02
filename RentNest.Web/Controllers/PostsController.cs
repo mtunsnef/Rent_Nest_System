@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RentNest.Core.Consts;
+using RentNest.Core.Domains;
 using RentNest.Core.DTO;
+using RentNest.Core.UtilHelper;
+using RentNest.Service.Implements;
 using RentNest.Core.Model.Momo;
 using RentNest.Core.Model.VNPay;
 using RentNest.Service.Interfaces;
 using RentNest.Web.Models;
 using RentNest.Web.Service.Interface;
+using System.Runtime.CompilerServices;
+using RentNest.Core.Enums;
 
 namespace RentNest.Web.Controllers
 {
@@ -18,18 +23,23 @@ namespace RentNest.Web.Controllers
         private readonly IAmenitiesSerivce _amenitiesService;
         private readonly ITimeUnitPackageService _timeUnitPackageService;
         private readonly IPackagePricingService _packagePricingService;
+        private readonly IPostService _postService;
         private readonly IMomoSerivce _momoservice;
         private readonly IVnPayService _vnPayService;
+        private readonly IAccountService _accountService;
 
-        public PostsController(IAzureOpenAIService azureOpenAIService, IAccommodationTypeService accommodationTypeService, IAmenitiesSerivce amenitiesService, ITimeUnitPackageService timeUnitPackageService, IPackagePricingService packagePricingService, IMomoSerivce momoSerivce, IVnPayService vnPayService)
+        public PostsController(IAzureOpenAIService azureOpenAIService, IAccommodationTypeService accommodationTypeService, IAmenitiesSerivce amenitiesService, ITimeUnitPackageService timeUnitPackageService,
+        IPostService postService, IPackagePricingService packagePricingService, IMomoSerivce momoSerivce, IVnPayService vnPayService, IAccountService accountService)
         {
             _azureOpenAIService = azureOpenAIService;
             _accommodationTypeService = accommodationTypeService;
             _amenitiesService = amenitiesService;
             _timeUnitPackageService = timeUnitPackageService;
             _packagePricingService = packagePricingService;
+            _postService = postService;
             _momoservice = momoSerivce;
             _vnPayService = vnPayService;
+            _accountService = accountService;
         }
 
         //api
@@ -66,11 +76,15 @@ namespace RentNest.Web.Controllers
             var accommodationTypes = await _accommodationTypeService.GetAllAsync();
             var amenities = await _amenitiesService.GetAll();
             var timePackages = await _timeUnitPackageService.GetAll();
+            var currentUser = User.GetUserId();
+            var account = await _accountService.GetProfileAsync(currentUser ?? 0);
             var model = new CreatePostViewModel
             {
                 AccommodationTypes = accommodationTypes,
                 Amenities = amenities,
-                TimeUnitPackages = timePackages
+                TimeUnitPackages = timePackages,
+                AccountName = $"{account?.FirstName ?? ""} {account?.LastName ?? ""}",
+                PhoneNumber = account?.PhoneNumber ?? ""
             };
             return View("User/CreatePost", model);
         }
@@ -80,8 +94,18 @@ namespace RentNest.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Post_Landlord([FromForm] LandlordPostDto dto)
         {
-            return Json(new { success = dto });
+            dto.OwnerId = User.GetUserId();
+
+            var postId = await _postService.SavePost(dto);
+
+            return Json(new
+            {
+                success = true,
+                postId = postId,
+                amount = dto.TotalPrice
+            });
         }
+
 
         [HttpPost]
         public async Task<IActionResult> GeneratePostWithAI([FromBody] PostDataAIDto model)
@@ -116,9 +140,65 @@ namespace RentNest.Web.Controllers
             return View(response);
         }
 
+        [HttpGet("/quan-ly-tin")]
+        public async Task<IActionResult> ManagePost([FromQuery] string status = null)
+        {
+            if (string.IsNullOrEmpty(status))
+            {
+                status = PostStatusHelper.ToDbValue(PostStatus.Pending);
+            }
 
+            var accountId = User.GetUserId();
 
+            if (accountId == 0) return Unauthorized();
 
+            var allPosts = await _postService.GetAllPostsByUserAsync(accountId.Value);
+
+            var userProfile = allPosts.FirstOrDefault()?.Account?.UserProfile;
+
+            var statusCounts = allPosts
+                .GroupBy(p => p.CurrentStatus)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            var filteredPosts = allPosts
+                .Where(p => p.CurrentStatus == status)
+                .ToList();
+
+            var viewModelList = filteredPosts.Select(f => new ManagePostViewModel
+            {
+                Id = f.PostId,
+                Title = f.Title,
+                Address = f.Accommodation.Address,
+                DistrictName = f.Accommodation.DistrictName ?? "",
+                ProvinceName = f.Accommodation.ProvinceName ?? "",
+                WardName = f.Accommodation.WardName ?? "",
+                Price = f.Accommodation.Price,
+                Status = f.CurrentStatus,
+                ImageUrl = f.Accommodation?.AccommodationImages?.FirstOrDefault()?.ImageUrl ?? "",
+                Area = f.Accommodation?.Area,
+                BedroomCount = f.Accommodation?.AccommodationDetail?.BedroomCount,
+                BathroomCount = f.Accommodation?.AccommodationDetail?.BathroomCount,
+                CreatedAt = f.CreatedAt,
+                PackageTypeName = f.PostPackageDetails
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Select(p => p.Pricing.PackageType.PackageTypeName)
+                    .FirstOrDefault() ?? "",
+                RejectionReason = f.PostApprovals
+                                .Where(p => p.Status == "R")
+                                .OrderByDescending(p => p.ProcessedAt)
+                                .Select(p => p.RejectionReason)
+                                .FirstOrDefault(),
+                AccountName = f.Account?.UserProfile?.FirstName ?? "" + " " + f.Account?.UserProfile?.LastName ?? "",
+                AvatarUrl = f.Account?.UserProfile?.AvatarUrl
+            }).ToList();
+
+            ViewBag.CurrentStatus = status;
+            ViewBag.StatusCounts = statusCounts;
+            ViewBag.AccountName = $"{userProfile?.FirstName} {userProfile?.LastName}".Trim();
+            ViewBag.AvatarUrl = userProfile?.AvatarUrl ?? "/images/default-avatar.jpg";
+
+            return View("User/ManagePost", viewModelList);
+        }
     }
 
 }

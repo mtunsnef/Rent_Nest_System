@@ -43,5 +43,11 @@ namespace RentNest.Web.Controllers
 
             return View();
         }
+
+        [Route("/bang-gia-tin")]
+        public IActionResult PriceTable()
+        {
+            return View();
+        }
     }
 }

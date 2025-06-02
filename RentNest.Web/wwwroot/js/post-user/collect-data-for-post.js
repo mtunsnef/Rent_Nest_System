@@ -1,4 +1,4 @@
-﻿        async function collectMainFormData() {
+﻿async function collectMainFormData() {
     const form = document.getElementById('filterForm');
     const data = {};
 
@@ -55,9 +55,27 @@
         data['timeUnitId'] = parseInt(timeUnitSelect.value);
     }
 
+    const totalPriceText = document.getElementById("summaryTotalAmount").innerText;
+    const priceCleaned = totalPriceText.replace(/[^\d]/g, '');
+    if (priceCleaned) {
+        data['totalPrice'] = parseInt(priceCleaned);
+    }
+
     const startDateInput = document.getElementById('startDate');
     if (startDateInput) {
         data['startDate'] = startDateInput.value;
+        if (data.startDate && data.duration && data.timeUnitId) {
+            const start = new Date(data.startDate + "T00:00:00");
+            if (!isNaN(start)) {
+                let end = new Date(start);
+                switch (data.timeUnitId) {
+                    case 1: end.setDate(start.getDate() + data.duration); break;
+                    case 2: end.setDate(start.getDate() + data.duration * 7); break;
+                    case 3: end.setMonth(start.getMonth() + data.duration); break;
+                }
+                data['endDate'] = end.toISOString().split('T')[0];
+            }
+        }
     }
 
     const scheduleSelect = document.getElementById('scheduleSelect');
@@ -94,7 +112,8 @@
             if (response.ok) {
                 const result = await response.json();
                 data['pricingId'] = result.pricingId;
-            } else {
+            }
+            else {
                 console.warn('Không tìm thấy pricingId phù hợp');
             }
         } catch (error) {
@@ -117,12 +136,13 @@ document.getElementById('testCollectFormBtn')?.addEventListener('click', async f
     const rawData = await collectMainFormData();
     const formData = new FormData();
 
-    if (rawData.Images) {
+    if (rawData.Images) { 
         rawData.Images.forEach(file => {
             formData.append("Images", file);
         });
         delete rawData.Images;
     }
+
 
     for (const key in rawData) {
         const value = rawData[key];
@@ -142,8 +162,11 @@ document.getElementById('testCollectFormBtn')?.addEventListener('click', async f
         formData.delete("selectedAmenities");
     }
 
+    formData.set("totalPrice", parseFloat(rawData.totalPrice));
+    formData.set("startDate", rawData.startDate);
+    formData.set("endDate", rawData.endDate);
     formData.set("accommodationTypeId", parseInt(rawData.category));
-    formData.set("dddress", rawData.address);
+    formData.set("address", rawData.address);
     formData.set("pricingId", rawData.pricingId);
 
     try {
@@ -152,12 +175,23 @@ document.getElementById('testCollectFormBtn')?.addEventListener('click', async f
             body: formData
         });
 
-        if (!response.ok) throw new Error("Server trả về lỗi");
+        if (!response.ok) {
+            throw new Error("Lỗi kết nối đến server");
+        }
 
         const result = await response.json();
-        console.log(result);
+
+        if (result.success) {
+            document.getElementById('hiddenPostId').value = result.postId;
+            document.getElementById('hiddenAmountInputPayOS').value = result.amount;
+
+            document.getElementById('realPayOsSubmit').click();
+        } else {
+            showToast('Đăng bài không thành công. Vui lòng kiểm tra lại dữ liệu.');
+        }
 
     } catch (err) {
+        console.error(err);
         showToast('Có lỗi xảy ra khi gửi dữ liệu. Vui lòng thử lại.');
     } finally {
         loadingOverlay?.classList.remove('d-flex');

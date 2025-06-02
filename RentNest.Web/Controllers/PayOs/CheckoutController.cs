@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Net.payOS.Types;
 using Net.payOS;
+using RentNest.Infrastructure.DataAccess;
 
 namespace RentNest.Web.Controllers.PayOs
 {
@@ -35,41 +36,43 @@ namespace RentNest.Web.Controllers.PayOs
             // Trả về trang HTML có tên "MyView.cshtml"
             return View("index");
         }
-        [HttpPost("/create-payment-link")]
-        public async Task<IActionResult> Checkout(int Amount)
+
+
+        [HttpPost("create-payment-link")]
+        public async Task<IActionResult> CheckoutPayment([FromForm] int postId, [FromForm] int AmountPayOs)
         {
-            Amount = 20000;
             try
             {
                 int orderCode = int.Parse(DateTimeOffset.Now.ToString("ffffff"));
-                // Sử dụng Amount từ tham số
-                ItemData item = new ItemData("Gói đăng ký dịch vụ", 1, Amount);
+
+                ItemData item = new ItemData("Gói đăng ký dịch vụ", 1, AmountPayOs);
                 List<ItemData> items = new List<ItemData> { item };
 
-                // Get the current request's base URL
                 var request = _httpContextAccessor.HttpContext?.Request;
                 var baseUrl = $"{request?.Scheme}://{request?.Host}";
 
                 PaymentData paymentData = new PaymentData(
                     orderCode,
-                    Amount, // Sử dụng Amount từ tham số
+                    AmountPayOs,
                     "Gói đăng ký dịch vụ",
                     items,
-                    $"{baseUrl}/cancel?amount={Amount}",
-                    $"{baseUrl}/success?amount={Amount}"
+                    $"{baseUrl}/cancel?postId={postId}&amount={AmountPayOs}",
+                    $"{baseUrl}/success?postId={postId}&amount={AmountPayOs}"
                 );
 
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
-                _logger.LogInformation("Created payment link for amount: {Amount}, OrderCode: {OrderCode}",
-                    Amount, orderCode);
+                _logger.LogInformation("Created payment link for PostId: {PostId}, OrderCode: {OrderCode}",
+                    postId, orderCode);
 
                 return Redirect(createPayment.checkoutUrl);
             }
             catch (System.Exception exception)
             {
+                _logger.LogError(exception, "Checkout payment failed for PostId: {PostId}", postId);
                 return Redirect($"/?error=payment_failed");
             }
         }
+
     }
 }

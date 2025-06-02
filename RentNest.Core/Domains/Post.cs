@@ -6,9 +6,12 @@ namespace RentNest.Core.Domains;
 public partial class Post
 {
     public int PostId { get; set; }
-    public string CurrentStatus { get; set; } = null!;
 
-    public int? ViewCount { get; set; }
+    public string Title { get; set; } = null!;
+
+    public string? Content { get; set; }
+
+    public string CurrentStatus { get; set; } = null!;
 
     public DateTime? PublishedAt { get; set; }
 
@@ -20,13 +23,11 @@ public partial class Post
 
     public int AccountId { get; set; }
 
-    public string Title { get; set; } = null!;
-
-    public string Content { get; set; } = null!;
-
     public virtual Accommodation Accommodation { get; set; } = null!;
 
     public virtual Account Account { get; set; } = null!;
+
+    public virtual ICollection<Conversation> Conversations { get; set; } = new List<Conversation>();
 
     public virtual ICollection<FavoritePost> FavoritePosts { get; set; } = new List<FavoritePost>();
 

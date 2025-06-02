@@ -23,7 +23,7 @@ namespace RentNest.Infrastructure.DataAccess
         public async Task UpdateProfileAsync(UserProfile updatedProfile)
         {
             var existingProfile = await _dbSet
-                .FirstOrDefaultAsync(p => p.ProfileId == updatedProfile.ProfileId);
+                .FirstOrDefaultAsync(p => p.AccountId == updatedProfile.AccountId);
 
             if (existingProfile == null)
             {
@@ -36,11 +36,17 @@ namespace RentNest.Infrastructure.DataAccess
             existingProfile.DateOfBirth = updatedProfile.DateOfBirth;
             existingProfile.Address = updatedProfile.Address;
             existingProfile.Occupation = updatedProfile.Occupation;
-            existingProfile.AvatarUrl = updatedProfile.AvatarUrl;
+            existingProfile.PhoneNumber = updatedProfile.PhoneNumber;
+            existingProfile.UpdatedAt = DateTime.Now;
+
+            if (!string.IsNullOrEmpty(updatedProfile.AvatarUrl))
+            {
+                existingProfile.AvatarUrl = updatedProfile.AvatarUrl;
+            }
+
             existingProfile.UpdatedAt = DateTime.Now;
 
             await _context.SaveChangesAsync();
         }
-
     }
 }

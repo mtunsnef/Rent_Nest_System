@@ -6,6 +6,7 @@ using RentNest.Service.Interfaces;
 using System.Security.Claims;
 using RentNest.Core.UtilHelper;
 using RentNest.Core.Domains;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 namespace RentNest.Web.Controllers
 {
     public class AuthController : Controller
@@ -42,11 +43,11 @@ namespace RentNest.Web.Controllers
             HttpContext.Session.SetString("Email", account.Email);
 
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, account.Email),
-        new Claim(ClaimTypes.Role, account.Role),
-        new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString())
-    };
+            {
+                new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
+                new Claim(ClaimTypes.Name, account.Email),
+                new Claim(ClaimTypes.Role, account.Role)
+            };
             var identity = new ClaimsIdentity(claims, AuthSchemes.Cookie);
             var principal = new ClaimsPrincipal(identity);
 
@@ -127,6 +128,7 @@ namespace RentNest.Web.Controllers
 
             var claims = new List<Claim>
             {
+                new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
                 new Claim(ClaimTypes.Name, name ?? ""),
                 new Claim(ClaimTypes.Email, email ?? ""),
                 new Claim(ClaimTypes.Role, account.Role)
@@ -154,7 +156,7 @@ namespace RentNest.Web.Controllers
             var dto = new ExternalAccountRegisterDto
             {
                 Email = TempData["Email"]?.ToString() ?? "",
-                AuthProvider = TempData["AuthProvider"]?.ToString() ?? "", 
+                AuthProvider = TempData["AuthProvider"]?.ToString() ?? "",
                 AuthProviderId = TempData["AuthProviderId"]?.ToString() ?? "",
                 FirstName = TempData["FirstName"]?.ToString(),
                 LastName = TempData["LastName"]?.ToString()
@@ -193,7 +195,7 @@ namespace RentNest.Web.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, dto.AuthProviderId),
+                new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
                 new Claim(ClaimTypes.Name, $"{dto.FirstName} {dto.LastName}"),
                 new Claim(ClaimTypes.GivenName, dto.FirstName ?? ""),
                 new Claim(ClaimTypes.Surname, dto.LastName ?? ""),
@@ -206,7 +208,7 @@ namespace RentNest.Web.Controllers
 
             await HttpContext.SignInAsync(AuthSchemes.Cookie, principal);
 
-            HttpContext.Session.SetString("AccountId", account.AccountId.ToString());
+            HttpContext.Session.SetInt32("AccountId", account.AccountId);
             HttpContext.Session.SetString("AccountName", $"{dto.FirstName} {dto.LastName}");
             HttpContext.Session.SetString("Email", dto.Email);
 
@@ -252,6 +254,16 @@ namespace RentNest.Web.Controllers
             HttpContext.Session.SetInt32("AccountId", account.AccountId);
             HttpContext.Session.SetString("AccountName", model.Username);
             HttpContext.Session.SetString("Email", model.Email);
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
+                new Claim(ClaimTypes.Email, account.Email ?? ""),
+                new Claim(ClaimTypes.Role, account.Role)
+            };
+
+            var identity = new ClaimsIdentity(claims, AuthSchemes.Cookie);
+            await HttpContext.SignInAsync(AuthSchemes.Cookie, new ClaimsPrincipal(identity));
 
             TempData["SuccessMessage"] = "Tài khoản đã được tạo thành công!";
             return RedirectToAction("Login", "Auth");

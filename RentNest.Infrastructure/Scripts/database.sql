@@ -1,5 +1,4 @@
-﻿
-USE RentNestSystem;
+﻿use RentNestSystem;
 
 CREATE TABLE Account (
     account_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -8,7 +7,9 @@ CREATE TABLE Account (
     password NVARCHAR(255) NULL,
     is_active CHAR(1) NOT NULL DEFAULT 'A' CHECK (is_active IN ('A', 'D')),  --A is active, D is disabled
     auth_provider VARCHAR(20) NOT NULL CHECK (auth_provider IN ('local', 'google', 'facebook')),
-    auth_provider_id VARCHAR(255), -- nullable only for 'local'
+    auth_provider_id VARCHAR(255),
+	is_online BIT DEFAULT 0,
+	last_active_at DATETIME NULL,
     created_at DATETIME NOT NULL DEFAULT GETDATE(),
     updated_at DATETIME NOT NULL DEFAULT GETDATE(),
     role CHAR(1) NOT NULL CHECK (role IN ('U', 'A', 'S', 'L')) -- U=User, S = Staff, A=Admin, L=Landlord
@@ -17,6 +18,12 @@ CREATE TABLE Account (
 CREATE UNIQUE INDEX UX_Account_Username
 ON Account (Username)
 WHERE Username IS NOT NULL;
+
+-- Chỉ đánh UNIQUE khi auth_provider_id không phải NULL
+CREATE UNIQUE INDEX UX_Account_AuthProviderId
+ON Account (auth_provider_id)
+WHERE auth_provider_id IS NOT NULL;
+
 
 CREATE TABLE AccommodationType (
     type_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -35,7 +42,8 @@ CREATE TABLE PaymentMethod (
 CREATE TABLE TimeUnitPackage (
     time_unit_id INT IDENTITY(1,1) PRIMARY KEY,
     time_unit_name NVARCHAR(20) NOT NULL CHECK (time_unit_name IN (N'Ngày', N'Tuần', N'Tháng')),
-    description NVARCHAR(255)
+    description NVARCHAR(255),
+	data varchar(50)
 );
 
 CREATE TABLE PostPackageType (
@@ -49,6 +57,7 @@ CREATE TABLE UserProfile (
     profile_id INT IDENTITY(1,1) PRIMARY KEY,
     first_name NVARCHAR(100),
     last_name NVARCHAR(100),
+	phone_number nvarchar(20),
     gender CHAR(1) CHECK (gender IN ('M', 'F', 'O')), -- M=Male, F=Female, O=Other
     date_of_birth DATE,
     avatar_url VARCHAR(255),
@@ -62,16 +71,16 @@ CREATE TABLE UserProfile (
         ON DELETE CASCADE
 );
 
-
 CREATE TABLE Accommodation (
     accommodation_id INT IDENTITY(1,1) PRIMARY KEY,
     title NVARCHAR(150) NOT NULL,
     description NVARCHAR(MAX),
     address NVARCHAR(255) NOT NULL,
+	ward_name NVARCHAR(255) NULL,
+	district_name NVARCHAR(255) NULL,
+    province_name NVARCHAR(255) NULL,
     price DECIMAL(10, 2) CHECK (price >= 0),
-    deposit_amount DECIMAL(10, 2) CHECK (deposit_amount >= 0),
     area INT CHECK (area > 0),
-    max_occupancy INT CHECK (max_occupancy > 0),
     video_url VARCHAR(255),
     status CHAR(1) NOT NULL DEFAULT 'A' CHECK (status IN ('A', 'R', 'I')), -- available, rented, inactive
     created_at DATETIME DEFAULT GETDATE(),
@@ -84,12 +93,6 @@ CREATE TABLE Accommodation (
     CONSTRAINT FK_Accommodation_Type FOREIGN KEY (type_id)
         REFERENCES AccommodationType(type_id)
 );
-
-ALTER TABLE Accommodation
-ADD district_name NVARCHAR(255) NULL,
-    ward_name NVARCHAR(255) NULL,
-    province_name NVARCHAR(255) NULL;
-
 
 -- 4. T?o b?ng giá gói tin
 CREATE TABLE PackagePricing (
@@ -164,8 +167,7 @@ CREATE TABLE Post (
     post_id INT IDENTITY(1,1) PRIMARY KEY,
     title NVARCHAR(150) NOT NULL,
     content NVARCHAR(MAX) NULL,
-    current_status CHAR(1) NOT NULL DEFAULT 'P' CHECK (current_status IN ('P', 'A', 'R')),
-    view_count INT DEFAULT 0 CHECK (view_count >= 0),
+    current_status CHAR(1) NOT NULL DEFAULT 'P' CHECK (current_status IN ('P', 'A', 'R', 'U', 'E', 'C')), -- 'P' (Pending), 'A' (Active), 'R'(Rejected), 'C' (Cancel), 'U' (Unpaid), 'E'(Expired)
     published_at DATETIME,
     created_at DATETIME DEFAULT GETDATE(),
     updated_at DATETIME DEFAULT GETDATE(),
@@ -186,7 +188,7 @@ CREATE TABLE PostPackageDetails (
     total_price DECIMAL(10, 2) CHECK (total_price >= 0) NOT NULL,
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
-    payment_status VARCHAR(20) DEFAULT 'Pending' CHECK (payment_status IN ('Pending', 'Completed', 'Failed', 'Refunded')),
+    payment_status CHAR(1) NOT NULL DEFAULT 'P' CHECK (payment_status IN ('P', 'C', 'R', 'I')),  --Pending, Completed, Refuned, Inactive
     payment_transaction_id VARCHAR(100),
     created_at DATETIME DEFAULT GETDATE(),
     CONSTRAINT FK_PostPackageDetails_Post FOREIGN KEY (post_id)
@@ -297,7 +299,6 @@ VALUES (N'Camera', '<svg width="20" height="20" viewBox="0 0 24 24" fill="#00000
 	   (N'Thang máy', '<svg fill="#000000" width="20" height="20" viewBox="0 0 38 38" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 37.383 49.85" xml:space="preserve" stroke="#000000"><path d="M0,17.307v30.678c0,1.028,0.827,1.865,1.846,1.865h15.738V15.441H1.846C0.827,15.441,0,16.278,0,17.307z"></path> <path d="M35.536,15.441H19.798v34.408h15.738c1.019,0,1.847-0.837,1.847-1.864V17.307C37.383,16.278,36.555,15.441,35.536,15.441z"></path> <path d="M6.663,6.128c0.303,0.529,0.801,1.397,1.103,1.927L8.57,9.47c0.308,0.531,0.802,0.531,1.104,0l0.81-1.415 c0.303-0.529,0.801-1.397,1.103-1.927l0.805-1.415c0.308-0.531,0.058-0.962-0.551-0.962h-1.009V0.237 C10.832,0.108,10.725,0,10.599,0H7.651c-0.13,0-0.232,0.107-0.232,0.236v3.515H6.406c-0.606,0-0.856,0.431-0.553,0.962L6.663,6.128 z"></path> <path d="M25.541,6.119h1.012v3.514c0,0.129,0.105,0.233,0.23,0.233h2.947c0.129,0,0.233-0.104,0.233-0.233V6.119h1.013 c0.604,0,0.855-0.436,0.553-0.967l-0.809-1.41c-0.303-0.529-0.802-1.401-1.104-1.933L28.811,0.4c-0.307-0.53-0.801-0.53-1.103,0 l-0.81,1.41c-0.303,0.531-0.801,1.403-1.104,1.933l-0.805,1.41C24.684,5.684,24.932,6.119,25.541,6.119z"></path></svg>'), 
 	   (N'Hầm để xe', '<svg fill="#000000" width="20" height="20" viewBox="0 0 15 15" version="1.1" id="parking-garage" xmlns="http://www.w3.org/2000/svg"><path d="M10.5,10.14c-0.6637,0.4788-1.4732,0.7121-2.29,0.66h-1.9V14h-1.9V5h3.92c0.7801-0.0414,1.5484,0.2041,2.16,0.69c0.5779,0.5595,0.875,1.3483,0.81,2.15C11.4042,8.6892,11.1088,9.5388,10.5,10.14z M9,6.9C8.711,6.6881,8.3579,6.5822,8,6.6H6.31v2.65H8c0.3612,0.0191,0.717-0.0947,1-0.32c0.2559-0.2675,0.3867-0.6308,0.36-1C9.4072,7.5493,9.274,7.1684,9,6.9z M14.41,4.21c0.114-0.2486,0.007-0.5427-0.24-0.66L7.5,0.45l-6.71,3.1C0.5387,3.666,0.429,3.9637,0.545,4.215C0.661,4.4663,0.9587,4.576,1.21,4.46l0,0L7.5,1.55l6.29,2.9c0.2486,0.114,0.5427,0.007,0.66-0.24H14.41z"></path></svg>');
 
-
 INSERT INTO PostPackageType (package_type_name, priority, description)
 VALUES 
 (N'Tin thường', 1, N'Gói cơ bản, ít lượt liên hệ'),
@@ -305,10 +306,9 @@ VALUES
 (N'VIP Vàng', 3, N'Tin ưu tiên cấp trung, x15 lượt liên hệ'),
 (N'VIP Kim Cương', 4, N'Tin nổi bật nhất, x30 lượt liên hệ');
 
-INSERT INTO TimeUnitPackage (time_unit_name, description)
-VALUES (N'Ngày', N'Tính theo đơn vị ngày'),(N'Tuần', N'Tính theo đơn vị tuần'),(N'Tháng', N'Tính theo đơn vị tháng');
+INSERT INTO TimeUnitPackage (time_unit_name, description, data)
+VALUES (N'Ngày', N'Tính theo đơn vị ngày', 'ngay'),(N'Tuần', N'Tính theo đơn vị tuần', 'tuan'),(N'Tháng', N'Tính theo đơn vị tháng', 'thang');
 
-Select * from TimeUnitPackage
 INSERT INTO PackagePricing (time_unit_id, package_type_id, duration_value, unit_price, total_price)
 VALUES
 (1, 1, 7, 2000, 14000),      -- 0% discount
@@ -396,3 +396,134 @@ VALUES
 (3, 4, 2, 196560.00, 393120.00),
 (3, 4, 3, 184275.00, 552825.00),
 (3, 4, 4, 171990.00, 687960.00);
+
+INSERT INTO Account (username, email, password, is_active, auth_provider, auth_provider_id, role)
+VALUES 
+('tuan123', 'tuan@gmail.com', '$2a$12$Z4AJnkoMRcybTNPk8HROWuq7l3q7e21AZ/nTabx0XcbTtj9AVrgHO', 'A', 'local', NULL, 'L'),  --123123qwe
+('minhtuns231', 'tuanvip231@gmail.com', '$2a$12$Z4AJnkoMRcybTNPk8HROWuq7l3q7e21AZ/nTabx0XcbTtj9AVrgHO', 'A', 'local', NULL, 'L'),
+('staff01', 'staff01@fpt.edu.vn', '$2a$12$Z4AJnkoMRcybTNPk8HROWuq7l3q7e21AZ/nTabx0XcbTtj9AVrgHO', 'A', 'local', NULL, 'S'),
+('admin01', 'admin@system.com', '$2a$12$Z4AJnkoMRcybTNPk8HROWuq7l3q7e21AZ/nTabx0XcbTtj9AVrgHO', 'A', 'local', NULL, 'A'),
+('user01', 'user01@gmail.com', '$2a$12$Z4AJnkoMRcybTNPk8HROWuq7l3q7e21AZ/nTabx0XcbTtj9AVrgHO', 'A', 'local', NULL, 'U');
+
+INSERT INTO UserProfile (first_name, last_name, phone_number, gender, date_of_birth, avatar_url, occupation, address, account_id)
+VALUES 
+('Minh', 'Tuan', '0941673660', 'M', '2003-11-23', '/images/tuan3.jpg', 'Chủ trọ', 'KTX FPT, Quảng Bình', 1),
+('My', 'Hanh', '0987654321', 'F', '1998-11-15', '/images/team-2.jpg', 'Chủ trọ', 'Dương Nội, Hà Đông, Hà Nội', 2),
+('Nguyen', 'Lam', '0909090909', 'M', '1995-08-12', '/images/team-3.jpg', 'Nhân viên quản lý', 'FPT Complex, Đà Nẵng', 3),
+('Admin', 'System', '0868686868', 'O', '1990-01-01', '/images/team-4.jpg', 'Quản trị viên', 'Hòa Lạc, Hà Nội', 4),
+('Lan', 'Nguyen', '0912345678', 'F', '1985-05-05', '/images/person_2.jpg', 'Sinh viên', 'Trần Duy Hưng, Hà Nội', 5);
+
+INSERT INTO Accommodation (
+    title, description, address, ward_name, district_name, province_name,
+    price, area, video_url, status, owner_id, type_id
+)
+VALUES 
+(N'Phòng trọ cao cấp gần đại học FPT', N'Phòng trọ rộng rãi, thoáng mát, gần trường và đầy đủ tiện nghi.', 
+N'12 Nguyễn Văn Thoại', N'Phường Hòa Hải', N'Quận Ngũ Hành Sơn', N'Thành Phố Đà Nẵng', 3500000, 75, null, 'A', 1, 1);
+
+INSERT INTO AccommodationDetails (
+    has_kitchen_cabinet, has_air_conditioner, has_refrigerator, has_washing_machine, has_loft,
+    furniture_status, bedroom_count, bathroom_count, accommodation_id
+)
+VALUES 
+(1, 1, 1, 0, 1, N'Đầy đủ nội thất', 1, 1, 1);
+
+INSERT INTO AccommodationAmenities (accommodation_id, amenity_id)
+VALUES 
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(1, 5);
+
+INSERT INTO Post (
+    title, content, current_status, published_at, accommodation_id, account_id
+)
+VALUES 
+(N'Cho thuê phòng trọ gần FPT Đà Nẵng', 
+N'Phòng sạch sẽ, an ninh, có gác lửng, đầy đủ tiện nghi như máy lạnh, tủ lạnh, bếp.', 
+'A', GETDATE(), 1, 1);
+
+INSERT INTO AccommodationImage (image_url, caption, accommodation_id)
+VALUES
+('/images/work-1.jpg', N'Phòng trọ nhìn từ cửa ra vào', 1),
+('/images/work-2.jpg', N'Góc nhìn phòng khách', 1),
+('/images/work-3.jpg', N'Góc nhìn phòng khách', 1),
+('/images/work-4.jpg', N'Góc nhìn phòng khách', 1),
+('/images/work-5.jpg', N'Góc nhìn phòng khách', 1),
+('/images/work-6.jpg', N'Góc nhìn phòng khách', 1),
+('/images/work-7.jpg', N'Góc nhìn phòng khách', 1),
+('/images/work-8.jpg', N'Góc nhìn phòng khách', 1)
+
+CREATE TABLE Conversation (
+    conversation_id INT IDENTITY(1,1) PRIMARY KEY,
+    sender_id INT NOT NULL,     
+    receiver_id INT NOT NULL,    
+    post_id INT NULL,          
+    started_at DATETIME DEFAULT GETDATE(),
+    updated_at DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Conversation_Sender FOREIGN KEY (sender_id) REFERENCES Account(account_id),
+    CONSTRAINT FK_Conversation_Receiver FOREIGN KEY (receiver_id) REFERENCES Account(account_id),
+    CONSTRAINT FK_Conversation_Post FOREIGN KEY (post_id) REFERENCES Post(post_id)
+);
+
+CREATE TABLE Message (
+    message_id INT IDENTITY(1,1) PRIMARY KEY,
+    conversation_id INT NOT NULL,
+    sender_id INT NOT NULL,
+    content NVARCHAR(MAX),
+    image_url VARCHAR(255),     
+    is_read BIT DEFAULT 0,       
+    sent_at DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Message_Conversation FOREIGN KEY (conversation_id) REFERENCES Conversation(conversation_id),
+    CONSTRAINT FK_Message_Sender FOREIGN KEY (sender_id) REFERENCES Account(account_id)
+);
+
+CREATE INDEX IX_Message_ConversationId ON Message(conversation_id);
+
+CREATE INDEX IX_Conversation_Users ON Conversation(sender_id, receiver_id);
+
+CREATE UNIQUE INDEX UX_Conversation_Uniqueness
+ON Conversation (sender_id, receiver_id, post_id);
+
+CREATE TABLE QuickReplyTemplate (
+    template_id INT IDENTITY(1,1) PRIMARY KEY,
+    message NVARCHAR(255) NOT NULL,
+    is_active BIT DEFAULT 1,
+    is_default BIT DEFAULT 1,             
+    account_id INT NULL,                  
+    target_role NVARCHAR(20) NULL,        
+    created_at DATETIME DEFAULT GETDATE(),
+    CONSTRAINT FK_QuickReplyTemplate_Account FOREIGN KEY (account_id) REFERENCES Account(account_id)
+);
+
+INSERT INTO QuickReplyTemplate (message, is_default, account_id, target_role)
+VALUES 
+(N'Phòng này còn cho thuê không ạ?', 1, NULL, 'tenant'),
+(N'Giờ giấc ra vào có tự do không ạ?', 1, NULL, 'tenant'),
+(N'Chi phí điện nước tính như thế nào ạ?', 1, NULL, 'tenant'),
+(N'Có chỗ để xe không ạ?', 1, NULL, 'tenant'),
+(N'Cho nuôi thú cưng không ạ?', 1, NULL, 'tenant');
+
+INSERT INTO QuickReplyTemplate (message, is_default, account_id, target_role)
+VALUES 
+(N'Phòng vẫn còn, bạn muốn xem phòng khi nào?', 1, NULL, 'landlord'),
+(N'Chi phí điện nước theo giá nhà nước nha bạn.', 1, NULL, 'landlord'),
+(N'Phòng có chỗ để xe máy và an ninh 24/7.', 1, NULL, 'landlord'),
+(N'Giờ giấc ra vào thoải mái, không giới hạn.', 1, NULL, 'landlord'),
+(N'Phòng không hỗ trợ nuôi thú cưng nha bạn.', 1, NULL, 'landlord');
+
+INSERT INTO PaymentMethod (method_name, description, is_active, icon_url)
+VALUES 
+(N'VNPay', N'Phương thức thanh toán qua cổng VNPay', 1, null),
+(N'PayOs', N'Phương thức thanh toán qua cổng PayOs', 1, null);
+
+INSERT INTO PostPackageDetails (post_id, pricing_id, total_price, start_date, end_date, payment_status, payment_transaction_id)
+VALUES
+(1, 5, 31500, GETDATE(), DATEADD(DAY, 7, GETDATE()), 'P', 'TXN001');
+
+INSERT INTO Payment (post_package_details_id, total_price, status, payment_date, method_id, account_id)
+VALUES
+(1, 31500, 'P', GETDATE(), 1, 1);

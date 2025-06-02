@@ -1,5 +1,6 @@
 ﻿@model RentNest.Web.Models.CreatePostViewModel
-
+@using RentNest.Core.Enums
+@using RentNest.Core.UtilHelper
 @{
     ViewData["Title"] = "Đăng tin cho thuê";
 }
@@ -21,10 +22,7 @@
                 </small>
             </div>
             <div>
-                <button type="button" class="btn btn-outline-secondary btn-sm me-2">
-                    <i class="bi bi-eye"></i> Xem trước
-                </button>
-                <button type="button" class="btn btn-outline btn-sm">Quay về</button>
+                <a href="/trang-chu" type="button" class="btn btn-outline-secondary btn-sm">Quay về</a>
             </div>
         </div>
 
@@ -87,9 +85,19 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="accommodationDescription">Mô tả về loại phòng</label>
+                            <input type="text" name="accommodationDescription" id="accommodationDescriptionInput"
+                                   class="form-control" placeholder="Nhập mô tả ngắn về loại phòng" required>
+                            <small class="form-text text-muted">
+                                Ví dụ: Phòng 30m² rộng rãi, thoáng mát có gác, gần trường ĐH FPT
+                            </small>
+                        </div>
+
+
+                        <div class="form-group">
                             <label>Diện tích <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input id="areaInput" type="number" name="area" class="form-control required-field"
+                                <input id="areaInput" type="number" min="0" step="5" name="area" class="form-control required-field"
                                     placeholder="Nhập diện tích">
                                 <span class="input-group-text">m²</span>
                             </div>
@@ -109,15 +117,6 @@
                             <small class="text-danger error-message" style="display:none;"></small>
                         </div>
 
-                        <div class="form-group">
-                            <label>Số tiền cọc</label>
-                            <div class="input-group mb-2">
-                                <input type="text" name="depositPrice" class="form-control price-input"
-                                    placeholder="Nhập số tiền cọc" data-target="coc">
-                                <span class="input-group-text">VNĐ</span>
-                            </div>
-                        </div>
-
                         <!-- Thông tin khác -->
                         <h5 class="d-inline-block font-weight-bold mt-4">
                             Thông tin khác
@@ -127,9 +126,12 @@
                             <label>Tình trạng nội thất</label>
                             <select id="furnitureSelect" name="furnitureStatus" class="form-control">
                                 <option value="">-- Chọn tình trạng nội thất --</option>
-                                <option value="none">Không có nội thất</option>
-                                <option value="basic">Nội thất cơ bản</option>
-                                <option value="full">Nội thất đầy đủ</option>
+                                @foreach (FurnitureStatusEnum status in Enum.GetValues(typeof(FurnitureStatusEnum)))
+                                {
+                                    <option value="@FurnitureStatusHelper.GetDisplayName(status)">
+                                        @FurnitureStatusHelper.GetDisplayName(status)
+                                    </option>
+                                }
                             </select>
                         </div>
 
@@ -172,12 +174,12 @@
                         <div class="row">
                             <div class="form-group col-md-6">
                                 <label>Số phòng ngủ</label>
-                                <input type="number" name="numberBedroom" class="form-control"
+                                <input type="number" min="0" step="1" name="numberBedroom" class="form-control"
                                     placeholder="Nhập số phòng ngủ">
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Số phòng tắm/vệ sinh</label>
-                                <input type="number" name="numberBathroom" class="form-control"
+                                <input type="number" min="0" step="1" name="numberBathroom" class="form-control"
                                     placeholder="Nhập số phòng tắm">
                             </div>
                         </div>
@@ -205,12 +207,12 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label>Họ tên</label>
-                                <input type="text" name="contactName" class="form-control" placeholder="Nhập họ tên">
+                                <input type="text" name="contactName" class="form-control" placeholder="Nhập họ tên" value="@Model.AccountName" disabled>
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Số điện thoại</label>
-                                <input type="text" name="contactNumber" class="form-control"
-                                    placeholder="Nhập số điện thoại">
+                                <input type="text" name="contactNumber" class="form-control" value="@Model.PhoneNumber"
+                                       placeholder="Nhập số điện thoại" disabled>
                             </div>
                         </div>
 
@@ -431,33 +433,34 @@
                 <div class="d-flex justify-content-end mt-4">
                     <button type="button" class="btn btn-secondary mr-2" onclick="backToEdit()">Quay lại chỉnh
                         sửa</button>
+                    <button type="button" class="btn btn-primary" id="testCollectFormBtn">Thanh toán</button>
+                    @* <form method="post" asp-action="CreatePayment" asp-controller="Posts" id="momoForm"> *@
+                    @*     <input hidden name="OrderInfomation" value="Thanh toán Momo cho đơn hàng hiện tại" /> *@
+                    @*     <input hidden name="OrderId" value="@Guid.NewGuid().ToString()" /> *@
+                    @*     <input hidden name="FullName" *@
+                    @*         value="@(Context.Session.GetString("UserName") ?? Context.Session.GetString("Email"))" /> *@
+                    @*     <input type="button" value="Thanh toán Momo" class="btn btn-success mx-2" *@
+                    @*         onclick="submitMomoForm()" /> *@
+                    @* </form> *@
 
-                    <form method="post" asp-action="CreatePayment" asp-controller="Posts" id="momoForm">
-                        @* <input hidden name="Amount" id="hiddenAmountInput" value="0" /> *@
-                        <input hidden name="OrderInfomation" value="Thanh toán Momo cho đơn hàng hiện tại" />
-                        <input hidden name="OrderId" value="@Guid.NewGuid().ToString()" />
-                        <input hidden name="FullName"
-                            value="@(Context.Session.GetString("UserName") ?? Context.Session.GetString("Email"))" />
-                        <input type="button" value="Thanh toán Momo" class="btn btn-success mx-2"
-                            onclick="submitMomoForm()" />
-                    </form>
-                    <form method="post" action="/create-payment-link" id="payosForm">
+                    <form method="post" asp-action="CheckoutPayment" asp-controller="Checkout" id="payosForm" hidden>
                         <input type="hidden" name="ItemName" value="Gói đăng bài" />
-                        <input type="hidden" name="Amount" id="hiddenAmountInputPayOS" value="0" />
+                        <input type="hidden" name="postId" id="hiddenPostId" />
+                        <input type="hidden" name="AmountPayOs" id="hiddenAmountInputPayOS" />
                         <input type="hidden" name="Description" value="Thanh toán PayOS cho đơn hàng hiện tại" />
-                        <input type="button" value="Thanh toán PayOS" class="btn btn-success"
-                            onclick="submitPayOSForm()" />
+                        <input type="button" value="Thanh toán PayOS" class="btn btn-success" id="realPayOsSubmit" onclick="submitPayOSForm()" />
                     </form>
 
-                    <form method="post" asp-action="CreatePaymentUrlVnpay" asp-controller="Posts" id="vnpayForm">
-                        <input type="hidden" name="OrderType" value="other" />
-                        <input type="hidden" name="Amount" id="hiddenAmountInput" value="0" />
-                        <input type="hidden" name="OrderDescription" value="Thanh toán VNPay cho đơn hàng hiện tại " />
-                        <input type="hidden" name="Name"
-                            value="@(Context.Session.GetString("UserName") ?? Context.Session.GetString("Email"))" />
-                        <input type="button" value="Thanh toán VN Pay" class="btn btn-success mx-2"
-                            onclick="submitVnPayForm()" />
-                    </form>
+
+                    @* <form method="post" asp-action="CreatePaymentUrlVnpay" asp-controller="Posts" id="vnpayForm"> *@
+                    @*     <input type="hidden" name="OrderType" value="other" /> *@
+                    @*     <input type="hidden" name="Amount" id="hiddenAmountInput" value="0" /> *@
+                    @*     <input type="hidden" name="OrderDescription" value="Thanh toán VNPay cho đơn hàng hiện tại " /> *@
+                    @*     <input type="hidden" name="Name" *@
+                    @*         value="@(Context.Session.GetString("UserName") ?? Context.Session.GetString("Email"))" /> *@
+                    @*     <input type="button" value="Thanh toán VN Pay" class="btn btn-success mx-2" *@
+                    @*         onclick="submitVnPayForm()" /> *@
+                    @* </form> *@
                 </div>
             </div>
 
@@ -638,51 +641,44 @@
     const furnitureSelect = document.getElementById('furnitureSelect');
     const furnitureFeatures = document.getElementById('furnitureFeatures');
 
-    furnitureSelect.addEventListener('change', function () {
-        const selected = this.value;
+    furnitureSelect?.addEventListener('change', function () {
+        const value = this.value;
 
-        if (selected === 'basic') {
+        const BASIC = "Nội thất cơ bản";
+        const FULL = "Nội thất đầy đủ";
+
+        const checkboxes = furnitureFeatures.querySelectorAll('input[type="checkbox"]');
+
+        if (value === FULL) {
             furnitureFeatures.style.display = 'block';
+            checkboxes.forEach(cb => cb.checked = true);
+        } else if (value === BASIC) {
+            furnitureFeatures.style.display = 'block';
+            checkboxes.forEach(cb => cb.checked = false);
         } else {
             furnitureFeatures.style.display = 'none';
-            furnitureFeatures.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-        }
-    });
-
-    document.getElementById('furnitureSelect')?.addEventListener('change', function () {
-        const value = this.value;
-        const featureDiv = document.getElementById('furnitureFeatures');
-        const checkboxes = featureDiv.querySelectorAll('input[type="checkbox"]');
-
-        if (value === 'full') {
-            featureDiv.style.display = 'block';
-            checkboxes.forEach(cb => cb.checked = true);
-        } else if (value === 'basic') {
-            featureDiv.style.display = 'block';
-            checkboxes.forEach(cb => cb.checked = false);
-        } else {
-            featureDiv.style.display = 'none';
             checkboxes.forEach(cb => cb.checked = false);
         }
     });
-    function submitMomoForm() {
-        const amount = document.getElementById("summaryTotalAmount").innerText.replace(/đ/g, '').trim();
-        const finalAmount = parseFloat(amount);
-        document.getElementById("hiddenAmountInput").value = finalAmount;
-        document.getElementById("momoForm").submit();
-    }
-    function submitVnPayForm() {
-        const amount = document.getElementById("summaryTotalAmount").innerText.replace(/đ/g, '').trim();
-        const finalAmount = parseFloat(amount);
-        document.getElementById("hiddenAmountInput").value = finalAmount;
-        document.getElementById('vnpayForm').submit();
-    }
+
+    // function submitMomoForm() {
+    //     const amount = document.getElementById("summaryTotalAmount").innerText.replace(/đ/g, '').trim();
+    //     const finalAmount = parseFloat(amount);
+    //     document.getElementById("hiddenAmountInput").value = finalAmount;
+    //     document.getElementById("momoForm").submit();
+    // }
+    // function submitVnPayForm() {
+    //     const amount = document.getElementById("summaryTotalAmount").innerText.replace(/đ/g, '').trim();
+    //     const finalAmount = parseFloat(amount);
+    //     document.getElementById("hiddenAmountInput").value = finalAmount;
+    //     document.getElementById('vnpayForm').submit();
+    // }
     function submitPayOSForm() {
         const amountPayOs = document.getElementById("summaryTotalAmount").innerText.replace(/đ/g, '').trim();
         const finalAmountPayOs = parseInt(amountPayOs);
+        console.log("Số tiền gửi:", finalAmountPayOs); // log kiểm tra
         document.getElementById("hiddenAmountInputPayOS").value = finalAmountPayOs;
         document.getElementById("payosForm").submit();
-        ;
     }
 
 </script>

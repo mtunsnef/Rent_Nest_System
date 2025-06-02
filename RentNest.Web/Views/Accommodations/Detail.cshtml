@@ -2,21 +2,43 @@
 @{
     ViewData["Title"] = "Chi tiết phòng thuê";
 }
+
+@{
+    var addressParts = new List<string> {
+        Model.Address,
+        Model.WardName,
+        Model.DistrictName,
+        Model.ProvinceName
+    };
+    var fullAddress = string.Join(", ", addressParts.Where(p => !string.IsNullOrWhiteSpace(p)));
+    var encodedAddress = System.Net.WebUtility.UrlEncode(fullAddress);
+}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-
+@functions {
+    public string GetTimeAgo(DateTime? dateTime)
+    {
+        if (dateTime == null) return "";
+        var timeSpan = DateTime.Now - dateTime.Value;
+        if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} phút trước";
+        if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} giờ trước";
+        return $"{(int)timeSpan.TotalDays} ngày trước";
+    }
+}
 <section style="margin-top: 9rem">
     <div class="container">
         <div class="row no-gutters align-items-end justify-content-start">
             <div class="col-md-9 ftco-animate pb-4">
                 <p class="breadcrumbs">
                     <span class="mr-2">
-                        <a href="/Home">
+                        <a href="/trang-chu">
                             Trang chủ <i class="ion-ios-arrow-forward"></i>
                         </a>
                     </span>
                     <span class="mr-2">
-                        <a href="/Room">
+                        <a href="/danh-sach-phong-tro">
                             Danh sách các phòng <i class="ion-ios-arrow-forward"></i>
                         </a>
                     </span>
@@ -38,33 +60,33 @@
                     <div class="col-md-6">
                         <!-- Ảnh chính -->
                         <div class="swiper mySwiper2 mb-2">
+                            @if (Model.PackageTypeName != "Tin thường")
+                            {
+                                <span id="packageBadgeVIP"
+                                      class="badge position-absolute @BadgeHelper.GetBadgeClass(Model.PackageTypeName)"
+                                      style="color: #fff; top: 8px; left: 8px; font-size: 15px; padding: 8px; z-index: 1000">
+                                    @Model.PackageTypeName
+                                </span>
+                            }
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide"><img src="/images/work-1.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-2.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-3.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-4.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-5.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-6.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-7.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-8.jpg" class="img-fluid rounded main-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-9.jpg" class="img-fluid rounded main-img" /></div>
+                                @foreach (var img in Model.ImageUrls)
+                                {
+                                    <div class="swiper-slide">
+                                        <img src="@img" class="img-fluid rounded main-img" />
+                                    </div>
+                                }
                             </div>
                         </div>
-
                         <!-- Ảnh nhỏ thumbnail -->
                         <div class="swiper mySwiperThumbs">
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide"><img src="/images/work-1.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-2.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-3.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-4.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-5.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-6.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-7.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-8.jpg" class="img-fluid thumb-img" /></div>
-                                <div class="swiper-slide"><img src="/images/work-9.jpg" class="img-fluid thumb-img" /></div>
+                                @foreach (var img in Model.ImageUrls)
+                                {
+                                    <div class="swiper-slide">
+                                        <img src="@img" class="img-fluid thumb-img" />
+                                    </div>
+                                }
                             </div>
-                            <!-- Nút điều hướng -->
                             <div class="swiper-button-next"></div>
                             <div class="swiper-button-prev"></div>
                         </div>
@@ -72,126 +94,134 @@
 
                     <!-- Thông tin phòng -->
                     <div class="col-md-6 py-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3 class="mb-0"><a href="properties-single.html">Phòng trọ gần FPT</a></h3>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 class="mb-0" style="word-break: break-word;"><a href="#">@Model.PostTitle</a></h3>
                             <div class="d-flex align-items-center">
-                                <span class="text-warning mr-2">★★★★☆ 4.5</span>
-
                                 <button class="btn btn-light border favorite-btn" data-post-id="@Model.PostId">
                                     <i class="fas fa-heart" id="heart-@Model.PostId"></i>
                                 </button>
-
-
                             </div>
                         </div>
-                        <span style="font-size: 110% !important" class="badge badge-danger mb-2 p-2">3.5 triệu / tháng</span>
-                        <p>Phòng trọ đầy đủ tiện nghi, nhà vệ sinh riêng, bếp nấu, gần trường FPT, khu vực an ninh.</p>
+                        <span style="font-size: 135% !important" class="badge text-danger p-0">@(((@Model.Price ??
+                                                        0) / 1_000_000M).ToString("0.#").Replace('.', ',')) triệu / tháng</span>
+                        <span style="float: right" class="text-warning mr-2"> 4.5 ★★★★☆</span>
+
+                        <p class="my-3">@Model.Description</p>
 
                         <div class="d-flex align-items-center my-3">
-                            <img src="images/person_1.jpg" class="rounded-circle" style="width: 50px; height: 50px;">
+                            <img src="@Model.AccountImg" class="rounded-circle" style="width: 50px; height: 50px;">
                             <div class="ml-3">
-                                <strong>Duy Khoa</strong><br>
-                                <small>Đăng 3 giờ trước • Phản hồi: 100%</small>
+                                <strong>@Model.AccountName</strong><br>
+                                <small>Đăng @GetTimeAgo(Model.CreatedAt) • Phản hồi: 100%</small>
                             </div>
                         </div>
+                        @{
+                            var phone = Model.AccountPhone;
+                            var maskedPhone = phone.Substring(0, phone.Length - 3) + "xxx";
+                        }
 
-                        <div class="d-flex mb-2">
-                            <a href="tel:033648xxxx" class="btn btn-success mr-2"><i class="fa fa-phone"></i> Gọi 033648xxxx</a>
-                            <a href="#" class="btn btn-outline-primary"><i class="fa fa-comment"></i> Chat</a>
+                        <div class="d-flex align-items-center mb-3">
+                            <button class="btn btn-success mr-3" onclick="showFullPhone('@phone')" id="phoneBtn">
+                                <i class="fa fa-phone"></i> @maskedPhone
+                            </button>
+                            <button class="btn btn-outline-secondary d-none mr-3" id="copyBtn"
+                                onclick="copyPhone('@phone')">
+                                <i class="fa fa-copy"></i> Sao chép
+                            </button>
+                            <a href="/bat-dau-tro-chuyen?postId=@Model.PostId&receiverId=@Model.AccountId" class="btn btn-outline-primary">
+                                <i class="fa fa-comment"></i> Chat
+                            </a>
                         </div>
 
-                        <div class="mt-2">
-                            <button class="btn btn-light btn-sm">Phòng này còn cho thuê không ạ?</button>
-                            <button class="btn btn-light btn-sm">Giá cuối là bao nhiêu vậy?</button>
-                        </div>
+                        <small class="text-success d-none" id="copyMsg">Đã sao chép</small>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-12 tour-wrap">
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <th scope="row">Số giường ngủ</th>
-                            <td>
-                                <p>@Model.BedroomCount giường</p>
-                            </td>
-                        </tr>
+                <div class="mb-4">
+                    <h5 class="font-weight-bold mb-3">Địa chỉ</h5>
+                    <p>@fullAddress</p>
+                </div>
+                <div class="mb-4">
+                    <h5 class="font-weight-bold mb-3">Thông tin mô tả</h5>
+                    <p>@Html.Raw(Model.PostContent?.Replace("\n", "<br>"))</p>
+                </div>
+                <div class="mb-4">
+                    <h5 class="font-weight-bold mb-3">Đặc điểm</h5>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Số phòng ngủ</th>
+                                <td>@Model.BedroomCount giường</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Số phòng tắm</th>
+                                <td>@Model.BathroomCount phòng tắm</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Tình trạng nội thất</th>
+                                <td>@Model.FurnitureStatus</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Cập nhật lần cuối</th>
+                                <td>@Model.UpdatedAt?.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Nổi bật</th>
+                                <td>
+                                    <ul class="mb-0 pl-3">
+                                        @if (Model.HasKitchenCabinet == true)
+                                        {
+                                            <li>Tủ bếp</li>
+                                        }
+                                        @if (Model.HasAirConditioner == true)
+                                        {
+                                            <li>Máy lạnh</li>
+                                        }
+                                        @if (Model.HasRefrigerator == true)
+                                        {
+                                            <li>Tủ lạnh</li>
+                                        }
+                                        @if (Model.HasWashingMachine == true)
+                                        {
+                                            <li>Máy giặt</li>
+                                        }
+                                        @if (Model.HasLoft == true)
+                                        {
+                                            <li>Gác lửng</li>
+                                        }
+                                    </ul>
+                                </td>
+                            </tr>
+                            @if (Model.Amenities != null)
+                            {
+                                <tr>
+                                    <th scope="row">Tiện ích</th>
+                                    <td>
+                                        <ul class="mb-0 pl-3">
+                                            @foreach (var item in Model.Amenities)
+                                            {
+                                                <li>@item</li>
+                                            }
+                                        </ul>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
 
-                        <tr>
-                            <th scope="row">Số phòng tắm</th>
-                            <td>
-                                <p>@Model.BathroomCount phòng tắm</p>
-                            </td>
-                        </tr>
+                <div class="mb-4">
+                    <h5 class="font-weight-bold mb-3">Vị trí</h5>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;"
+                            loading="lazy" allowfullscreen
+                                src="https://maps.google.com/maps?q=@encodedAddress&z=14&output=embed">
+                        </iframe>
+                    </div>
+                </div>
 
-                        <tr>
-                            <th scope="row">Tình trạng nội thất</th>
-                            <td>
-                                <p>@Model.FurnitureStatus</p>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th scope="row">Tiện ích</th>
-                            <td class="d-flex">
-                                <ul>
-                                    @if (Model.HasKitchenCabinet == true)
-                                    {
-                                        <li>Tủ bếp</li>
-                                    }
-                                    @if (Model.HasAirConditioner == true)
-                                    {
-                                        <li>Máy lạnh</li>
-                                    }
-                                    @if (Model.HasRefrigerator == true)
-                                    {
-                                        <li>Tủ lạnh</li>
-                                    }
-                                    @if (Model.HasWashingMachine == true)
-                                    {
-                                        <li>Máy giặt</li>
-                                    }
-                                    @if (Model.HasLoft == true)
-                                    {
-                                        <li>Gác lửng</li>
-                                    }
-                                </ul>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th scope="row">Ngày đăng</th>
-                            <td>
-                                <p>@Model.CreatedAt?.ToString("dd/MM/yyyy")</p>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th scope="row">Cập nhật lần cuối</th>
-                            <td>
-                                <p>@Model.UpdatedAt?.ToString("dd/MM/yyyy")</p>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <th scope="row">Vị trí</th>
-                            <td>
-                                @{
-                                    var encodedAddress = System.Net.WebUtility.UrlEncode(ViewData["Address"]?.ToString());
-                                }
-                                <div style="position: relative;">
-                                    <div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden;">
-                                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;"
-                                                loading="lazy" allowfullscreen
-                                                src="https://maps.google.com/maps?q=@encodedAddress&z=15&output=embed">
-                                        </iframe>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
             <div class="col-md-12 tour-wrap">
                 <div class="pt-5 mt-5">
@@ -204,7 +234,8 @@
                             <div class="comment-body">
                                 <h3>Nguyễn Văn A</h3>
                                 <div class="meta">Ngày 05/03/2025 lúc 10:15 AM</div>
-                                <p>Phòng sạch sẽ, thoáng mát, đầy đủ tiện nghi. Mình ở đây hơn 1 năm rồi và cảm thấy rất thoải mái. Khu vực an ninh, không gian yên tĩnh, phù hợp để học tập.</p>
+                                <p>Phòng sạch sẽ, thoáng mát, đầy đủ tiện nghi. Mình ở đây hơn 1 năm rồi và cảm thấy rất
+                                    thoải mái. Khu vực an ninh, không gian yên tĩnh, phù hợp để học tập.</p>
                                 <p><a href="#" class="reply">Trả lời</a></p>
                             </div>
                         </li>
@@ -216,7 +247,8 @@
                             <div class="comment-body">
                                 <h3>Trần Thị B</h3>
                                 <div class="meta">Ngày 05/03/2025 lúc 11:30 AM</div>
-                                <p>Giá thuê hợp lý, phòng rộng rãi, có bàn học và wifi rất ổn. Tuy nhiên, giờ giấc hơi nghiêm ngặt nên ai hay đi về khuya thì nên cân nhắc nhé.</p>
+                                <p>Giá thuê hợp lý, phòng rộng rãi, có bàn học và wifi rất ổn. Tuy nhiên, giờ giấc hơi
+                                    nghiêm ngặt nên ai hay đi về khuya thì nên cân nhắc nhé.</p>
                                 <p><a href="#" class="reply">Trả lời</a></p>
                             </div>
 
@@ -228,7 +260,8 @@
                                     <div class="comment-body">
                                         <h3>Phạm Văn C</h3>
                                         <div class="meta">Ngày 05/03/2025 lúc 12:00 PM</div>
-                                        <p>Trần Thị B: Mình thấy quy định giờ giấc cũng hợp lý thôi, vì giúp đảm bảo an ninh cho mọi người. Nhưng nếu cần đi khuya thì có thể xin phép quản lý.</p>
+                                        <p>Trần Thị B: Mình thấy quy định giờ giấc cũng hợp lý thôi, vì giúp đảm bảo an
+                                            ninh cho mọi người. Nhưng nếu cần đi khuya thì có thể xin phép quản lý.</p>
                                         <p><a href="#" class="reply">Trả lời</a></p>
                                     </div>
                                 </li>
@@ -242,7 +275,8 @@
                             <div class="comment-body">
                                 <h3>Lê Minh D</h3>
                                 <div class="meta">Ngày 05/03/2025 lúc 01:45 PM</div>
-                                <p>Phòng rất mới và sạch, có máy giặt chung, nước nóng lạnh đầy đủ. Ở đây rất thích vì gần trường, đi học chỉ mất 5 phút.</p>
+                                <p>Phòng rất mới và sạch, có máy giặt chung, nước nóng lạnh đầy đủ. Ở đây rất thích vì
+                                    gần trường, đi học chỉ mất 5 phút.</p>
                                 <p><a href="#" class="reply">Trả lời</a></p>
                             </div>
                         </li>
@@ -263,11 +297,13 @@
                             </div>
                             <div class="form-group mb-3">
                                 <label for="website" class="fw-bold">Website (nếu có)</label>
-                                <input type="url" class="form-control" id="website" placeholder="Nhập URL trang web của bạn">
+                                <input type="url" class="form-control" id="website"
+                                    placeholder="Nhập URL trang web của bạn">
                             </div>
                             <div class="form-group mb-3">
                                 <label for="message" class="fw-bold">Nội dung bình luận *</label>
-                                <textarea id="message" cols="30" rows="5" class="form-control" placeholder="Nhập nội dung bình luận..."></textarea>
+                                <textarea id="message" cols="30" rows="5" class="form-control"
+                                    placeholder="Nhập nội dung bình luận..."></textarea>
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary py-2 px-4">Gửi bình luận</button>
@@ -279,13 +315,12 @@
         </div>
     </div>
 </section> <!-- .section -->
+<div id="custom-toast" class="custom-toast"></div>
 
-<!-- SwiperJS JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 <script>
-    // Khởi tạo Swiper
     var thumbSwiper = new Swiper(".mySwiperThumbs", {
-        spaceBetween: 0, // <== GIẢM KHOẢNG CÁCH
+        spaceBetween: 0,
         slidesPerView: 8,
         freeMode: true,
         watchSlidesProgress: true,
@@ -294,7 +329,6 @@
             prevEl: ".swiper-button-prev"
         },
     });
-
 
     var mainSwiper = new Swiper(".mySwiper2", {
         spaceBetween: 10,
@@ -308,84 +342,33 @@
         },
     });
 
-    // Hover để thay đổi ảnh chính (không cần click)
     document.querySelectorAll('.mySwiperThumbs .swiper-slide img').forEach(function (img, index) {
         img.addEventListener('mouseenter', function () {
             mainSwiper.slideToLoop(index);
         });
     });
 
-</script>
+    function showFullPhone(fullPhone) {
+        const phoneBtn = document.getElementById("phoneBtn");
+        const copyBtn = document.getElementById("copyBtn");
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        phoneBtn.innerHTML = '<i class="fa fa-phone"></i> ' + fullPhone;
+        phoneBtn.classList.remove("btn-success");
+        phoneBtn.classList.add("btn-outline-success");
+
+        copyBtn.classList.remove("d-none");
+    }
+
+    function copyPhone(fullPhone) {
+        navigator.clipboard.writeText(fullPhone).then(() => {
+            const msg = document.getElementById("copyMsg");
+            msg.classList.remove("d-none");
+            setTimeout(() => msg.classList.add("d-none"), 2000);
+        });
+    }
+
+</script>
 @Html.AntiForgeryToken()
-
-<script>
-    $(document).ready(function () {
-        $(".favorite-btn").each(function () {
-            var postId = $(this).data("post-id");
-            var heartIcon = $("#heart-" + postId);
-
-            // Check if this post is already in favorites
-            $.get("/Accommodations/IsFavorite", { postId: postId }, function (isFavorite) {
-                if (isFavorite) {
-                    heartIcon.addClass("favorite-red");
-                }
-            });
-        });
-
-        $(document).on("click", ".favorite-btn", function () {
-            var postId = $(this).data("post-id");
-            var token = $('input[name="__RequestVerificationToken"]').val();
-            var heartIcon = $("#heart-" + postId);
-            var isAdding = !heartIcon.hasClass("favorite-red"); // determine action
-
-            $.ajax({
-                url: isAdding ? '/Accommodations/AddToFavorite' : '/Accommodations/RemoveFromFavorite',
-                type: 'POST',
-                data: { postId: postId },
-                headers: {
-                    'RequestVerificationToken': token
-                },
-                success: function () {
-                    heartIcon.toggleClass("favorite-red");
-                    alert(isAdding ? "Added to favorites!" : "Removed from favorites.");
-                },
-                error: function (xhr, status, error) {
-                    console.log("XHR:", xhr);
-                    console.log("Status:", status);
-                    console.log("Error:", error);
-                    alert("Operation failed.");
-                }
-            });
-        });
-    });
-</script>
-
-
-
-<style>
-    .thumb-img {
-        border: 2px solid #ddd;
-        border-radius: 5px;
-        cursor: pointer;
-        height: 60px;
-        object-fit: cover;
-    }
-
-
-    .main-img {
-        height: 350px;
-        object-fit: cover;
-        width: 100%;
-    }
-
-    .swiper-button-next,
-    .swiper-button-prev {
-        color: #333;
-    }
-
-    .favorite-red {
-        color: red;
-    }
-</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/common/show-toast.js"></script>
+<script src="~/js/favorite-post/add-favorite.js"></script>

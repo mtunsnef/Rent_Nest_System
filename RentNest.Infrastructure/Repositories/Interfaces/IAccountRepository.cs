@@ -18,5 +18,8 @@ namespace RentNest.Infrastructure.Repositories.Interfaces
         Task Update(Account account);
         Task<Account> CreateExternalAccountAsync(ExternalAccountRegisterDto dto);
         Task<bool> RegisterAccountAsync(AccountRegisterDto model);
+        Task SetUserOnlineAsync(int userId, bool isOnline);
+        Task UpdateLastActiveAsync(int userId);
+        Task<Account> GetAccountById(int accountId);
     }
 }

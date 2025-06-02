@@ -1,7 +1,9 @@
 ﻿using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Net.payOS;
 using RentNest.Core.Configs;
 using RentNest.Core.Consts;
 using RentNest.Core.Domains;
@@ -11,10 +13,10 @@ using RentNest.Infrastructure.Repositories.Implements;
 using RentNest.Infrastructure.Repositories.Interfaces;
 using RentNest.Service.Implements;
 using RentNest.Service.Interfaces;
-using RentNest.Web.Models;
+using RentNest.Web.Hubs;
 using RentNest.Web.Service.Implement;
 using RentNest.Web.Service.Interface;
-using Net.payOS;
+
 namespace RentNest.Web
 {
     public class Program
@@ -44,7 +46,6 @@ namespace RentNest.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
             builder.Services.AddHttpContextAccessor();
 
             //DAO
@@ -57,7 +58,14 @@ namespace RentNest.Web
             builder.Services.AddScoped<PackagePricingDAO>();
             builder.Services.AddScoped<AccommodationDAO>();
             builder.Services.AddScoped<PostDAO>();
+            builder.Services.AddScoped<ConversationDAO>();
+            builder.Services.AddScoped<MessageDAO>();
             builder.Services.AddScoped<FavoriteDAO>();
+            builder.Services.AddScoped<QuickReplyTemplateDAO>();
+            builder.Services.AddScoped<AccommodationAmenityDAO>();
+            builder.Services.AddScoped<AccommodationDetailDAO>();
+            builder.Services.AddScoped<AccommodationImageDAO>();
+            builder.Services.AddScoped<PostPackageDetailDAO>();
 
             //Repository
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -67,7 +75,10 @@ namespace RentNest.Web
             builder.Services.AddScoped<IPackagePricingRepository, PackagePricingRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
+            builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
             builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+            builder.Services.AddScoped<IQuickReplyTemplateRepository, QuickReplyTemplateRepository>();
 
             //Service
             builder.Services.AddScoped<IMailService, MailService>();
@@ -79,7 +90,11 @@ namespace RentNest.Web
             builder.Services.AddScoped<IPackagePricingService, PackagePricingService>();
             builder.Services.AddScoped<IAccommodationService, AccommodationService>();
             builder.Services.AddScoped<IPostService, PostService>();
+            builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
+            builder.Services.AddScoped<IConversationService, ConversationService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+            builder.Services.AddScoped<IQuicklyReplyTemplateService, QuicklyReplyTemplateService>();
 
             //Config
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
@@ -97,6 +112,15 @@ namespace RentNest.Web
                 options.Facebook.AppSecret = Environment.GetEnvironmentVariable("AUTHENTICATION_FACEBOOK_APPSECRET")!;
             });
             builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+            builder.Services.AddSignalR()
+                .AddHubOptions<ChatHub>(options =>
+                {
+                    options.EnableDetailedErrors = true;
+                    options.MaximumReceiveMessageSize = 10 * 1024 * 1024;
+                });
+
+            //customize getUserid
+            builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
             //su dung cache de luu session
             builder.Services.AddDistributedMemoryCache();
@@ -170,6 +194,7 @@ namespace RentNest.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.MapHub<ChatHub>("/chathub");
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

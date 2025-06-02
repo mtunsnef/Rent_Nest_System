@@ -2,6 +2,13 @@
 {
 	public class AccommodationDetailViewModel
 	{
+        //Post
+        public int PostId { get; set; }
+        public string PostTitle { get; set; }
+
+		public string PostContent { get; set; }
+
+		//Accommodation
 		public int DetailId { get; set; }
 
 		public bool? HasKitchenCabinet { get; set; }
@@ -24,15 +31,49 @@
 
 		public DateTime? UpdatedAt { get; set; }
 
-		public int AccommodationId { get; set; }	
+		public int AccommodationId { get; set; }
 
-		public int PostId {  get; set; }
+		public string? Title { get; set; }
 
-		public string? Title { get; set; } // Optional for display use
 		public decimal? Price { get; set; }
+
 		public string? Description { get; set; }
-		public string ImageUrl { get; set; }
+
+		public List<string> ImageUrls { get; set; } = new List<string>();
+
+		public string Address { get; set; }
+
+		public string DistrictName { get; set; }
+
+		public string WardName { get; set; }
+
+		public string ProvinceName { get; set; }
+
+        public string PackageTypeName { get; set; }
+
+        public string TimeUnitName { get; set; }
+
+        public decimal TotalPrice { get; set; }
+
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
+
+        //Owner
+        public int? AccountId { get; set; }
+
+		public string? AccountName { get; set; }
+
+		public string? AccountImg { get; set; }
+
+		public string? AccountPhone { get; set; }
+
+		//Amentities
+
+		public List<string> Amenities { get; set; } = new List<string>();
 
 	}
 
 }
+

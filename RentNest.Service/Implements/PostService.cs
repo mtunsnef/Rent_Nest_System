@@ -1,4 +1,5 @@
 ﻿using RentNest.Core.Domains;
+using RentNest.Core.DTO;
 using RentNest.Infrastructure.Repositories.Interfaces;
 using RentNest.Service.Interfaces;
 
@@ -11,14 +12,25 @@ namespace RentNest.Service.Implements
         {
             _postRepository = postRepository;
         }
+
+        public async Task<List<Post>> GetAllPostsByUserAsync(int accountId)
+        {
+            return await _postRepository.GetAllPostsByUserAsync(accountId);
+        }
+
         public async Task<List<Post>> GetAllPostsWithAccommodation()
         {
             return await _postRepository.GetAllPostsWithAccommodation();
         }
-		public async Task<int?> GetAccommodationIdByPostId(int postId)
+
+        public async Task<Post?> GetPostDetailWithAccommodationDetailAsync(int postId)
         {
-            return await _postRepository.GetAccommodationIdByPostId(postId);
+            return await _postRepository.GetPostDetailWithAccommodationDetailAsync(postId);
         }
 
-	}
+        public async Task<int> SavePost(LandlordPostDto dto)
+        {
+            return await _postRepository.SavePost(dto);
+        }
+    }
 }

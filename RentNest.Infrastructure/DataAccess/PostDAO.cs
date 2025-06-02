@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using RentNest.Core.Domains;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RentNest.Infrastructure.DataAccess
 {
-    public class PostDAO: BaseDAO<PostDAO>
+    public class PostDAO : BaseDAO<Post>
     {
         public PostDAO(RentNestSystemContext context) : base(context) { }
 
@@ -18,22 +19,62 @@ namespace RentNest.Infrastructure.DataAccess
                 .Include(p => p.Accommodation)
                     .ThenInclude(a => a.AccommodationImages)
                 .Include(p => p.Accommodation)
-                    .ThenInclude(a => a.AccommodationDetail) 
+                    .ThenInclude(a => a.AccommodationDetail)
+                .Include(p => p.PostPackageDetails)
+                    .ThenInclude(p => p.Pricing)
+                        .ThenInclude(t => t.PackageType)
+                .Include(p => p.PostPackageDetails)
+                    .ThenInclude(d => d.Pricing)
+                        .ThenInclude(p => p.TimeUnit)
+                .Include(a => a.Account)
+                    .ThenInclude(u => u.UserProfile)
                 .Where(p => p.CurrentStatus == "A" && p.Accommodation.Status != "I")
                 .OrderByDescending(p => p.PublishedAt)
                 .ToListAsync();
         }
 
-		public async Task<int?> GetAccommodationIdByPostId(int postId)
-		{
-			var post = await _context.Posts
-				.Where(p => p.PostId == postId)
-				.Select(p => p.AccommodationId)
-				.FirstOrDefaultAsync();
+        public async Task<Post?> GetPostDetailWithAccommodationDetailAsync(int postId)
+        {
+            return await _context.Posts
+                .Include(p => p.Accommodation)
+                    .ThenInclude(a => a.AccommodationDetail)
+                .Include(p => p.Accommodation.AccommodationImages)
+                .Include(p => p.PostPackageDetails)
+                    .ThenInclude(p => p.Pricing)
+                        .ThenInclude(t => t.PackageType)
+                .Include(p => p.PostPackageDetails)
+                    .ThenInclude(d => d.Pricing)
+                        .ThenInclude(p => p.TimeUnit)
+                .Include(a => a.Account)
+                    .ThenInclude(u => u.UserProfile)
+                .Include(a => a.Accommodation.AccommodationAmenities)
+                    .ThenInclude(aa => aa.Amenity)
+                .FirstOrDefaultAsync(p => p.PostId == postId);
+        }
 
-			return post == 0 ? null : post; // Assuming 0 means not found
-		}
-
-
-	}
+        public async Task<List<Post>> GetAllPostsByUserAsync(int accountId)
+        {
+            return await _context.Posts
+                .Include(p => p.Accommodation)
+                    .ThenInclude(a => a.AccommodationImages)
+                .Include(p => p.Accommodation)
+                    .ThenInclude(a => a.AccommodationDetail)
+                .Include(p => p.PostPackageDetails)
+                    .ThenInclude(d => d.Pricing)
+                        .ThenInclude(p => p.PackageType)
+                .Include(p => p.PostPackageDetails)
+                    .ThenInclude(d => d.Pricing)
+                        .ThenInclude(t => t.TimeUnit)
+                .Include(p => p.PostApprovals)
+                .Include(a => a.Account)
+                    .ThenInclude(u => u.UserProfile)
+                .Where(p => p.AccountId == accountId)
+                .OrderByDescending(p => p.PublishedAt)
+                .ToListAsync();
+        }
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
+        }
+    }
 }
