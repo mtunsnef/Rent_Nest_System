@@ -17,6 +17,9 @@ namespace RentNest.Service.Interfaces
         Task SetUserOnlineAsync(int userId, bool isOnline);
         Task UpdateLastActiveAsync(int userId);
         Task<Account> GetAccountById(int accountId);
+        Task<bool> CheckEmailExistsAsync(string email);
+        Task<bool> CheckUsernameExistsAsync(string username);
+        Task<Account?> GetAccountByEmailOrUsernameAsync(string input);
     }
 
 }

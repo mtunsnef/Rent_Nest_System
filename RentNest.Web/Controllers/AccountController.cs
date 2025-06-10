@@ -16,11 +16,12 @@ namespace RentNest.Web.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly IMailService _mailService;
-
-        public AccountController(IAccountService accountService, IMailService mailService)
+        private readonly IConfiguration _config;
+        public AccountController(IAccountService accountService, IMailService mailService, IConfiguration config)
         {
             _accountService = accountService;
             _mailService = mailService;
+            _config = config;
         }
         [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.User},{UserRoles.Landlord}")]
         [HttpGet]
@@ -28,14 +29,22 @@ namespace RentNest.Web.Controllers
         {
             var account = await _accountService.GetAccountByEmailAsync(HttpContext.Session.GetString("Email")!);
 
-            var updatePassword = "http://localhost:5216/Account/UpdatePassword";
+            var baseUrl = _config["AppSettings:BaseUrl"];
+            var updatePassword = $"{baseUrl}/Account/UpdatePassword";
+
             MailContent mail = new MailContent
             {
                 To = account!.Email,
-                Subject = "Reset Password - BlueTeam",
-                Body = "<h3>Click the link to reset your password:</h3>\n" +
-               $"<a href='{updatePassword}'>Reset Password</a>\n" +
-               $"<p>If you didn't request this, please ignore this email.</p>"
+                Subject = "BlueHouse - Liên kết cập nhật mật khẩu của bạn đã sẵn sàng",
+                Body = $@"
+                <div style='font-family: Arial, sans-serif;'>
+                    <h3>Xin chào {account.UserProfile?.FirstName} {account.UserProfile?.LastName},</h3>
+                    <p>Bạn vừa yêu cầu cập nhật mật khẩu. Vui lòng nhấn vào liên kết dưới đây để thực hiện:</p>
+                    <a href='{updatePassword}' style='padding: 10px 10px; background-color: #4b69bd; color: white; text-decoration: underline; border-radius: 5px;'>Cập nhât mật khẩu</a>
+                    <p>Nếu bạn không yêu cầu điều này, hãy bỏ qua email này.</p>
+                    <br/>
+                    <p>Trân trọng, BlueTeam</p>
+                </div>"
             };
 
             bool send = await _mailService.SendMail(mail);
@@ -50,12 +59,14 @@ namespace RentNest.Web.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
         [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.User},{UserRoles.Landlord}")]
         [HttpGet]
         public IActionResult UpdatePassword()
         {
             return View();
         }
+
         [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.User},{UserRoles.Landlord}")]
         [HttpPost]
         public async Task<IActionResult> UpdatePassword([FromForm] ChangePasswordDto model)
@@ -69,7 +80,7 @@ namespace RentNest.Web.Controllers
             {
                 if (!PasswordHelper.VerifyPassword(model.OldPassword!, account.Password!))
                 {
-                    TempData["ErrorMessage"] = "Mật Khẩu cũ không hợp lệ!";
+                    TempData["ErrorMessage"] = "Mật khẩu cũ không hợp lệ!";
                     return View(model);
                 }
                 else if (!string.Equals(model.NewPassword, model.ConfirmPassword))

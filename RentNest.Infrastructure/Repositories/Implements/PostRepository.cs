@@ -45,6 +45,11 @@ namespace RentNest.Infrastructure.Repositories.Implements
             return await _postDAO.GetPostDetailWithAccommodationDetailAsync(postId);
         }
 
+        public async Task<List<Post>> GetTopVipPostsAsync()
+        {
+            return await _postDAO.GetTopVipPostsAsync();
+        }
+
         public async Task<int> SavePost(LandlordPostDto dto)
         {
             using var transaction = await _postDAO.BeginTransactionAsync();

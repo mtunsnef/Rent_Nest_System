@@ -43,7 +43,7 @@ namespace RentNest.Infrastructure.Repositories.Implements
         {
             try
             {
-                var user = await _accountDAO.GetAccountByEmailAsync(accountDto.Email);
+                var user = await _accountDAO.GetAccountByEmailOrUsernameAsync(accountDto.EmailOrUsername);
 
                 if (user == null || !PasswordHelper.VerifyPassword(accountDto.Password, user.Password))
                 {
@@ -57,6 +57,7 @@ namespace RentNest.Infrastructure.Repositories.Implements
                 throw new Exception("Lỗi khi đăng nhập: " + ex.Message);
             }
         }
+
 
         public async Task<Account?> GetAccountByEmailAsync(string email)
         {
@@ -152,6 +153,21 @@ namespace RentNest.Infrastructure.Repositories.Implements
         public async Task<Account> GetAccountById(int accountId)
         {
             return await _accountDAO.GetByIdAsync(accountId);
+        }
+
+        public async Task<bool> CheckEmailExistsAsync(string email)
+        {
+            return await _accountDAO.CheckEmailExistsAsync(email);
+        }
+
+        public async Task<bool> CheckUsernameExistsAsync(string username)
+        {
+            return await _accountDAO.CheckEmailExistsAsync(username);
+        }
+
+        public async Task<Account?> GetAccountByEmailOrUsernameAsync(string input)
+        {
+            return await _accountDAO.GetAccountByEmailOrUsernameAsync(input);
         }
     }
 }

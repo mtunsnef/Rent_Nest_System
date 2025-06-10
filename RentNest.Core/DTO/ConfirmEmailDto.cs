@@ -13,6 +13,5 @@ namespace RentNest.Core.DTO
         public string? Email { get; set; }
         [Required]
         public string? ClientUri { get; set; }
-
     }
 }
