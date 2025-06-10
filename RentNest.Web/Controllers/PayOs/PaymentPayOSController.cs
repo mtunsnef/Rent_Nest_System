@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
 using RentNest.Core.Domains;
 using RentNest.Core.Enums;
 using RentNest.Core.Model.PayOS;
@@ -40,7 +34,7 @@ namespace RentNest.Web.Controllers.PayOs
         }
 
         [HttpGet("success")]
-        public async Task<IActionResult> PaymentSuccess([FromQuery] int amount, [FromQuery] string transactionId, [FromQuery] int postId)
+        public async Task<IActionResult> Success([FromQuery] int postId, [FromQuery] int amount)
         {
             try
             {
@@ -51,6 +45,7 @@ namespace RentNest.Web.Controllers.PayOs
                 var postPackage = await _postPackageDetailDAO.GetByPostIdAsync(postId);
                 if (postPackage == null)
                     return NotFound("Post package not found");
+
                 string packageTypeName = postPackage.Pricing?.PackageType.PackageTypeName ?? "Tin thường";
                 var packageType = BadgeHelper.ParsePackageType(packageTypeName);
 
@@ -63,14 +58,14 @@ namespace RentNest.Web.Controllers.PayOs
                     post.CurrentStatus = PostStatusHelper.ToDbValue(PostStatus.Pending);
                 }
 
-                postPackage.PaymentStatus = PaymentStatusHelper.ToDbValue(PaymentStatus.Completed);
-                postPackage.PaymentTransactionId = transactionId;
+                postPackage.PaymentStatus = PostPackagePaymentStatusHelper.ToDbValue(PostPackagePaymentStatus.Completed);
+                //postPackage.PaymentTransactionId = transactionId;
 
                 var payment = new Payment
                 {
                     PostPackageDetailsId = postPackage.Id,
                     TotalPrice = postPackage.TotalPrice,
-                    Status = PaymentStatusHelper.ToDbValue(PaymentStatus.Completed),
+                    Status = PaymentStatusHelper.ToDbValue(PaymentStatus.Success),
                     PaymentDate = DateTime.Now,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
@@ -82,7 +77,14 @@ namespace RentNest.Web.Controllers.PayOs
                 await _postDAO.UpdateAsync(post);
                 await _postPackageDetailDAO.UpdateAsync(postPackage);
 
-                return Redirect("/payment-success");
+                var model = new PayOSResponseModel
+                {
+                    Amount = amount,
+                    IsSuccess = true,
+                    CreatedAt = DateTime.Now
+                };
+
+                return View(model);
             }
             catch (Exception ex)
             {
@@ -91,9 +93,8 @@ namespace RentNest.Web.Controllers.PayOs
             }
         }
 
-
         [HttpGet("/cancel")]
-        public async Task<IActionResult> Cancel(int postId, int amount = 0)
+        public async Task<IActionResult> Cancel([FromQuery] int postId, [FromQuery] int amount = 0)
         {
             try
             {
@@ -118,7 +119,7 @@ namespace RentNest.Web.Controllers.PayOs
                 }
 
                 post.CurrentStatus = PostStatusHelper.ToDbValue(PostStatus.Cancelled);
-                postPackage.PaymentStatus = PaymentStatusHelper.ToDbValue(PaymentStatus.Inactive);
+                postPackage.PaymentStatus = PostPackagePaymentStatusHelper.ToDbValue(PostPackagePaymentStatus.Inactive);
 
                 await _postDAO.UpdateAsync(post);
                 await _postPackageDetailDAO.UpdateAsync(postPackage);

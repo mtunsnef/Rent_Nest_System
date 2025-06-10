@@ -13,7 +13,7 @@ namespace RentNest.Web.Controllers.PayOs
 {
     [Route("[controller]")]
     [ApiController]
-    public class PaymentController : ControllerBase
+    public class PaymentController : Controller
     {
         private readonly PayOS _payOS;
         private readonly ILogger<PaymentController> _logger;
