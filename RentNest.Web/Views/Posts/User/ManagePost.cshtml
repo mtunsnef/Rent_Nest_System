@@ -128,9 +128,11 @@
                                                 }
                                                 else if (status == PostStatus.Unpaid)
                                                 {
-                                                    <a href="@Url.Action("Payment", "Post", new { id = item.Id })" class="btn btn-warning">
-                                                        Thanh toán
-                                                    </a>
+                                                    <form action="@Url.Action("CheckoutPayment", "Checkout")" method="post" style="display:inline;">
+                                                        <input type="hidden" name="postId" value="@item.Id" />
+                                                        <input type="hidden" name="AmountPayOs" value="@Convert.ToInt32(item.TotalPrice)" />
+                                                        <button type="submit" class="btn btn-warning">Thanh toán: @item.TotalPrice.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))<span class="currency">đ</span></button>
+                                                    </form>
                                                 }
                                                 else if (status != PostStatus.Cancelled && status != PostStatus.Pending)
                                                 {

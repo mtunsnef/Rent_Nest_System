@@ -31,7 +31,16 @@
                         </div>
 
                         <div class="list-group list-group-flush">
-                            @foreach (var conversation in Model)
+                            @if (Model == null || !Model.Any())
+                            {
+                                <div class="text-center text-muted p-4">
+                                    <i class="fas fa-comments-slash fa-2x mb-2"></i><br />
+                                    Bạn hiện chưa có cuộc trò chuyện nào.
+                                </div>
+                            }
+                            else
+                            {
+                                @foreach (var conversation in Model)
                             {
                                 var otherUser = conversation.SenderId == currentUserId
                                 ? conversation.Receiver
@@ -45,6 +54,7 @@
                                         <small>@conversation.Post?.Title</small>
                                     </div>
                                 </a>
+                            }
                             }
                         </div>
                     </div>

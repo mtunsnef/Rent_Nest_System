@@ -151,49 +151,69 @@
                     <h5 class="font-weight-bold mb-3">Đặc điểm</h5>
                     <table class="table table-bordered">
                         <tbody>
-                            <tr>
-                                <th scope="row">Số phòng ngủ</th>
-                                <td>@Model.BedroomCount giường</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Số phòng tắm</th>
-                                <td>@Model.BathroomCount phòng tắm</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Tình trạng nội thất</th>
-                                <td>@Model.FurnitureStatus</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Cập nhật lần cuối</th>
-                                <td>@Model.UpdatedAt?.ToString("dd/MM/yyyy")</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Nổi bật</th>
-                                <td>
-                                    <ul class="mb-0 pl-3">
-                                        @if (Model.HasKitchenCabinet == true)
-                                        {
-                                            <li>Tủ bếp</li>
-                                        }
-                                        @if (Model.HasAirConditioner == true)
-                                        {
-                                            <li>Máy lạnh</li>
-                                        }
-                                        @if (Model.HasRefrigerator == true)
-                                        {
-                                            <li>Tủ lạnh</li>
-                                        }
-                                        @if (Model.HasWashingMachine == true)
-                                        {
-                                            <li>Máy giặt</li>
-                                        }
-                                        @if (Model.HasLoft == true)
-                                        {
-                                            <li>Gác lửng</li>
-                                        }
-                                    </ul>
-                                </td>
-                            </tr>
+                            @if (Model.BedroomCount > 0)
+                            {
+                                <tr>
+                                    <th scope="row">Số phòng ngủ</th>
+                                    <td>@Model.BedroomCount giường</td>
+                                </tr>
+                            }
+
+                            @if (Model.BathroomCount > 0)
+                            {
+                                <tr>
+                                    <th scope="row">Số phòng tắm</th>
+                                    <td>@Model.BathroomCount phòng tắm</td>
+                                </tr>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(Model.FurnitureStatus))
+                            {
+                                <tr>
+                                    <th scope="row">Tình trạng nội thất</th>
+                                    <td>@Model.FurnitureStatus</td>
+                                </tr>
+                            }
+
+                            @if (Model.UpdatedAt.HasValue)
+                            {
+                                <tr>
+                                    <th scope="row">Cập nhật lần cuối</th>
+                                    <td>@Model.UpdatedAt?.ToString("dd/MM/yyyy")</td>
+                                </tr>
+                            }
+
+                            @if (Model.HasKitchenCabinet == true || Model.HasAirConditioner == true || Model.HasRefrigerator == true || Model.HasWashingMachine == true || Model.HasLoft == true)
+                            {
+                                <tr>
+                                    <th scope="row">Nổi bật</th>
+                                    <td>
+                                        <ul class="mb-0 pl-3">
+                                            @if (Model.HasKitchenCabinet == true)
+                                            {
+                                                <li>Tủ bếp</li>
+                                            }
+                                            @if (Model.HasAirConditioner == true)
+                                            {
+                                                <li>Máy lạnh</li>
+                                            }
+                                            @if (Model.HasRefrigerator == true)
+                                            {
+                                                <li>Tủ lạnh</li>
+                                            }
+                                            @if (Model.HasWashingMachine == true)
+                                            {
+                                                <li>Máy giặt</li>
+                                            }
+                                            @if (Model.HasLoft == true)
+                                            {
+                                                <li>Gác lửng</li>
+                                            }
+                                        </ul>
+                                    </td>
+                                </tr>
+                            }
+
                             @if (Model.Amenities != null)
                             {
                                 <tr>

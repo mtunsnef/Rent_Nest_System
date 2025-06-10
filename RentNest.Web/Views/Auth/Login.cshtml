@@ -15,7 +15,7 @@
         </div>
 
         <div class="row justify-content-center block-9">
-            <div class="col-md-7 text-center order-md-last d-flex ftco-animate">
+            <div class="col-md-7 order-md-last d-flex ftco-animate">
                 <form asp-controller="Auth" asp-action="Login" method="post" class="bg-light p-4 p-md-5 contact-form">
                     <div style="display: flex; width: 100%; text-align: center; margin-bottom: 20px; justify-content: space-between;">
                         <a asp-controller="Auth" asp-action="ExternalLogin" asp-route-provider="Google"
@@ -71,14 +71,15 @@
                         </script>
                     }
                     <div class="form-group">
-                        <input asp-for="Email" type="email" class="form-control" placeholder="Email của bạn">
+                        <input asp-for="EmailOrUsername" type="text" class="form-control" placeholder="Tên người dùng hoặc Email của bạn">
+                        <span asp-validation-for="EmailOrUsername" class="text-danger small text-left"></span>
+
                     </div>
-                    <span asp-validation-for="Email" class="text-danger"></span>
 
                     <div class="form-group">
                         <input asp-for="Password" type="password" class="form-control" placeholder="Mật khẩu">
+                        <span asp-validation-for="Password" class="text-danger small text-left"></span>
                     </div>
-                    <span asp-validation-for="Password" class="text-danger"></span>
 
                     <div class="form-group d-flex justify-content-between">
                         <div>

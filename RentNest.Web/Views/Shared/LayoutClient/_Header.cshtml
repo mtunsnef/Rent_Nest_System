@@ -15,7 +15,7 @@
 						<div class="icon mr-2 d-flex justify-content-center align-items-center">
 							<span class="icon-paper-plane"></span>
 						</div>
-						<span class="text">bluedream.company@email.com</span>
+						<span class="text">bluedream.rentnest.company@gmail.com</span>
 					</div>
 					<div class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right justify-content-end">
 						@if (Context.Session.GetString("AccountId") != null)
@@ -33,15 +33,20 @@
 
 									@{
 										var email = Context.Session.GetString("Email");
+										var loginProvider = Context.Session.GetString("LoginProvider");
+
 										if (email != null)
 										{
-											<a class="dropdown-item" asp-controller="Account" asp-action="ConfirmEmail"
-												method="post">Đổi mật
-												khẩu</a>
-											<div class="dropdown-divider"></div>
+											if (loginProvider == AuthProviders.Local)
+											{
+												<a class="dropdown-item" asp-controller="Account" asp-action="ConfirmEmail"
+												   method="post">Đổi mật khẩu</a>
+												<div class="dropdown-divider"></div>
+											}
 											<a class="dropdown-item text-danger" href="/Auth/Logout">Đăng xuất</a>
 										}
 									}
+
 
 								</div>
 							</div>

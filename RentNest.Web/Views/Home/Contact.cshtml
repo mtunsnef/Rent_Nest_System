@@ -1,6 +1,9 @@
 ﻿@{
 	ViewData["Title"] = "Liên hệ";
 }
+@model RentNest.Web.Models.ContactFormViewModel
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <section class="ftco-section contact-section ftco-no-pb" id="contact-section" style="padding: 10em !important">
 	<div class="container">
 		<div class="row justify-content-center mb-5 pb-3">
@@ -16,25 +19,36 @@
 
 		<div class="row block-9">
 			<div class="col-md-7 order-md-last d-flex ftco-animate">
-				<form action="#" class="bg-light p-4 p-md-5 contact-form">
+				<form asp-action="Contact" method="post" class="bg-light p-4 p-md-5 contact-form">
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Họ và tên">
+						<input asp-for="FullName" class="form-control" placeholder="Họ và tên" />
+						<span asp-validation-for="FullName" class="text-danger small"></span>
 					</div>
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Email">
+						<input asp-for="Email" class="form-control" placeholder="Email" />
+						<span asp-validation-for="Email" class="text-danger small"></span>
 					</div>
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Nghề nghiệp">
+						<input asp-for="Occupation" class="form-control" placeholder="Nghề nghiệp" />
 					</div>
 					<div class="form-group">
-						<textarea name="" id="" cols="30" rows="7" class="form-control"
-								  placeholder="Nội dung"></textarea>
+						<textarea asp-for="Message" cols="30" rows="7" class="form-control" placeholder="Nội dung"></textarea>
+						<span asp-validation-for="Message" class="text-danger small"></span>
 					</div>
 					<div class="form-group">
 						<input type="submit" value="Gửi" class="btn btn-primary py-3 px-5">
 					</div>
 				</form>
-
+				@if (TempData["Message"] != null)
+				{
+					<script>
+						Swal.fire({
+							icon: 'success',
+							title: 'Gửi thành công!',
+							text: '@Html.Raw(TempData["Message"])'
+						});
+					</script>
+				}
 			</div>
 
 			<div class="col-md-5 d-flex">
@@ -68,7 +82,11 @@
 							</div>
 							<div>
 								<h3 class="mb-3">Email</h3>
-								<p><a href="mailto:info@yoursite.com">bluedream.company@email.com</a></p>
+								<p>
+									<a href="mailto:info@yoursite.com">
+										bluedream.rentnest.company@gmail.com
+									</a>
+								</p>
 							</div>
 						</div>
 					</div>

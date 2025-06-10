@@ -15,7 +15,7 @@
         </div>
 
         <div class="row justify-content-center block-9">
-            <div class="col-md-7 text-center order-md-last d-flex ftco-animate">
+            <div class="col-md-7 order-md-last d-flex ftco-animate">
                 <form asp-controller="Auth" asp-action="SignUp" method="post" class="bg-light p-4 p-md-5 contact-form">
 
                     @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
@@ -29,13 +29,13 @@
                         </script>
                     }
 
-                    @if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+                    @if (!string.IsNullOrEmpty(TempData["SuccessRegisterLocalMessage"] as string))
                     {
                         <script>
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Đăng ký thành công!',
-                                text: '@Html.Raw(TempData["SuccessMessage"])',
+                                text: '@Html.Raw(TempData["SuccessRegisterLocalMessage"])',
                                 timer: 2500,
                                 showConfirmButton: false
                             }).then(() => {
@@ -45,24 +45,24 @@
                     }
 
                     <div class="form-group">
-                        <input asp-for="Username" class="form-control" placeholder="Tên người dùng" />
-                        <span asp-validation-for="Username" class="text-danger"></span>
+                        <input asp-for="Username" class="form-control" placeholder="Tên người dùng *" />
+                        <span asp-validation-for="Username" class="text-danger small text-left"></span>
                     </div>
 
                     <div class="form-group">
-                        <input asp-for="Email" type="email" class="form-control" placeholder="Email của bạn" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
+                        <input asp-for="Email" type="email" class="form-control" placeholder="Email của bạn *" />
+                        <span asp-validation-for="Email" class="text-danger small text-left"></span>
                     </div>
 
 
                     <div class="form-group">
-                        <input asp-for="Password" type="password" class="form-control" placeholder="Mật khẩu" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Mật khẩu *" />
+                        <span asp-validation-for="Password" class="text-danger small text-left"></span>
                     </div>
 
                     <div class="form-group">
-                        <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Nhập lại mật khẩu" />
-                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Nhập lại mật khẩu *" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small text-left"></span>
                     </div>
 
                     <div class="form-group">
@@ -71,7 +71,7 @@
                             <option value="U">Người thuê nhà</option>
                             <option value="L">Chủ nhà</option>
                         </select>
-                        <span asp-validation-for="Role" class="text-danger"></span>
+                        <span asp-validation-for="Role" class="text-danger small text-left"></span>
                     </div>
 
                     <div class="form-group">

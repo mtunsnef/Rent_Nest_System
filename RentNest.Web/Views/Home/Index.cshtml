@@ -1,6 +1,9 @@
-﻿@{
+﻿@using RentNest.Core.Enums
+@{
 	ViewData["Title"] = "Trang chủ";
 }
+@model List<TopPostViewModel>
+
 <section class="hero-wrapper ftco-animate">
 	<div class="hero-banner">
 		<div class="hero-overlay"></div>
@@ -93,156 +96,62 @@
 		});
 	</script>
 }
-<section class="ftco-section ftco-properties" id="properties-section" style="padding: 2rem 0 !important;">
-	<div class="container">
-		<div class="row justify-content-center pb-5">
-			<div class="col-md-12 heading-section text-center ftco-animate">
-				<h2 class="mb-4">Danh sách các phòng nổi bật</h2>
+@if (Model != null && Model.Any())
+{
+	<section class="ftco-section ftco-properties" id="properties-section" style="padding: 2rem 0 !important;">
+		<div class="container">
+			<div class="row justify-content-center pb-5">
+				<div class="col-md-12 heading-section text-center ftco-animate">
+					<h2 class="mb-4">Danh sách các phòng nổi bật</h2>
+				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<div class="carousel-properties owl-carousel">
-					<div class="item">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-1.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div
-									class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="carousel-properties owl-carousel">
+						@foreach (var post in Model)
+						{
+							<div class="item">
+								<div class="properties ftco-animate">
+									<div class="img">
+										<img src="@post.ImageUrl" class="img-fluid" alt="Ảnh phòng">
+										@if (post.PackageTypeName != PackageTypeEnum.Normal.GetDisplayName())
+										{
+											<span id="packageBadgeVIP"
+												  class="badge position-absolute @BadgeHelper.GetBadgeClass(post.PackageTypeName)"
+												  style="color: #fff; top: 8px; left: 8px; font-size: 15px; padding: 8px; z-index: 1000">
+												@post.PackageTypeName
+											</span>
+										}
 									</div>
-									<div class="pl-md-4">
-										<h4 class="price">2.4tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-2.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div
-									class="text bg-secondary d-flex text-center align-items-center justify-content-center">
-									<span>Đã thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">3.5tr/tháng</h4>
+									<div class="desc">
+										<div class="text d-flex text-center align-items-center justify-content-center" style="background-color: white;">
+											<img src="@post.AvatarUrl" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;" alt="Avatar người đăng" />
+										</div>
+										<div class="pt-5">
+											<div>
+												<h3>
+													<a style="font-family: system-ui;" href="/chi-tiet/@post.Id">
+														@post.Title
+													</a>
+												</h3>
+											</div>
+											<div>
+												<h4 class="price" style="white-space: nowrap;">
+													@(((post.Price ?? 0) / 1_000_000M).ToString("0.#").Replace('.', ',')) triệu/tháng
+												</h4>
+											</div>
+										</div>
+										<p class="h-info"><span class="location">@post.Address</span></p>
 									</div>
 								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
 							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-3.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div
-									class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">4.5tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-4.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div
-									class="text bg-primary d-flex text-center align-items-center justify-content-center">
-									<span>Cho thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">2.5tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="properties ftco-animate">
-							<div class="img">
-								<img src="images/work-5.jpg" class="img-fluid" alt="Colorlib Template">
-							</div>
-							<div class="desc">
-								<div
-									class="text bg-secondary d-flex text-center align-items-center justify-content-center">
-									<span>Đã thuê</span>
-								</div>
-								<div class="d-flex pt-5">
-									<div>
-										<h3>
-											<a style="font-family: system-ui;" href="/Detail">
-												Khu trọ
-												FPT
-											</a>
-										</h3>
-									</div>
-									<div class="pl-md-4">
-										<h4 class="price">2.1tr/tháng</h4>
-									</div>
-								</div>
-								<p class="h-info"><span class="location">Hoa Hai, Khu Do Thị FPT</span></p>
-							</div>
-						</div>
+						}
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
+}
 
 <section class="ftco-intro img" id="about-section" style="background-image: url(images/bg_1.jpg);">
 	<div class="overlay"></div>
@@ -411,94 +320,6 @@
 	</div>
 </section>
 
-<section class="ftco-section contact-section ftco-no-pb" id="contact-section">
-	<div class="container">
-		<div class="row justify-content-center mb-5 pb-3">
-			<div class="col-md-7 heading-section text-center ftco-animate">
-				<span class="subheading">Liên hệ</span>
-				<h2 style="font-family: system-ui;" class="mb-4">Liên hệ với chúng tôi</h2>
-				<p>
-					Chúng tôi luôn sẵn sàng hỗ trợ bạn trong việc tìm kiếm nhà trọ phù hợp một cách nhanh chóng và
-					an
-					toàn. Hãy liên hệ ngay để được tư vấn chi tiết!
-				</p>
-			</div>
-		</div>
-
-		<div class="row block-9">
-			<div class="col-md-7 order-md-last d-flex ftco-animate">
-				<form action="#" class="bg-light p-4 p-md-5 contact-form">
-					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Họ và tên">
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Email">
-					</div>
-					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Nghề nghiệp">
-					</div>
-					<div class="form-group">
-						<textarea name="" id="" cols="30" rows="7" class="form-control"
-							placeholder="Nội dung"></textarea>
-					</div>
-					<div class="form-group">
-						<input type="submit" value="Gửi" class="btn btn-primary py-3 px-5">
-					</div>
-				</form>
-
-			</div>
-
-			<div class="col-md-5 d-flex">
-				<div class="row d-flex contact-info mb-5">
-					<div class="col-md-12 ftco-animate">
-						<div class="box p-2 px-3 bg-light d-flex">
-							<div class="icon mr-3">
-								<span class="icon-map-signs"></span>
-							</div>
-							<div>
-								<h3 class="mb-3">Địa chỉ</h3>
-								<p>Hòa Hải, Khu Đô Thị FPT, Đại Học FPT</p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-12 ftco-animate">
-						<div class="box p-2 px-3 bg-light d-flex">
-							<div class="icon mr-3">
-								<span class="icon-phone2"></span>
-							</div>
-							<div>
-								<h3 class="mb-3">Số điện thoại</h3>
-								<p><a href="tel://1234567920">(+84) 941 673 660</a></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-12 ftco-animate">
-						<div class="box p-2 px-3 bg-light d-flex">
-							<div class="icon mr-3">
-								<span class="icon-paper-plane"></span>
-							</div>
-							<div>
-								<h3 class="mb-3">Email</h3>
-								<p><a href="mailto:info@yoursite.com">bluedream.company@email.com</a></p>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-12 ftco-animate">
-						<div class="box p-2 px-3 bg-light d-flex">
-							<div class="icon mr-3">
-								<span class="icon-globe"></span>
-							</div>
-							<div>
-								<h3 class="mb-3">Website</h3>
-								<p><a href="#">bluehouseDaNang.com</a></p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
 @section script {
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="~/js/address.js"></script>
