@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace RentNest.Core.Enums
 {
-    public enum PaymentStatus
+    public enum PostPackagePaymentStatus
     {
-        Success,  //S
-        Pending,  //P
-        Failed    //F
+        Pending,     // P
+        Completed,    // C
+        Refuned,      // R
+        Inactive      // I
     }
 }

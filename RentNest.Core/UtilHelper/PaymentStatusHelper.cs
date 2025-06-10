@@ -1,5 +1,9 @@
-﻿using System;
-using RentNest.Core.Enums;
+﻿using RentNest.Core.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace RentNest.Core.UtilHelper
 {
@@ -9,10 +13,9 @@ namespace RentNest.Core.UtilHelper
         {
             return status switch
             {
+                PaymentStatus.Success => "S",
                 PaymentStatus.Pending => "P",
-                PaymentStatus.Completed => "C",
-                PaymentStatus.Refuned => "R",
-                PaymentStatus.Inactive => "I",
+                PaymentStatus.Failed => "F",
                 _ => throw new ArgumentOutOfRangeException(nameof(status), $"Unsupported payment status: {status}")
             };
         }
@@ -21,10 +24,9 @@ namespace RentNest.Core.UtilHelper
         {
             return value switch
             {
+                "S" => PaymentStatus.Success,
                 "P" => PaymentStatus.Pending,
-                "C" => PaymentStatus.Completed,
-                "R" => PaymentStatus.Refuned,
-                "I" => PaymentStatus.Inactive,
+                "F" => PaymentStatus.Failed,
                 _ => throw new ArgumentOutOfRangeException(nameof(value), $"Unsupported payment status value: {value}")
             };
         }
