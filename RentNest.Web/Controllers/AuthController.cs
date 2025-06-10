@@ -7,15 +7,21 @@ using System.Security.Claims;
 using RentNest.Core.UtilHelper;
 using RentNest.Core.Domains;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using RentNest.Infrastructure.DataAccess;
+using Humanizer;
 namespace RentNest.Web.Controllers
 {
     public class AuthController : Controller
     {
         private readonly IAccountService _accountService;
+        private readonly IMailService _mailService;
+        private readonly IConfiguration _config;
 
-        public AuthController(IAccountService accountService)
+        public AuthController(IAccountService accountService, IMailService mailService, IConfiguration config)
         {
             _accountService = accountService;
+            _mailService = mailService;
+            _config = config;
         }
         [HttpGet]
         public IActionResult Login()
@@ -30,35 +36,36 @@ namespace RentNest.Web.Controllers
             {
                 return View(model);
             }
+
             if (!await _accountService.Login(model))
             {
-                TempData["ErrorMessage"] = "Email hoặc mật khẩu không hợp lệ!";
+                TempData["ErrorMessage"] = "Email/Tên đăng nhập hoặc mật khẩu không hợp lệ!";
                 return RedirectToAction("Login", "Auth");
             }
 
-            var account = await _accountService.GetAccountByEmailAsync(model.Email);
-            //HttpContext.Session.SetString("AccountId", account!.AccountId.ToString());
-            HttpContext.Session.SetInt32("AccountId", account!.AccountId); // Do this in login
+            var account = await _accountService.GetAccountByEmailOrUsernameAsync(model.EmailOrUsername);
+
+            HttpContext.Session.SetInt32("AccountId", account.AccountId);
             HttpContext.Session.SetString("AccountName", account.Username!);
             HttpContext.Session.SetString("Email", account.Email);
+            HttpContext.Session.SetString("LoginProvider", account.AuthProvider ?? "");
 
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, account.AccountId.ToString()),
-                new Claim(ClaimTypes.Name, account.Email),
+                new Claim(ClaimTypes.Name, account.UserProfile?.FirstName ?? "" + " " + account.UserProfile?.LastName ?? ""),
                 new Claim(ClaimTypes.Role, account.Role)
             };
             var identity = new ClaimsIdentity(claims, AuthSchemes.Cookie);
             var principal = new ClaimsPrincipal(identity);
 
-            HttpContext.SignInAsync(AuthSchemes.Cookie, principal).Wait();
+            await HttpContext.SignInAsync(AuthSchemes.Cookie, principal);
 
             TempData["SuccessMessage"] = "Đăng nhập thành công! Đang chuyển hướng đến trang chủ...";
             TempData["RedirectUrl"] = Url.Action("Index", "Home");
 
             return RedirectToAction("Login", "Auth");
         }
-
 
         public async Task<IActionResult> Logout()
         {
@@ -125,6 +132,7 @@ namespace RentNest.Web.Controllers
 
             HttpContext.Session.SetString("AccountId", account.AccountId.ToString());
             HttpContext.Session.SetString("Email", account.Email);
+            HttpContext.Session.SetString("LoginProvider", account.AuthProvider ?? "");
 
             var claims = new List<Claim>
             {
@@ -211,9 +219,27 @@ namespace RentNest.Web.Controllers
             HttpContext.Session.SetInt32("AccountId", account.AccountId);
             HttpContext.Session.SetString("AccountName", $"{dto.FirstName} {dto.LastName}");
             HttpContext.Session.SetString("Email", dto.Email);
+            HttpContext.Session.SetString("LoginProvider", account.AuthProvider ?? "");
 
             TempData["SuccessRegisMessage"] = "Đăng ký tài khoản thành công! Đang chuyển hướng bạn đến trang chủ...";
             TempData["RedirectUrl"] = Url.Action("Index", "Home");
+
+            var baseUrl = _config["AppSettings:BaseUrl"];
+            var mail = new MailContent
+            {
+                To = dto.Email,
+                Subject = "Chào mừng đến với BlueHouse!",
+                Body = $@"
+                    <div style='font-family:Arial,sans-serif;padding:20px;color:#333'>
+                        <h2>Chào mừng {dto.FirstName} {dto.LastName} đến với <span style='color:#007bff;'>BlueHouse</span>!</h2>
+                        <p>Cảm ơn bạn đã đăng ký tài khoản bằng {dto.AuthProvider}. Chúng tôi rất vui khi có bạn là một phần của cộng đồng.</p>
+                        <img src='https://localhost:7046/images/welcome-mail.jpg' alt='Welcome' style='max-width:100%;border-radius:10px;margin:20px 0' />
+                        <p>Bắt đầu hành trình của bạn ngay hôm nay bằng cách khám phá các tính năng tuyệt vời của BlueHouse.</p>
+                        <a href='{baseUrl}' style='display:inline-block;padding:10px 20px;background:#4b69bd;color:#fff;text-decoration:none;border-radius:5px;'>Truy cập BlueHouse</a>
+                    </div>"
+            };
+
+            await _mailService.SendMail(mail);
 
             return RedirectToAction("Login", "Auth");
         }
@@ -232,16 +258,21 @@ namespace RentNest.Web.Controllers
 
             if (model.Password != model.ConfirmPassword)
             {
-                ModelState.AddModelError("ConfirmPassword", "Passwords do not match.");
+                ModelState.AddModelError("Mật khẩu", "Xác nhận mật khẩu không trùng.");
                 return View(model);
             }
 
-            if (string.IsNullOrEmpty(model.Email))
+            if (await _accountService.CheckEmailExistsAsync(model.Email))
             {
-                ModelState.AddModelError("Email", "Email cannot be empty.");
+                ModelState.AddModelError("Email", "Email đã được sử dụng. Vui lòng chọn email khác.");
                 return View(model);
             }
 
+            if (await _accountService.CheckUsernameExistsAsync(model.Username))
+            {
+                ModelState.AddModelError("Username", "Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.");
+                return View(model);
+            }
             var result = await _accountService.RegisterAccountAsync(model);
             if (!result)
             {
@@ -254,6 +285,7 @@ namespace RentNest.Web.Controllers
             HttpContext.Session.SetInt32("AccountId", account.AccountId);
             HttpContext.Session.SetString("AccountName", model.Username);
             HttpContext.Session.SetString("Email", model.Email);
+            HttpContext.Session.SetString("LoginProvider", account.AuthProvider ?? "");
 
             var claims = new List<Claim>
             {
@@ -265,8 +297,26 @@ namespace RentNest.Web.Controllers
             var identity = new ClaimsIdentity(claims, AuthSchemes.Cookie);
             await HttpContext.SignInAsync(AuthSchemes.Cookie, new ClaimsPrincipal(identity));
 
-            TempData["SuccessMessage"] = "Tài khoản đã được tạo thành công!";
-            return RedirectToAction("Login", "Auth");
+            TempData["SuccessRegisterLocalMessage"] = "Tài khoản đã được tạo thành công! Đang chuyển hướng đến trang chủ ...";
+            TempData["RedirectUrl"] = Url.Action("Index", "Home");
+
+            var baseUrl = _config["AppSettings:BaseUrl"];
+            var mail = new MailContent
+            {
+                To = model.Email,
+                Subject = "Chào mừng đến với BlueHouse!",
+                Body = $@"
+                    <div style='font-family:Arial,sans-serif;padding:20px;color:#333'>
+                        <h2>Chào mừng bạn đến với <span style='color:#007bff;'>BlueHouse</span>!</h2>
+                        <p>Cảm ơn bạn đã đăng ký tài khoản của website BlueHouse. Chúng tôi rất vui khi có bạn là một phần của cộng đồng.</p>
+                        <img src='https://localhost:7046/images/welcome-mail.jpg' alt='Welcome' style='max-width:100%;border-radius:10px;margin:20px 0' />
+                        <p>Bắt đầu hành trình của bạn ngay hôm nay bằng cách khám phá các tính năng tuyệt vời của BlueHouse.</p>
+                        <a href='{baseUrl}' style='display:inline-block;padding:10px 20px;background:#4b69bd;color:#fff;text-decoration:none;border-radius:5px;'>Truy cập BlueHouse</a>
+                    </div>"
+            };
+            await _mailService.SendMail(mail);
+
+            return RedirectToAction("SignUp", "Auth");
         }
 
     }

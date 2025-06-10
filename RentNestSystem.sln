@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentNest.Web", "RentNest.Web\RentNest.Web.csproj", "{B104D142-D5B9-44E9-AB5D-927FC72C80E6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{68C01140-B133-40F0-848B-BB93ED592489} = {68C01140-B133-40F0-848B-BB93ED592489}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentNest.Core", "RentNest.Core\RentNest.Core.csproj", "{AA291F8B-8D03-40B0-976F-93E7AD97068D}"
 EndProject

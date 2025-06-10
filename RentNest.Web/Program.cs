@@ -25,24 +25,25 @@ namespace RentNest.Web
         {
 
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddDbContext<RentNestSystemContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+
             // dang ki momo
             builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
             builder.Services.AddScoped<IMomoSerivce, MomoService>();
             IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             //load file .env
-            var webRoot = builder.Environment.ContentRootPath;
-            var solutionRoot = Path.GetFullPath(Path.Combine(webRoot, ".."));
-            var envPath = Path.Combine(solutionRoot, ".env");
-            Env.Load(envPath);
+            //var webRoot = builder.Environment.ContentRootPath;
+            //var solutionRoot = Path.GetFullPath(Path.Combine(webRoot, ".."));
+            //var envPath = Path.Combine(solutionRoot, ".env");
+            //Env.Load(envPath);
 
             PayOS payOS = new PayOS(configuration["PayOS:ClientId"] ?? throw new Exception("Cannot find PayOS Client ID"),
                                 configuration["PayOS:ApiKey"] ?? throw new Exception("Cannot find PayOS API Key"),
                                 configuration["PayOS:ChecksumKey"] ?? throw new Exception("Cannot find PayOS Checksum Key"));
             builder.Services.AddSingleton(payOS);
             //Add dbcontext
-            builder.Services.AddDbContext<RentNestSystemContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -66,6 +67,7 @@ namespace RentNest.Web
             builder.Services.AddScoped<AccommodationDetailDAO>();
             builder.Services.AddScoped<AccommodationImageDAO>();
             builder.Services.AddScoped<PostPackageDetailDAO>();
+            builder.Services.AddScoped<PaymentDAO>();
 
             //Repository
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -98,19 +100,22 @@ namespace RentNest.Web
 
             //Config
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
-            builder.Services.Configure<AzureOpenAISettings>(options =>
-            {
-                options.Endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
-                options.DeploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT")!;
-                options.ApiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY")!;
-            });
-            builder.Services.Configure<AuthSettings>(options =>
-            {
-                options.Google.ClientId = Environment.GetEnvironmentVariable("AUTHENTICATION_GOOGLE_CLIENTID")!;
-                options.Google.ClientSecret = Environment.GetEnvironmentVariable("AUTHENTICATION_GOOGLE_CLIENTSECRET")!;
-                options.Facebook.AppId = Environment.GetEnvironmentVariable("AUTHENTICATION_FACEBOOK_APPID")!;
-                options.Facebook.AppSecret = Environment.GetEnvironmentVariable("AUTHENTICATION_FACEBOOK_APPSECRET")!;
-            });
+            //builder.Services.Configure<AzureOpenAISettings>(options =>
+            //{
+            //    options.Endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
+            //    options.DeploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT")!;
+            //    options.ApiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY")!;
+            //});
+            //builder.Services.Configure<AuthSettings>(options =>
+            //{
+            //    options.Google.ClientId = Environment.GetEnvironmentVariable("AUTHENTICATION_GOOGLE_CLIENTID")!;
+            //    options.Google.ClientSecret = Environment.GetEnvironmentVariable("AUTHENTICATION_GOOGLE_CLIENTSECRET")!;
+            //    options.Facebook.AppId = Environment.GetEnvironmentVariable("AUTHENTICATION_FACEBOOK_APPID")!;
+            //    options.Facebook.AppSecret = Environment.GetEnvironmentVariable("AUTHENTICATION_FACEBOOK_APPSECRET")!;
+            //});
+
+            builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
+            builder.Services.Configure<AzureOpenAISettings>(builder.Configuration.GetSection("AzureOpenAISettings"));
             builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
             builder.Services.AddSignalR()
                 .AddHubOptions<ChatHub>(options =>
@@ -134,54 +139,65 @@ namespace RentNest.Web
             });
 
             //auth
-            var authSettings = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<AuthSettings>>().Value;
+            var authSettings = builder.Configuration.GetSection("AuthSettings").Get<AuthSettings>();
 
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = AuthSchemes.Cookie;
                 options.DefaultSignInScheme = AuthSchemes.Cookie;
             })
-                .AddCookie(AuthSchemes.Cookie, config =>
+            .AddCookie(AuthSchemes.Cookie, config =>
+            {
+                config.LoginPath = "/Auth/Login";
+                config.AccessDeniedPath = "/Auth/AccessDenied";
+            })
+            .AddGoogle(AuthSchemes.Google, options =>
+            {
+                options.ClientId = authSettings.Google.ClientId;
+                options.ClientSecret = authSettings.Google.ClientSecret;
+                options.CallbackPath = "/Auth/signIn-google";
+            })
+            .AddFacebook(AuthSchemes.Facebook, options =>
+            {
+                options.AppId = authSettings.Facebook.AppId;
+                options.AppSecret = authSettings.Facebook.AppSecret;
+                options.CallbackPath = "/Auth/signIn-facebook";
+                options.Events = new OAuthEvents
                 {
-                    config.LoginPath = "/Auth/Login";
-                    config.AccessDeniedPath = "/Auth/AccessDenied";
-                })
-                .AddGoogle(AuthSchemes.Google, options =>
-                {
-                    options.ClientId = authSettings.Google.ClientId;
-                    options.ClientSecret = authSettings.Google.ClientSecret;
-                    options.CallbackPath = "/Auth/signIn-google";
-                })
-                .AddFacebook(AuthSchemes.Facebook, options =>
-                {
-                    options.AppId = authSettings.Facebook.AppId;
-                    options.AppSecret = authSettings.Facebook.AppSecret;
-                    options.CallbackPath = "/Auth/signIn-facebook";
-                    options.Events = new OAuthEvents
+                    OnRemoteFailure = context =>
                     {
-                        OnRemoteFailure = context =>
-                        {
-                            context.Response.Redirect("/Auth/Login");
-                            context.HandleResponse();
-                            return Task.CompletedTask;
-                        }
-                    };
-                });
+                        context.Response.Redirect("/Auth/Login");
+                        context.HandleResponse();
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
             // dang ki vn pay
             builder.Services.AddScoped<IVnPayService, VnPayService>();
             var app = builder.Build();
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/trang-chu/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                //The default HSTS value is 30 days.You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+               app.UseHsts();
             }
-
+            //if (app.Environment.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/trang-chu/Error");
+            //    app.UseHsts();
+            //}
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.Use(async (context, next) =>
             {
                 if (context.Request.Path == "/")
@@ -191,13 +207,11 @@ namespace RentNest.Web
                 }
                 await next();
             });
-            app.UseAuthentication();
-            app.UseAuthorization();
-
             app.MapHub<ChatHub>("/chathub");
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+           
 
             app.Run();
         }

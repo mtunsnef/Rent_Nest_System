@@ -40,7 +40,7 @@ namespace RentNest.Web.Controllers
 
         [HttpGet]
         [Route("danh-sach-phong-tro")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? roomType, string? furnitureStatus, int? bedroomCount, int? bathroomCount)
         {
             string provinceName = TempData["provinceName"] as string;
             string districtName = TempData["districtName"] as string;
@@ -56,29 +56,9 @@ namespace RentNest.Web.Controllers
             ViewBag.MinMoney = minMoney;
             ViewBag.MaxMoney = maxMoney;
 
-
-            List<AccommodationIndexViewModel> model;
-
-            if (TempData["HasSearched"] != null)
-            {
-                ViewBag.HasSearched = true;
-
-                if (TempData["RoomList"] != null)
-                {
-                    model = JsonConvert.DeserializeObject<List<AccommodationIndexViewModel>>(TempData["RoomList"].ToString());
-                }
-                else
-                {
-                    model = new List<AccommodationIndexViewModel>();
-                }
-
-                return View(model);
-            }
-
-            ViewBag.HasSearched = false;
-
             var posts = await _postService.GetAllPostsWithAccommodation();
-            model = posts.Select(p =>
+
+            var model = posts.Select(p =>
             {
                 var latestPackageDetail = p.PostPackageDetails
                     .OrderByDescending(d => d.StartDate)
@@ -109,8 +89,31 @@ namespace RentNest.Web.Controllers
                 };
             }).ToList();
 
+            if (!string.IsNullOrEmpty(roomType))
+            {
+                model = model.Where(m => m.Title.Contains(roomType, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(furnitureStatus))
+            {
+                model = model.Where(m => m.Status == furnitureStatus).ToList();
+            }
+
+            if (bedroomCount.HasValue)
+            {
+                model = model.Where(m => m.BedroomCount == bedroomCount).ToList();
+            }
+
+            if (bathroomCount.HasValue)
+            {
+                model = model.Where(m => m.BathroomCount == bathroomCount).ToList();
+            }
+
+            ViewBag.HasSearched = !string.IsNullOrEmpty(roomType) || !string.IsNullOrEmpty(furnitureStatus) || bedroomCount.HasValue || bathroomCount.HasValue;
+
             return View(model);
         }
+
 
 
         [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.User},{UserRoles.Landlord}")]
@@ -306,6 +309,7 @@ namespace RentNest.Web.Controllers
         }
 
         [HttpGet("/bat-dau-tro-chuyen")]
+        [Authorize(AuthenticationSchemes = AuthSchemes.Cookie, Roles = $"{UserRoles.User},{UserRoles.Landlord}")]
         public async Task<IActionResult> StartConversation(int postId, int receiverId)
         {
             int senderId = User.GetUserId() ?? 0;
