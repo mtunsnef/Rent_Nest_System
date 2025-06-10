@@ -13,7 +13,7 @@ namespace RentNest.Infrastructure.Repositories.Interfaces
         Task<List<Post>> GetAllPostsWithAccommodation();
         Task<Post?> GetPostDetailWithAccommodationDetailAsync(int postId);
         Task<List<Post>> GetAllPostsByUserAsync(int accountId);
-
+        Task<List<Post>> GetTopVipPostsAsync();
         Task<int> SavePost(LandlordPostDto dto);
     }
 }

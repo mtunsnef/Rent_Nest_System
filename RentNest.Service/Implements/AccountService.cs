@@ -94,5 +94,20 @@ namespace RentNest.Service.Implements
         {
             return await _accountRepository.GetAccountById(accountId);
         }
+
+        public async Task<bool> CheckEmailExistsAsync(string email)
+        {
+            return await _accountRepository.CheckEmailExistsAsync(email);
+        }
+
+        public async Task<bool> CheckUsernameExistsAsync(string username)
+        {
+            return await _accountRepository.CheckUsernameExistsAsync(username);
+        }
+
+        public async Task<Account?> GetAccountByEmailOrUsernameAsync(string input)
+        {
+            return await _accountRepository.GetAccountByEmailOrUsernameAsync(input);
+        }
     }
 }

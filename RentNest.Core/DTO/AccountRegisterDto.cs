@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RentNest.Core.Domains;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,20 +10,24 @@ namespace RentNest.Core.DTO
 {
     public class AccountRegisterDto
     {
-        [Required]
+        [Required(ErrorMessage = "Tên người dùng không được để trống")]
         public string Username { get; set; }
 
-        [Required, EmailAddress]
+        [EmailAddress]
+        [Required(ErrorMessage = "Email không được để trống")]
+
         public string Email { get; set; }
 
-        [Required, MinLength(6)]
+        [MinLength(6, ErrorMessage = "Vui lòng nhập mật khẩu trên 6 ký tự")]
+        [Required(ErrorMessage = "Mật khẩu không được để trống")]
         public string Password { get; set; }
 
-        [Required]
-        [Compare("Password")]
+        [MinLength(6, ErrorMessage = "Vui lòng nhập mật khẩu trên 6 ký tự")]
+        [Compare("Password", ErrorMessage = "Mật khẩu không trùng khớp")]
+        [Required(ErrorMessage = "Xác nhận mật khẩu không được để trống")]
         public string ConfirmPassword { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Vui lòng chọn vai trò của bạn")]
         public string Role { get; set; } // "U" or "L"
     }
 

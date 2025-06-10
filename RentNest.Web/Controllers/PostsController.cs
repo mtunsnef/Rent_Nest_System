@@ -189,7 +189,8 @@ namespace RentNest.Web.Controllers
                                 .Select(p => p.RejectionReason)
                                 .FirstOrDefault(),
                 AccountName = f.Account?.UserProfile?.FirstName ?? "" + " " + f.Account?.UserProfile?.LastName ?? "",
-                AvatarUrl = f.Account?.UserProfile?.AvatarUrl
+                AvatarUrl = f.Account?.UserProfile?.AvatarUrl,
+                TotalPrice = f.PostPackageDetails?.Select(p => p.Pricing.TotalPrice).FirstOrDefault() ?? 0
             }).ToList();
 
             ViewBag.CurrentStatus = status;

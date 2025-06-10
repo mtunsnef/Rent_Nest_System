@@ -28,6 +28,11 @@ namespace RentNest.Service.Implements
             return await _postRepository.GetPostDetailWithAccommodationDetailAsync(postId);
         }
 
+        public async Task<List<Post>> GetTopVipPostsAsync()
+        {
+            return await _postRepository.GetTopVipPostsAsync();
+        }
+
         public async Task<int> SavePost(LandlordPostDto dto)
         {
             return await _postRepository.SavePost(dto);

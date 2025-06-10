@@ -501,19 +501,19 @@ CREATE TABLE QuickReplyTemplate (
 
 INSERT INTO QuickReplyTemplate (message, is_default, account_id, target_role)
 VALUES 
-(N'Phòng này còn cho thuê không ạ?', 1, NULL, 'tenant'),
-(N'Giờ giấc ra vào có tự do không ạ?', 1, NULL, 'tenant'),
-(N'Chi phí điện nước tính như thế nào ạ?', 1, NULL, 'tenant'),
-(N'Có chỗ để xe không ạ?', 1, NULL, 'tenant'),
-(N'Cho nuôi thú cưng không ạ?', 1, NULL, 'tenant');
+(N'Phòng này còn cho thuê không ạ?', 1, NULL, 'T'),
+(N'Giờ giấc ra vào có tự do không ạ?', 1, NULL, 'T'),
+(N'Chi phí điện nước tính như thế nào ạ?', 1, NULL, 'T'),
+(N'Có chỗ để xe không ạ?', 1, NULL, 'T'),
+(N'Cho nuôi thú cưng không ạ?', 1, NULL, 'T');
 
 INSERT INTO QuickReplyTemplate (message, is_default, account_id, target_role)
 VALUES 
-(N'Phòng vẫn còn, bạn muốn xem phòng khi nào?', 1, NULL, 'landlord'),
-(N'Chi phí điện nước theo giá nhà nước nha bạn.', 1, NULL, 'landlord'),
-(N'Phòng có chỗ để xe máy và an ninh 24/7.', 1, NULL, 'landlord'),
-(N'Giờ giấc ra vào thoải mái, không giới hạn.', 1, NULL, 'landlord'),
-(N'Phòng không hỗ trợ nuôi thú cưng nha bạn.', 1, NULL, 'landlord');
+(N'Phòng vẫn còn, bạn muốn xem phòng khi nào?', 1, NULL, 'L'),
+(N'Chi phí điện nước theo giá nhà nước nha bạn.', 1, NULL, 'L'),
+(N'Phòng có chỗ để xe máy và an ninh 24/7.', 1, NULL, 'L'),
+(N'Giờ giấc ra vào thoải mái, không giới hạn.', 1, NULL, 'L'),
+(N'Phòng không hỗ trợ nuôi thú cưng nha bạn.', 1, NULL, 'L');
 
 INSERT INTO PaymentMethod (method_name, description, is_active, icon_url)
 VALUES 

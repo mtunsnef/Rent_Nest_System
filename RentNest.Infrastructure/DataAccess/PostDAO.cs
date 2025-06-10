@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using RentNest.Core.Domains;
+using RentNest.Core.UtilHelper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace RentNest.Infrastructure.DataAccess
 
         public async Task<List<Post>> GetAllPostsWithAccommodation()
         {
-            return await _context.Posts
+            var posts = await _dbSet.AsNoTracking()
                 .Include(p => p.Accommodation)
                     .ThenInclude(a => a.AccommodationImages)
                 .Include(p => p.Accommodation)
@@ -26,16 +27,75 @@ namespace RentNest.Infrastructure.DataAccess
                 .Include(p => p.PostPackageDetails)
                     .ThenInclude(d => d.Pricing)
                         .ThenInclude(p => p.TimeUnit)
-                .Include(a => a.Account)
+                .Include(p => p.Account)
                     .ThenInclude(u => u.UserProfile)
                 .Where(p => p.CurrentStatus == "A" && p.Accommodation.Status != "I")
-                .OrderByDescending(p => p.PublishedAt)
                 .ToListAsync();
+
+            var sortedPosts = posts
+                .OrderByDescending(p =>
+                {
+                    var latestPackageName = p.PostPackageDetails
+                        .OrderByDescending(ppd => ppd.CreatedAt)
+                        .Select(ppd => ppd.Pricing.PackageType.PackageTypeName)
+                        .FirstOrDefault();
+
+                    var packageTypeEnum = BadgeHelper.ParsePackageType(latestPackageName ?? string.Empty);
+
+                    return packageTypeEnum;
+                })
+                .ThenByDescending(p => p.PublishedAt)
+                .ToList();
+
+            return sortedPosts;
         }
+        public async Task<List<Post>> GetTopVipPostsAsync()
+        {
+            var vipPosts = await _dbSet
+                .Include(p => p.Accommodation)
+                    .ThenInclude(a => a.AccommodationImages)
+                .Include(p => p.Accommodation)
+                    .ThenInclude(a => a.AccommodationDetail)
+                .Include(p => p.PostPackageDetails)
+                    .ThenInclude(ppd => ppd.Pricing)
+                        .ThenInclude(pr => pr.PackageType)
+                .Include(p => p.PostPackageDetails)
+                    .ThenInclude(ppd => ppd.Pricing)
+                        .ThenInclude(pr => pr.TimeUnit)
+                .Include(p => p.Account)
+                    .ThenInclude(acc => acc.UserProfile)
+                .Where(p => p.CurrentStatus == "A" && p.Accommodation.Status != "I")
+                .ToListAsync();
+
+            var filtered = vipPosts
+                .Select(p => new
+                {
+                    Post = p,
+                    LatestPackage = p.PostPackageDetails
+                        .OrderByDescending(ppd => ppd.CreatedAt)
+                        .FirstOrDefault()
+                })
+                .Where(x =>
+                    x.LatestPackage != null &&
+                    (x.LatestPackage.Pricing.PackageType.PackageTypeName == "VIP Kim Cương" ||
+                     x.LatestPackage.Pricing.PackageType.PackageTypeName == "VIP Vàng"))
+                .OrderBy(x =>
+                {
+                    var package = x.LatestPackage.Pricing.PackageType.PackageTypeName;
+                    return package == "VIP Kim Cương" ? 0 : 1;
+                })
+                .ThenByDescending(x => x.Post.PublishedAt)
+                .Take(6)
+                .Select(x => x.Post)
+                .ToList();
+
+            return filtered;
+        }
+
 
         public async Task<Post?> GetPostDetailWithAccommodationDetailAsync(int postId)
         {
-            return await _context.Posts
+            return await _dbSet.AsNoTracking()
                 .Include(p => p.Accommodation)
                     .ThenInclude(a => a.AccommodationDetail)
                 .Include(p => p.Accommodation.AccommodationImages)
